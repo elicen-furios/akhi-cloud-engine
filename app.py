@@ -18,22 +18,33 @@ os.makedirs(MEDIA_DIR, exist_ok=True)
 def read_db():
     if not os.path.exists(DATA_FILE):
         init = {"keys": {}, "collections": {}}
-        with open(DATA_FILE, "w") as f:
-            json.dump(init, f, indent=2)
+        try:
+            with open(DATA_FILE, "w") as f:
+                json.dump(init, f, indent=2)
+        except Exception:
+            pass
         return init
     try:
         with open(DATA_FILE, "r") as f:
             return json.load(f)
-    except:
+    except Exception:
         return {"keys": {}, "collections": {}}
 
 def write_db(data):
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+    try:
+        with open(DATA_FILE, "w") as f:
+            json.dump(data, f, indent=2)
+    except Exception:
+        pass
 
 @app.route('/api/system/status', methods=['GET'])
 def get_status():
-    return jsonify({"status": "online", "mode": "cyber_engine_active"})
+    return jsonify({
+        "status": "operational",
+        "engine": "Akhi Unified Cloud Fabric",
+        "protocol": "HTTP/1.1 REST",
+        "cluster": "Europe-Frankfurt (Render Edge)"
+    })
 
 @app.route('/api/admin/keys/list', methods=['GET'])
 def list_keys():
@@ -42,17 +53,19 @@ def list_keys():
 @app.route('/api/admin/keys/create', methods=['POST'])
 def create_key():
     req = request.get_json(silent=True) or {}
-    name = req.get("app_name", "ANIME_OPERATOR")
+    name = req.get("app_name", "Primary Client Engine").strip() or "Unnamed Integration"
+    env = req.get("environment", "Production")
     key = f"akhi_live_{secrets.token_urlsafe(16)}"
     db = read_db()
     db.setdefault("keys", {})[key] = {
         "app": name,
-        "created": time.strftime("%Y-%m-%d"),
+        "environment": env,
+        "created": time.strftime("%Y-%m-%d %H:%M"),
         "hits": 0,
         "active": True
     }
     write_db(db)
-    return jsonify({"status": "success", "key": key, "app": name})
+    return jsonify({"status": "success", "key": key, "app": name, "environment": env})
 
 @app.route('/api/admin/keys/toggle', methods=['POST'])
 def toggle_key():
@@ -63,7 +76,7 @@ def toggle_key():
         db["keys"][k]["active"] = not db["keys"][k].get("active", True)
         write_db(db)
         return jsonify({"status": "success", "active": db["keys"][k]["active"]})
-    return jsonify({"status": "error"}), 404
+    return jsonify({"status": "error", "message": "Key identifier not found"}), 404
 
 @app.route('/api/v1/db/<collection>', methods=['GET', 'POST'])
 def db_handler(collection):
@@ -71,41 +84,53 @@ def db_handler(collection):
     db.setdefault("collections", {})
     if request.method == 'GET':
         items = db["collections"].get(collection, [])
-        return jsonify({"status": "success", "collection": collection, "count": len(items), "data": items})
+        return jsonify({
+            "status": "success",
+            "collection": collection,
+            "total_records": len(items),
+            "data": items
+        })
     
     key = request.headers.get("x-api-key") or request.args.get("api_key")
     keys = db.get("keys", {})
     if not key or key not in keys or not keys[key].get("active"):
-        return jsonify({"status": "error", "message": "Valid x-api-key required"}), 403
+        return jsonify({
+            "status": "unauthorized",
+            "error_code": "INVALID_X_API_KEY",
+            "message": "Access denied. Valid cryptographic pass required via 'x-api-key' header."
+        }), 403
     
     keys[key]["hits"] = keys[key].get("hits", 0) + 1
     if collection not in db["collections"]:
         db["collections"][collection] = []
     
-    item = {
+    payload = request.get_json(silent=True) or {}
+    record = {
         "_id": secrets.token_hex(6),
-        "app": keys[key].get("app", "App"),
-        "time": time.strftime("%H:%M:%S"),
-        "payload": request.get_json(silent=True) or {}
+        "origin_app": keys[key].get("app", "Client"),
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S UTC"),
+        "payload": payload
     }
-    db["collections"][collection].append(item)
+    db["collections"][collection].append(record)
     write_db(db)
-    return jsonify({"status": "success", "item": item})
+    return jsonify({"status": "success", "record": record})
 
 @app.route('/api/v1/media/upload', methods=['POST'])
 def media_upload():
     if 'file' not in request.files:
-        return jsonify({"status": "error", "message": "No binary payload received"}), 400
+        return jsonify({"status": "error", "message": "No binary multipart file detected"}), 400
     f = request.files['file']
-    s_name = f"{int(time.time())}_{secrets.token_hex(3)}_{secure_filename(f.filename)}"
+    s_name = f"{int(time.time())}_{secrets.token_hex(4)}_{secure_filename(f.filename)}"
     f.save(os.path.join(MEDIA_DIR, s_name))
-    return jsonify({"status": "success", "url": f"/media/{s_name}"})
+    return jsonify({"status": "success", "asset_id": s_name, "url": f"/media/{s_name}"})
 
 @app.route('/media/<path:fname>')
 def media_serve(fname):
     return send_from_directory(MEDIA_DIR, secure_filename(fname))
 
-# --- PORTAL: GET API KEY GENERATOR PAGE ---
+# ========================================================
+# STANDALONE KEY PROVISIONING TERMINAL (/portal/keys)
+# ========================================================
 @app.route('/portal/keys')
 def key_provision_portal():
     return render_template_string("""
@@ -114,249 +139,340 @@ def key_provision_portal():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Akhi // Security Key Terminal</title>
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+        <title>Identity & Access Provisioning • Akhi Cloud</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
         <style>
             :root {
-                --bg: #030611;
-                --panel: rgba(10, 16, 30, 0.85);
+                --bg: #07090f;
+                --panel: rgba(14, 20, 36, 0.7);
+                --border: rgba(255, 255, 255, 0.08);
+                --border-highlight: rgba(56, 189, 248, 0.35);
                 --cyan: #38bdf8;
-                --purple: #c084fc;
-                --neon-border: rgba(56, 189, 248, 0.3);
+                --text-main: #f1f5f9;
+                --text-muted: #94a3b8;
             }
             * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
             body {
-                background: radial-gradient(circle at 50% 10%, rgba(192, 132, 252, 0.15), transparent 60%),
-                            radial-gradient(circle at 10% 90%, rgba(56, 189, 248, 0.1), transparent 50%), var(--bg);
-                color: #f8fafc; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+                background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.12), transparent 50%), var(--bg);
+                color: var(--text-main); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
             }
-            .hud-card {
-                background: var(--panel); backdrop-filter: blur(20px); border: 1px solid var(--neon-border);
-                border-radius: 20px; max-width: 480px; width: 100%; padding: 30px; box-shadow: 0 0 50px rgba(56, 189, 248, 0.15);
-                position: relative; overflow: hidden;
+            .card {
+                background: var(--panel); backdrop-filter: blur(24px); border: 1px solid var(--border);
+                border-radius: 20px; max-width: 520px; width: 100%; padding: 36px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             }
-            .hud-card::before {
-                content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-                background: linear-gradient(90deg, var(--cyan), var(--purple));
+            .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--cyan); margin-bottom: 16px; font-weight: 700; }
+            h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; }
+            p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+            .form-group { margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px; }
+            label { font-size: 12px; font-weight: 600; color: #cbd5e1; }
+            input, select {
+                background: rgba(3, 7, 18, 0.7); border: 1px solid var(--border); border-radius: 10px;
+                padding: 13px 16px; color: #fff; font-size: 14px; outline: none; transition: all 0.2s;
             }
-            .badge-top { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-family: 'JetBrains Mono'; text-transform: uppercase; color: var(--cyan); margin-bottom: 12px; }
-            h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
-            p { font-size: 13px; color: #94a3b8; line-height: 1.5; margin-bottom: 24px; }
-            input {
-                width: 100%; background: rgba(3, 7, 18, 0.7); border: 1px solid rgba(255,255,255,0.12);
-                border-radius: 10px; padding: 13px 16px; color: #fff; font-size: 14px; outline: none; margin-bottom: 16px;
-            }
-            input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+            input:focus, select:focus { border-color: var(--border-highlight); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
             button {
-                width: 100%; background: linear-gradient(135deg, var(--cyan), #0284c7); color: #030712;
-                font-weight: 700; padding: 13px; border: none; border-radius: 10px; cursor: pointer; font-size: 13px;
-                text-transform: uppercase; letter-spacing: 1px; transition: 0.2s;
+                background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617; font-weight: 700;
+                padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px;
+                letter-spacing: 0.5px; width: 100%; transition: opacity 0.2s; margin-top: 8px;
             }
-            button:active { transform: scale(0.98); }
-            .token-result {
-                margin-top: 20px; background: rgba(2, 6, 23, 0.8); border: 1px solid var(--neon-border);
-                border-radius: 12px; padding: 16px; display: none;
+            button:hover { opacity: 0.95; }
+            .result-container {
+                margin-top: 24px; background: rgba(3, 7, 18, 0.85); border: 1px solid var(--border-highlight);
+                border-radius: 12px; padding: 18px; display: none;
             }
-            .token-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--purple); word-break: break-all; margin: 10px 0; }
+            .token-view {
+                font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--cyan);
+                background: rgba(56, 189, 248, 0.08); padding: 12px; border-radius: 8px; margin: 10px 0; word-break: break-all;
+            }
             .copy-btn {
-                background: rgba(192, 132, 252, 0.15); border: 1px solid var(--purple); color: var(--purple);
-                padding: 8px 12px; border-radius: 6px; font-size: 11px; width: auto; font-family: 'JetBrains Mono';
+                background: transparent; border: 1px solid var(--border); color: #cbd5e1; padding: 8px 14px;
+                border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; width: auto; margin: 0;
             }
         </style>
     </head>
     <body>
-        <div class="hud-card">
-            <div class="badge-top">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                Identity Authorization Gateway
+        <div class="card">
+            <div class="breadcrumb">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Access Control Module
             </div>
-            <h1>Generate Digital API Pass</h1>
-            <p>Deploy secure cryptographic credentials for client systems, mobile applications, or game engine integration.</p>
+            <h1>Generate Client Token</h1>
+            <p>Provision a cryptographically signed digital pass. This key grants authorized write privilege to your backend database and media pipeline.</p>
             
-            <input type="text" id="appName" placeholder="System ID / App Name (e.g. AnimeCore)">
-            <button onclick="issueToken()">Authorize & Issue Pass</button>
+            <div class="form-group">
+                <label>Integration / Application Name</label>
+                <input type="text" id="appName" placeholder="e.g. AnimeStudio Web Client">
+            </div>
+            <div class="form-group">
+                <label>Environment Scope</label>
+                <select id="appEnv">
+                    <option value="Production">Production Instance</option>
+                    <option value="Staging">Staging & Testing</option>
+                    <option value="Development">Local Development</option>
+                </select>
+            </div>
+            <button onclick="generateToken()">Issue Access Token</button>
 
-            <div id="tokenBox" class="token-result">
-                <div style="font-size: 11px; color:#94a3b8; font-family:'JetBrains Mono';">SECURE ACCESS TOKEN:</div>
-                <div class="token-text" id="tokenDisplay"></div>
-                <button class="copy-btn" onclick="copyToken()">Copy Pass</button>
+            <div id="resultBox" class="result-container">
+                <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); font-weight:600;">Cryptographic Key Generated</div>
+                <div class="token-view" id="tokenOutput"></div>
+                <button class="copy-btn" onclick="copyToken()">Copy Token to Clipboard</button>
             </div>
         </div>
 
         <script>
-            async function issueToken() {
-                const n = document.getElementById("appName").value.trim();
-                if (!n) return alert("System ID name required");
+            async function generateToken() {
+                const name = document.getElementById("appName").value.trim();
+                const env = document.getElementById("appEnv").value;
+                if (!name) return alert("Please specify an integration name.");
                 const res = await fetch('/api/admin/keys/create', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({app_name: n})
+                    body: JSON.stringify({ app_name: name, environment: env })
                 });
                 const d = await res.json();
                 if (d.status === "success") {
-                    document.getElementById("tokenDisplay").innerText = d.key;
-                    document.getElementById("tokenBox").style.display = "block";
+                    document.getElementById("tokenOutput").innerText = d.key;
+                    document.getElementById("resultBox").style.display = "block";
                 }
             }
             function copyToken() {
-                navigator.clipboard.writeText(document.getElementById("tokenDisplay").innerText);
-                alert("Cryptographic token copied.");
+                navigator.clipboard.writeText(document.getElementById("tokenOutput").innerText);
+                alert("Pass copied to clipboard.");
             }
         </script>
     </body>
     </html>
     """)
 
-# --- ROOT: CYBER-ANIME ARCHITECT HUD ---
+# ========================================================
+# MAIN DEVELOPER PLATFORM & ARCHITECTURE INTERFACE (ROOT /)
+# ========================================================
 @app.route('/')
-def architect_console():
+def main_developer_hub():
     return render_template_string("""
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AKHI // ARCHITECT • Cyber Engine</title>
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+        <title>Akhi Cloud • Developer Infrastructure Platform</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
         <style>
             :root {
-                --bg: #030611;
-                --panel: rgba(11, 18, 33, 0.75);
+                --bg: #07090f;
+                --panel: rgba(14, 20, 36, 0.65);
+                --border: rgba(255, 255, 255, 0.08);
                 --cyan: #38bdf8;
-                --purple: #c084fc;
+                --purple: #a855f7;
                 --green: #34d399;
                 --red: #f87171;
-                --border: rgba(56, 189, 248, 0.18);
+                --text-main: #f8fafc;
+                --text-muted: #94a3b8;
             }
             * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
             body {
-                background: radial-gradient(circle at 10% 10%, rgba(192, 132, 252, 0.12), transparent 40%),
-                            radial-gradient(circle at 90% 90%, rgba(56, 189, 248, 0.12), transparent 40%), var(--bg);
-                color: #f1f5f9; min-height: 100vh; padding: 20px;
+                background: radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.08), transparent 40%),
+                            radial-gradient(circle at 85% 90%, rgba(168, 85, 247, 0.08), transparent 40%), var(--bg);
+                color: var(--text-main); min-height: 100vh; padding: 24px;
             }
-            .hud-layout { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-            .navbar {
+            .app-wrapper { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
+            
+            /* NAVIGATION HEADER */
+            .header-bar {
+                background: var(--panel); backdrop-filter: blur(20px); border: 1px solid var(--border);
+                border-radius: 18px; padding: 16px 28px; display: flex; justify-content: space-between; align-items: center;
+            }
+            .brand-group { display: flex; align-items: center; gap: 14px; font-weight: 800; font-size: 17px; }
+            .brand-emblem {
+                width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--cyan), #2563eb);
+                display: grid; place-items: center; box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+            }
+            .header-actions { display: flex; align-items: center; gap: 12px; }
+            .btn-portal {
+                text-decoration: none; font-size: 13px; font-weight: 700; padding: 10px 18px; border-radius: 10px;
+                background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--cyan);
+                display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
+            }
+            .btn-portal:hover { background: rgba(56, 189, 248, 0.22); }
+
+            /* HERO INTRO */
+            .hero-section {
+                padding: 20px 8px; display: flex; flex-direction: column; gap: 12px; max-width: 780px;
+            }
+            .hero-tag { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--cyan); font-weight: 700; }
+            .hero-heading { font-size: 34px; font-weight: 800; line-height: 1.25; letter-spacing: -0.5px; }
+            .hero-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+
+            /* METRIC STRIP */
+            .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+            .metric-card {
+                background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px;
+                display: flex; flex-direction: column; gap: 6px;
+            }
+            .metric-card .caption { font-size: 11px; font-family: 'JetBrains Mono'; text-transform: uppercase; color: var(--text-muted); }
+            .metric-card .value { font-size: 24px; font-weight: 800; font-family: 'JetBrains Mono'; }
+
+            /* MAIN SECTION TABS */
+            .tab-nav {
+                display: flex; gap: 8px; background: rgba(3, 7, 18, 0.6); padding: 6px; border-radius: 12px;
+                border: 1px solid var(--border); width: fit-content;
+            }
+            .tab-btn {
+                background: transparent; border: none; color: var(--text-muted); padding: 10px 20px; border-radius: 8px;
+                font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            }
+            .tab-btn.active { background: rgba(255, 255, 255, 0.08); color: #fff; }
+
+            .tab-pane { display: none; }
+            .tab-pane.active { display: block; }
+
+            /* CARDS & TABLES */
+            .content-card {
                 background: var(--panel); backdrop-filter: blur(16px); border: 1px solid var(--border);
-                border-radius: 16px; padding: 14px 22px; display: flex; justify-content: space-between; align-items: center;
+                border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 20px;
             }
-            .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 16px; letter-spacing: 1px; }
-            .brand-shield {
-                width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--cyan), var(--purple));
-                display: grid; place-items: center; box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+            .card-title-group { display: flex; justify-content: space-between; align-items: center; }
+            .card-title { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
+
+            .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+            table { width: 100%; border-collapse: collapse; font-size: 13px; }
+            th { text-align: left; padding: 14px 16px; background: rgba(255,255,255,0.02); color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+            td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+            .token-badge { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); background: rgba(56, 189, 248, 0.08); padding: 4px 8px; border-radius: 6px; }
+
+            /* DOCUMENTATION CODE BLOCKS */
+            .code-sample {
+                background: #020612; border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+                font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #cbd5e1; line-height: 1.6;
+                overflow-x: auto;
             }
-            .nav-btn-link {
-                text-decoration: none; font-size: 12px; font-weight: 700; padding: 8px 14px; border-radius: 8px;
-                display: flex; align-items: center; gap: 8px; transition: 0.2s;
-                background: rgba(192, 132, 252, 0.12); border: 1px solid rgba(192, 132, 252, 0.4); color: var(--purple);
-            }
-            .nav-btn-link:hover { background: rgba(192, 132, 252, 0.25); box-shadow: 0 0 15px rgba(192, 132, 252, 0.3); }
-
-            .metric-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
-            .metric-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
-            .metric-card .title { font-size: 11px; font-family: 'JetBrains Mono'; text-transform: uppercase; color: #94a3b8; }
-            .metric-card .val { font-size: 22px; font-weight: 700; color: #fff; margin-top: 4px; font-family: 'JetBrains Mono'; }
-
-            .view-selector { display: flex; gap: 10px; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 12px; border: 1px solid var(--border); }
-            .hud-tab {
-                flex: 1; background: transparent; border: none; color: #94a3b8; padding: 10px; border-radius: 8px;
-                font-weight: 600; font-size: 13px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
-                transition: 0.2s;
-            }
-            .hud-tab.active { background: linear-gradient(135deg, var(--cyan), #0284c7); color: #000; font-weight: 700; box-shadow: 0 0 15px rgba(56,189,248,0.4); }
-
-            .panel-container { display: none; }
-            .panel-container.active { display: block; }
-            .hud-glass-card { background: var(--panel); backdrop-filter: blur(14px); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
-
-            .table-wrap { overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; }
-            table { width: 100%; border-collapse: collapse; font-size: 12px; }
-            th { text-align: left; padding: 12px; background: rgba(255,255,255,0.02); color: #94a3b8; font-family: 'JetBrains Mono'; border-bottom: 1px solid rgba(255,255,255,0.06); }
-            td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
-            .code-tag { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--cyan); background: rgba(56, 189, 248, 0.08); padding: 4px 8px; border-radius: 6px; }
-
-            input {
-                background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
-                padding: 10px 14px; color: #fff; font-size: 13px; outline: none; width: 100%;
-            }
-            input:focus { border-color: var(--cyan); }
-            .btn-hud { background: linear-gradient(135deg, var(--cyan), #0284c7); border: none; color: #000; font-weight: 700; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 12px; }
+            .code-comment { color: #64748b; }
+            .code-keyword { color: var(--cyan); }
+            .code-str { color: var(--green); }
         </style>
     </head>
     <body>
-        <div class="hud-layout">
-            <div class="navbar">
-                <div class="brand">
-                    <div class="brand-shield">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        <div class="app-wrapper">
+            <!-- HEADER -->
+            <div class="header-bar">
+                <div class="brand-group">
+                    <div class="brand-emblem">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
                     </div>
-                    <span>AKHI<span style="color:var(--cyan)">.CLOUD</span> // ENGINE CORE</span>
+                    <span>AKHI<span style="color:var(--cyan);">.CLOUD</span> CORE</span>
                 </div>
                 
-                <a href="/portal/keys" target="_blank" class="nav-btn-link">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
-                    Get API Key ↗
-                </a>
+                <div class="header-actions">
+                    <a href="/portal/keys" target="_blank" class="btn-portal">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                        Get API Key ↗
+                    </a>
+                </div>
             </div>
 
-            <div class="metric-bar">
-                <div class="metric-card"><div class="title">Cloud Engine</div><div class="val" style="color:var(--green);">ONLINE</div></div>
-                <div class="metric-card"><div class="title">Issued Passes</div><div class="val" id="statKeys">0</div></div>
-                <div class="metric-card"><div class="title">Platform Mode</div><div class="val" style="color:var(--cyan);">REST API</div></div>
-                <div class="metric-card"><div class="title">Media Vault</div><div class="val" style="color:var(--purple);">ACTIVE</div></div>
+            <!-- HERO INFORMATION -->
+            <div class="hero-section">
+                <div class="hero-tag">Cloud Native Infrastructure</div>
+                <h1 class="hero-heading">High-Performance Backend Fabric for Modern Client Applications</h1>
+                <p class="hero-desc">
+                    A multi-tenant REST database, media ingestion vault, and key-gated access layer running 24/7 on Frankfurt cloud compute. Connect any web client, mobile application, or automation pipeline using cryptographic digital passes.
+                </p>
             </div>
 
-            <div class="view-selector">
-                <button class="hud-tab active" onclick="switchHUD('keysView')">Pass Management</button>
-                <button class="hud-tab" onclick="switchHUD('sandboxView')">Operations Sandbox</button>
+            <!-- METRICS -->
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <span class="caption">System Cluster</span>
+                    <span class="value" style="color:var(--green);">ONLINE 24/7</span>
+                </div>
+                <div class="metric-card">
+                    <span class="caption">Registered Passes</span>
+                    <span class="value" id="statKeys">0</span>
+                </div>
+                <div class="metric-card">
+                    <span class="caption">Architecture Protocol</span>
+                    <span class="value" style="color:var(--cyan);">REST / JSON</span>
+                </div>
+                <div class="metric-card">
+                    <span class="caption">Media Vault</span>
+                    <span class="value" style="color:var(--purple);">ACTIVE</span>
+                </div>
             </div>
 
-            <div id="keysView" class="panel-container active">
-                <div class="hud-glass-card">
-                    <div style="font-size:14px; font-weight:700; color:var(--cyan); margin-bottom:14px; text-transform:uppercase;">
-                        Active Digital Passes
+            <!-- TABS -->
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('passesTab')">Active Key Management</button>
+                <button class="tab-btn" onclick="switchTab('docsTab')">API Integration Guide</button>
+            </div>
+
+            <!-- TAB 1: PASS MANAGEMENT -->
+            <div id="passesTab" class="tab-pane active">
+                <div class="content-card">
+                    <div class="card-title-group">
+                        <span class="card-title">Provisioned Digital Tokens</span>
+                        <span style="font-size:12px; color:var(--text-muted);">Scoped Cryptographic Gating</span>
                     </div>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>Application</th><th>Access Token</th><th>Hits</th><th>Status</th><th>Control</th></tr></thead>
-                            <tbody id="keysList"></tbody>
+                            <thead>
+                                <tr>
+                                    <th>Application</th>
+                                    <th>Environment</th>
+                                    <th>Digital Pass</th>
+                                    <th>Hits</th>
+                                    <th>Status</th>
+                                    <th>Revocation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keysTable"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <div id="sandboxView" class="panel-container">
-                <div class="hud-glass-card" style="display:flex; flex-direction:column; gap:16px;">
-                    <div style="font-size:14px; font-weight:700; color:var(--cyan); text-transform:uppercase;">Manual Cloud Operations</div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                        <input type="text" id="sandKey" placeholder="Paste x-api-key">
-                        <input type="text" id="sandCol" value="project_data" placeholder="Target Collection">
+            <!-- TAB 2: DEVELOPER DOCUMENTATION -->
+            <div id="docsTab" class="tab-pane">
+                <div class="content-card">
+                    <div class="card-title">How Client Applications Connect</div>
+                    <p style="font-size:14px; color:var(--text-muted); line-height:1.6;">
+                        Your frontend client talks directly to this backend using standard HTTPS requests. Supply your issued token via the <code>x-api-key</code> header to persist data to the cloud database.
+                    </p>
+
+                    <div style="font-size:13px; font-weight:700; color:var(--cyan);">JavaScript / Web Client Example</div>
+                    <div class="code-sample">
+<span class="code-comment">// Storing data into collection 'users'</span>
+<span class="code-keyword">await</span> fetch(<span class="code-str">'https://akhil-private-backend.onrender.com/api/v1/db/users'</span>, {
+    method: <span class="code-str">'POST'</span>,
+    headers: {
+        <span class="code-str">'Content-Type'</span>: <span class="code-str">'application/json'</span>,
+        <span class="code-str">'x-api-key'</span>: <span class="code-str">'YOUR_GENERATED_KEY'</span>
+    },
+    body: JSON.stringify({
+        player_name: <span class="code-str">"Ren"</span>,
+        score: 1540
+    })
+});
                     </div>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="sandJson" placeholder='{"operator": "cyber", "rank": 1}'>
-                        <button class="btn-hud" onclick="execDB()">Commit Data</button>
-                    </div>
-                    <div style="display:flex; gap:10px; align-items:center; border-top:1px solid rgba(255,255,255,0.06); padding-top:14px;">
-                        <input type="file" id="sandFile">
-                        <button class="btn-hud" onclick="execUpload()">Transmit Media</button>
-                    </div>
-                    <div id="sandOutput" style="font-family:'JetBrains Mono'; font-size:12px; color:var(--cyan);"></div>
                 </div>
             </div>
         </div>
 
         <script>
-            function switchHUD(id) {
-                document.querySelectorAll('.hud-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.panel-container').forEach(p => p.classList.remove('active'));
-                if(id === 'keysView') document.querySelectorAll('.hud-tab')[0].classList.add('active');
-                else document.querySelectorAll('.hud-tab')[1].classList.add('active');
+            function switchTab(id) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                if (id === 'passesTab') document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                else document.querySelectorAll('.tab-btn')[1].classList.add('active');
                 document.getElementById(id).classList.add('active');
             }
 
-            async function syncKeys() {
+            async function syncKeyTable() {
                 const res = await fetch('/api/admin/keys/list');
                 const data = await res.json();
-                const tb = document.getElementById("keysList");
+                const tb = document.getElementById("keysTable");
                 tb.innerHTML = "";
                 let count = 0;
                 for (let k in data.keys) {
@@ -364,10 +480,15 @@ def architect_console():
                     const item = data.keys[k];
                     tb.innerHTML += `<tr>
                         <td><b>${item.app}</b></td>
-                        <td><span class="code-tag">${k}</span></td>
+                        <td style="color:var(--text-muted);">${item.environment || 'Production'}</td>
+                        <td><span class="token-badge">${k}</span></td>
                         <td>${item.hits || 0}</td>
-                        <td style="color:${item.active ? 'var(--green)' : 'var(--red)'}">${item.active ? 'ACTIVE' : 'REVOKED'}</td>
-                        <td><button style="background:${item.active ? 'rgba(248,113,113,0.2)' : 'rgba(52,211,153,0.2)'}; color:${item.active ? 'var(--red)' : 'var(--green)'}; border:none; padding:4px 8px; border-radius:6px; font-size:11px; cursor:pointer;" onclick="toggleKey('${k}')">${item.active ? 'Revoke' : 'Allow'}</button></td>
+                        <td style="color:${item.active ? 'var(--green)' : 'var(--red)'}; font-weight:600;">${item.active ? 'ACTIVE' : 'REVOKED'}</td>
+                        <td>
+                            <button style="background:transparent; border:1px solid var(--border); color:${item.active ? 'var(--red)' : 'var(--green)'}; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer;" onclick="toggleKey('${k}')">
+                                ${item.active ? 'Revoke Access' : 'Re-enable'}
+                            </button>
+                        </td>
                     </tr>`;
                 }
                 document.getElementById("statKeys").innerText = count;
@@ -377,35 +498,12 @@ def architect_console():
                 await fetch('/api/admin/keys/toggle', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({key: k})
+                    body: JSON.stringify({ key: k })
                 });
-                syncKeys();
+                syncKeyTable();
             }
 
-            async function execDB() {
-                const k = document.getElementById("sandKey").value.trim();
-                const col = document.getElementById("sandCol").value.trim();
-                const payload = document.getElementById("sandJson").value || '{}';
-                const res = await fetch(`/api/v1/db/${col}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json', 'x-api-key': k},
-                    body: payload
-                });
-                const d = await res.json();
-                document.getElementById("sandOutput").innerText = d.status === "success" ? `SUCCESS // ID: ${d.item._id}` : `ERROR // ${d.message}`;
-            }
-
-            async function execUpload() {
-                const f = document.getElementById("sandFile").files[0];
-                if (!f) return alert("Select a file");
-                const fd = new FormData();
-                fd.append("file", f);
-                const res = await fetch('/api/v1/media/upload', {method: 'POST', body: fd});
-                const d = await res.json();
-                document.getElementById("sandOutput").innerText = d.status === "success" ? `MEDIA_STORED // ${d.url}` : `UPLOAD_FAIL`;
-            }
-
-            syncKeys();
+            syncKeyTable();
         </script>
     </body>
     </html>
