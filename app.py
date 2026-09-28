@@ -325,3 +325,84 @@ def modern_console():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
+
+@app.route('/demo')
+def client_demo():
+    return """
+    <!DOCTYPE html>
+    <html lang="hi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Akhi Cloud • Live Client Demo</title>
+        <style>
+            body { font-family: sans-serif; background: #0f172a; color: white; padding: 20px; display: flex; justify-content: center; }
+            .card { background: #1e293b; border-radius: 12px; padding: 20px; max-width: 400px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+            h2 { margin-top: 0; color: #38bdf8; font-size: 20px; }
+            input, textarea, button { width: 100%; box-sizing: border-box; margin-bottom: 12px; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; }
+            button { background: #38bdf8; color: black; font-weight: bold; cursor: pointer; border: none; }
+            .feed { margin-top: 20px; border-top: 1px solid #334155; padding-top: 12px; }
+            .item { background: #0f172a; padding: 10px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #38bdf8; }
+            .meta { font-size: 11px; color: #94a3b8; }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h2>Guestbook Client App</h2>
+            <p style="font-size: 13px; color: #94a3b8;">Yeh page direct aapke live cloud database se connect hota hai.</p>
+            
+            <input type="text" id="name" placeholder="Aapka Naam">
+            <textarea id="msg" placeholder="Aapka Message"></textarea>
+            <button onclick="sendData()">Save to Cloud DB</button>
+            
+            <div class="feed">
+                <h3 style="font-size: 14px; margin-bottom: 8px;">Saved Records (Direct from DB):</h3>
+                <div id="posts">Loading data...</div>
+            </div>
+        </div>
+
+        <script>
+            const API_KEY = "akhi_live_u4scNJ9A7v4K8ti6dgfk-Q"; // Aapki active key
+            const BASE = location.origin;
+
+            async function loadPosts() {
+                const res = await fetch(`${BASE}/api/v1/db/guestbook`);
+                const json = await res.json();
+                const container = document.getElementById("posts");
+                container.innerHTML = "";
+                if (!json.data || json.data.length === 0) {
+                    container.innerHTML = "<p style='font-size:12px; color:#64748b;'>Abhi koi data nahi hai. Upar se pehla message bhejein!</p>";
+                    return;
+                }
+                json.data.slice().reverse().forEach(item => {
+                    const d = document.createElement("div");
+                    d.className = "item";
+                    d.innerHTML = `<div><b>${item.payload.name || 'Anonymous'}</b>: ${item.payload.msg || ''}</div><div class="meta">ID: ${item._id} • Time: ${item.time}</div>`;
+                    container.appendChild(d);
+                });
+            }
+
+            async function sendData() {
+                const name = document.getElementById("name").value.trim();
+                const msg = document.getElementById("msg").value.trim();
+                if (!name || !msg) return alert("Naam aur message dono bharein!");
+
+                await fetch(`${BASE}/api/v1/db/guestbook`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': API_KEY
+                    },
+                    body: JSON.stringify({ name: name, msg: msg })
+                });
+
+                document.getElementById("name").value = "";
+                document.getElementById("msg").value = "";
+                loadPosts();
+            }
+
+            loadPosts();
+        </script>
+    </body>
+    </html>
+    """
