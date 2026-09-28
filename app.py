@@ -4,12 +4,10 @@ import time
 import secrets
 from flask import Flask, request, jsonify, send_from_directory, render_template_string
 from flask_cors import CORS
-from flask_sock import Sock
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 CORS(app)
-sock = Sock(app)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MEDIA_DIR = os.path.join(BASE_DIR, "media")
@@ -19,39 +17,19 @@ os.makedirs(MEDIA_DIR, exist_ok=True)
 
 def read_db():
     if not os.path.exists(DATA_FILE):
-        init = {"keys": {}, "users": {}, "collections": {}}
+        init = {"keys": {}, "collections": {}}
         with open(DATA_FILE, "w") as f:
             json.dump(init, f, indent=2)
         return init
-    with open(DATA_FILE, "r") as f:
-        return json.load(f)
+    try:
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
+    except:
+        return {"keys": {}, "collections": {}}
 
 def write_db(data):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=2)
-
-active_ws = []
-def ws_broadcast(event, payload):
-    data = json.dumps({"event": event, "payload": payload, "time": time.strftime("%H:%M:%S")})
-    for client in active_ws[:]:
-        try:
-            client.send(data)
-        except:
-            active_ws.remove(client)
-
-@sock.route('/ws/stream')
-def realtime_stream(ws):
-    active_ws.append(ws)
-    ws_broadcast("CONNECT", {"online": len(active_ws)})
-    try:
-        while True:
-            msg = ws.receive()
-            if msg:
-                ws_broadcast("TRANSMIT", {"data": msg})
-    except:
-        if ws in active_ws:
-            active_ws.remove(ws)
-        ws_broadcast("DISCONNECT", {"online": len(active_ws)})
 
 @app.route('/api/system/status', methods=['GET'])
 def get_status():
@@ -67,9 +45,13 @@ def create_key():
     name = req.get("app_name", "ANIME_OPERATOR")
     key = f"akhi_live_{secrets.token_urlsafe(16)}"
     db = read_db()
-    db["keys"][key] = {"app": name, "created": time.strftime("%Y-%m-%d"), "hits": 0, "active": True}
+    db.setdefault("keys", {})[key] = {
+        "app": name,
+        "created": time.strftime("%Y-%m-%d"),
+        "hits": 0,
+        "active": True
+    }
     write_db(db)
-    ws_broadcast("KEY_ISSUED", {"app": name})
     return jsonify({"status": "success", "key": key, "app": name})
 
 @app.route('/api/admin/keys/toggle', methods=['POST'])
@@ -77,7 +59,7 @@ def toggle_key():
     req = request.get_json(silent=True) or {}
     k = req.get("key")
     db = read_db()
-    if k in db["keys"]:
+    if k in db.get("keys", {}):
         db["keys"][k]["active"] = not db["keys"][k].get("active", True)
         write_db(db)
         return jsonify({"status": "success", "active": db["keys"][k]["active"]})
@@ -86,22 +68,28 @@ def toggle_key():
 @app.route('/api/v1/db/<collection>', methods=['GET', 'POST'])
 def db_handler(collection):
     db = read_db()
+    db.setdefault("collections", {})
     if request.method == 'GET':
         items = db["collections"].get(collection, [])
         return jsonify({"status": "success", "collection": collection, "count": len(items), "data": items})
     
     key = request.headers.get("x-api-key") or request.args.get("api_key")
-    if not key or key not in db["keys"] or not db["keys"][key].get("active"):
+    keys = db.get("keys", {})
+    if not key or key not in keys or not keys[key].get("active"):
         return jsonify({"status": "error", "message": "Valid x-api-key required"}), 403
     
-    db["keys"][key]["hits"] = db["keys"][key].get("hits", 0) + 1
+    keys[key]["hits"] = keys[key].get("hits", 0) + 1
     if collection not in db["collections"]:
         db["collections"][collection] = []
     
-    item = {"_id": secrets.token_hex(6), "app": db["keys"][key]["app"], "time": time.strftime("%H:%M:%S"), "payload": request.get_json(silent=True) or {}}
+    item = {
+        "_id": secrets.token_hex(6),
+        "app": keys[key].get("app", "App"),
+        "time": time.strftime("%H:%M:%S"),
+        "payload": request.get_json(silent=True) or {}
+    }
     db["collections"][collection].append(item)
     write_db(db)
-    ws_broadcast("DATA_SAVED", {"collection": collection, "item": item})
     return jsonify({"status": "success", "item": item})
 
 @app.route('/api/v1/media/upload', methods=['POST'])
@@ -111,16 +99,13 @@ def media_upload():
     f = request.files['file']
     s_name = f"{int(time.time())}_{secrets.token_hex(3)}_{secure_filename(f.filename)}"
     f.save(os.path.join(MEDIA_DIR, s_name))
-    ws_broadcast("MEDIA_UPLOADED", {"file": s_name})
     return jsonify({"status": "success", "url": f"/media/{s_name}"})
 
 @app.route('/media/<path:fname>')
 def media_serve(fname):
     return send_from_directory(MEDIA_DIR, secure_filename(fname))
 
-# ========================================================
-# 1. SEPARATE PAGE: GET API KEY GENERATION PORTAL (/portal/keys)
-# ========================================================
+# --- PORTAL: GET API KEY GENERATOR PAGE ---
 @app.route('/portal/keys')
 def key_provision_portal():
     return render_template_string("""
@@ -222,9 +207,7 @@ def key_provision_portal():
     </html>
     """)
 
-# ========================================================
-# 2. MAIN REMAKE: CYBER-ANIME ARCHITECT HUD (ROOT /)
-# ========================================================
+# --- ROOT: CYBER-ANIME ARCHITECT HUD ---
 @app.route('/')
 def architect_console():
     return render_template_string("""
@@ -252,8 +235,6 @@ def architect_console():
                 color: #f1f5f9; min-height: 100vh; padding: 20px;
             }
             .hud-layout { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-            
-            /* TOP NAV */
             .navbar {
                 background: var(--panel); backdrop-filter: blur(16px); border: 1px solid var(--border);
                 border-radius: 16px; padding: 14px 22px; display: flex; justify-content: space-between; align-items: center;
@@ -270,13 +251,11 @@ def architect_console():
             }
             .nav-btn-link:hover { background: rgba(192, 132, 252, 0.25); box-shadow: 0 0 15px rgba(192, 132, 252, 0.3); }
 
-            /* HUD METRICS */
             .metric-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
             .metric-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
             .metric-card .title { font-size: 11px; font-family: 'JetBrains Mono'; text-transform: uppercase; color: #94a3b8; }
             .metric-card .val { font-size: 22px; font-weight: 700; color: #fff; margin-top: 4px; font-family: 'JetBrains Mono'; }
 
-            /* MULTI-VIEW HUD TABS */
             .view-selector { display: flex; gap: 10px; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 12px; border: 1px solid var(--border); }
             .hud-tab {
                 flex: 1; background: transparent; border: none; color: #94a3b8; padding: 10px; border-radius: 8px;
@@ -285,28 +264,16 @@ def architect_console():
             }
             .hud-tab.active { background: linear-gradient(135deg, var(--cyan), #0284c7); color: #000; font-weight: 700; box-shadow: 0 0 15px rgba(56,189,248,0.4); }
 
-            /* PANELS */
             .panel-container { display: none; }
             .panel-container.active { display: block; }
             .hud-glass-card { background: var(--panel); backdrop-filter: blur(14px); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
-            
-            .two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-            @media(max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
 
-            /* TABLE */
             .table-wrap { overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; }
             table { width: 100%; border-collapse: collapse; font-size: 12px; }
             th { text-align: left; padding: 12px; background: rgba(255,255,255,0.02); color: #94a3b8; font-family: 'JetBrains Mono'; border-bottom: 1px solid rgba(255,255,255,0.06); }
             td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
             .code-tag { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--cyan); background: rgba(56, 189, 248, 0.08); padding: 4px 8px; border-radius: 6px; }
 
-            /* TERMINAL */
-            .term-hud { background: #01040a; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; height: 340px; padding: 14px; overflow-y: auto; font-family: 'JetBrains Mono'; font-size: 11px; }
-            .log-line { margin-bottom: 8px; word-break: break-all; }
-            .log-time { color: #64748b; margin-right: 6px; }
-            .log-ev { color: var(--purple); font-weight: bold; }
-
-            /* INPUTS */
             input {
                 background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
                 padding: 10px 14px; color: #fff; font-size: 13px; outline: none; width: 100%;
@@ -317,7 +284,6 @@ def architect_console():
     </head>
     <body>
         <div class="hud-layout">
-            <!-- TOP BAR -->
             <div class="navbar">
                 <div class="brand">
                     <div class="brand-shield">
@@ -326,59 +292,38 @@ def architect_console():
                     <span>AKHI<span style="color:var(--cyan)">.CLOUD</span> // ENGINE CORE</span>
                 </div>
                 
-                <!-- SEPARATE PAGE BUTTON -->
                 <a href="/portal/keys" target="_blank" class="nav-btn-link">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
                     Get API Key ↗
                 </a>
             </div>
 
-            <!-- METRIC HUD -->
             <div class="metric-bar">
                 <div class="metric-card"><div class="title">Cloud Engine</div><div class="val" style="color:var(--green);">ONLINE</div></div>
                 <div class="metric-card"><div class="title">Issued Passes</div><div class="val" id="statKeys">0</div></div>
-                <div class="metric-card"><div class="title">Realtime Sockets</div><div class="val" id="statSockets">1</div></div>
+                <div class="metric-card"><div class="title">Platform Mode</div><div class="val" style="color:var(--cyan);">REST API</div></div>
                 <div class="metric-card"><div class="title">Media Vault</div><div class="val" style="color:var(--purple);">ACTIVE</div></div>
             </div>
 
-            <!-- MULTI-PAGE TAB CONTROLS -->
             <div class="view-selector">
-                <button class="hud-tab active" onclick="switchHUD('keysView')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    Pass Management & Telemetry
-                </button>
-                <button class="hud-tab" onclick="switchHUD('sandboxView')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                    Live Operations Sandbox
-                </button>
+                <button class="hud-tab active" onclick="switchHUD('keysView')">Pass Management</button>
+                <button class="hud-tab" onclick="switchHUD('sandboxView')">Operations Sandbox</button>
             </div>
 
-            <!-- VIEW 1: KEYS & TELEMETRY -->
             <div id="keysView" class="panel-container active">
-                <div class="two-col">
-                    <div class="hud-glass-card">
-                        <div style="font-size:14px; font-weight:700; color:var(--cyan); margin-bottom:14px; text-transform:uppercase;">
-                            Active Digital Passes
-                        </div>
-                        <div class="table-wrap">
-                            <table>
-                                <thead><tr><th>Application</th><th>Access Token</th><th>Hits</th><th>Status</th><th>Control</th></tr></thead>
-                                <tbody id="keysList"></tbody>
-                            </table>
-                        </div>
+                <div class="hud-glass-card">
+                    <div style="font-size:14px; font-weight:700; color:var(--cyan); margin-bottom:14px; text-transform:uppercase;">
+                        Active Digital Passes
                     </div>
-
-                    <div class="hud-glass-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <span style="font-size:13px; font-weight:700; color:var(--purple); text-transform:uppercase;">Live Telemetry</span>
-                            <span style="font-size:10px; color:var(--green); font-family:'JetBrains Mono';">● CONNECTED</span>
-                        </div>
-                        <div class="term-hud" id="termLogs"></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Application</th><th>Access Token</th><th>Hits</th><th>Status</th><th>Control</th></tr></thead>
+                            <tbody id="keysList"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW 2: DIRECT SANDBOX OPERATIONS -->
             <div id="sandboxView" class="panel-container">
                 <div class="hud-glass-card" style="display:flex; flex-direction:column; gap:16px;">
                     <div style="font-size:14px; font-weight:700; color:var(--cyan); text-transform:uppercase;">Manual Cloud Operations</div>
@@ -407,19 +352,6 @@ def architect_console():
                 else document.querySelectorAll('.hud-tab')[1].classList.add('active');
                 document.getElementById(id).classList.add('active');
             }
-
-            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const ws = new WebSocket(`${proto}//${location.host}/ws/stream`);
-            const term = document.getElementById("termLogs");
-
-            ws.onmessage = (e) => {
-                const d = JSON.parse(e.data);
-                const el = document.createElement("div");
-                el.className = "log-line";
-                el.innerHTML = `<span class="log-time">[${d.time}]</span> <span class="log-ev">${d.event}</span>: <span>${JSON.stringify(d.payload || '')}</span>`;
-                term.appendChild(el);
-                term.scrollTop = term.scrollHeight;
-            };
 
             async function syncKeys() {
                 const res = await fetch('/api/admin/keys/list');
