@@ -299,7 +299,7 @@ def page_api_keys():
     content = """
     <div class="card">
         <h2 style="font-size:1.3rem; font-weight:700; margin-bottom:8px;">API Access Vault</h2>
-        <p style="color:#71717a; font-size:0.88rem; margin-bottom:24px;">Issue production authorization tokens for client applications.</p>
+        <p style="color:#71717a; font-size:0.88rem; margin-bottom:24px;">Issue and manage production authorization tokens for client applications.</p>
 
         <div style="max-width:500px;">
             <label style="font-size:0.75rem; font-weight:600; color:#52525b; display:block; margin-bottom:6px;">APPLICATION IDENTIFIER</label>
@@ -307,14 +307,85 @@ def page_api_keys():
             <button class="btn-primary" id="btn-forge-key" onclick="issueDevKey()">Generate Pass Token</button>
 
             <div id="key-output-panel" style="display:none; margin-top:20px; padding:16px; background:#fafafa; border:1px solid #e4e4e7; border-radius:8px;">
-                <span style="font-size:0.72rem; font-weight:700;">GENERATED CRYPTOGRAPHIC PASS</span>
+                <span style="font-size:0.72rem; font-weight:700; color:#10b981;">NEW TOKEN GENERATED</span>
                 <div id="pass-val-box" style="font-family:var(--font-mono); font-size:0.92rem; font-weight:600; margin:8px 0; word-break:break-all;"></div>
                 <button class="btn-secondary" style="padding:6px 12px; font-size:0.78rem;" onclick="navigator.clipboard.writeText(document.getElementById('pass-val-box').innerText); window.showSaasError('Cryptographic token copied to clipboard!', 'Success');">Copy Token</button>
             </div>
         </div>
     </div>
 
+    <!-- Active Keys Section -->
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div>
+                <h3 style="font-size:1.1rem; font-weight:700;">Active Tokens</h3>
+                <p style="font-size:0.82rem; color:#71717a;">Tokens currently authorized to interact with your services.</p>
+            </div>
+            <button class="btn-secondary" style="padding:6px 12px; font-size:0.8rem;" onclick="loadUserKeys()">Refresh</button>
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="data-table" id="keys-table">
+                <thead>
+                    <tr>
+                        <th>Application</th>
+                        <th>Token</th>
+                        <th>Created</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="keys-table-body">
+                    <tr><td colspan="4" style="text-align:center; color:#a1a1aa; padding:18px;">Checking session...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <script>
+        async function loadUserKeys() {
+            const tbody = document.getElementById("keys-table-body");
+            try {
+                const res = await fetch("/api/admin/keys/list");
+                if (res.status === 403) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#71717a; padding:18px;">Sign in at Identity Gate to view active keys.</td></tr>';
+                    return;
+                }
+                const data = await res.json();
+                if (data.status === "success" && data.keys.length > 0) {
+                    tbody.innerHTML = data.keys.map(k => `
+                        <tr>
+                            <td style="font-weight:600;">${k.app_name}</td>
+                            <td><code style="font-family:var(--font-mono); font-size:0.8rem; background:#f4f4f5; padding:3px 6px; border-radius:4px;">${k.key.substring(0, 14)}...</code></td>
+                            <td style="color:#71717a; font-size:0.8rem;">${k.created_at}</td>
+                            <td>
+                                <button class="btn-secondary" style="padding:4px 8px; font-size:0.75rem; color:#ef4444; border-color:#fecaca;" onclick="revokeKey(${k.id})">Revoke</button>
+                            </td>
+                        </tr>
+                    `).join("");
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#a1a1aa; padding:18px;">No active tokens issued yet.</td></tr>';
+                }
+            } catch(e) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ef4444; padding:18px;">Failed to load tokens.</td></tr>';
+            }
+        }
+
+        async function revokeKey(id) {
+            if (!confirm("Revoke this token permanently?")) return;
+            try {
+                const res = await fetch("/api/admin/keys/revoke", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id })
+                });
+                const d = await res.json();
+                if (d.status === "success") {
+                    loadUserKeys();
+                } else {
+                    window.showSaasError(d.message || "Failed to revoke token");
+                }
+            } catch(e) { window.showSaasError(e.message); }
+        }
+
         async function issueDevKey() {
             if (!window.currentFirebaseUser) {
                 window.showSaasError("ACCESS RESTRICTED: Please authenticate at the Identity Gate first.", "Unauthorized Access");
@@ -337,6 +408,7 @@ def page_api_keys():
                 if (d.status === "success" || d.key) {
                     document.getElementById("pass-val-box").innerText = d.key;
                     document.getElementById("key-output-panel").style.display = "block";
+                    loadUserKeys();
                 } else {
                     window.showSaasError(d.message || "Failed to generate key", "Generation Failed");
                 }
@@ -347,6 +419,9 @@ def page_api_keys():
                 btn.disabled = false; 
             }
         }
+
+        // Auto load on page load
+        setTimeout(loadUserKeys, 800);
     </script>
     """
     return render_page("API Keys", "api-keys", content)
@@ -433,6 +508,72 @@ def page_system():
     </div>
     """
     return render_page("System Status", "system", content)
+
+
+# Layer 3: Keys Management (List & Delete)
+@app.route("/api/admin/keys/list", methods=["GET"])
+def list_keys():
+    if not session.get("authenticated") or not session.get("user_email"):
+        return jsonify({"status": "error", "message": "Unauthorized"}), 403
+    email = session.get("user_email")
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        cur.execute("SELECT id, key, app_name, created_at FROM api_keys WHERE email = ? ORDER BY id DESC", (email,))
+        rows = cur.fetchall()
+        conn.close()
+        keys_list = [{"id": r[0], "key": r[1], "app_name": r[2], "created_at": r[3]} for r in rows]
+        return jsonify({"status": "success", "keys": keys_list})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/api/admin/keys/revoke", methods=["POST"])
+def revoke_key():
+    if not session.get("authenticated") or not session.get("user_email"):
+        return jsonify({"status": "error", "message": "Unauthorized"}), 403
+    data = request.get_json(silent=True) or {}
+    key_id = data.get("id")
+    email = session.get("user_email")
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        cur.execute("DELETE FROM api_keys WHERE id = ? AND email = ?", (key_id, email))
+        conn.commit()
+        conn.close()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# Public Key Validation Route for External Apps
+@app.route("/api/v1/verify", methods=["GET", "POST"])
+def verify_api_key():
+    auth_header = request.headers.get("Authorization", "")
+    token = ""
+    if auth_header.startswith("Bearer "):
+        token = auth_header.split("Bearer ")[1].strip()
+    elif request.args.get("key"):
+        token = request.args.get("key").strip()
+    
+    if not token:
+        return jsonify({"valid": False, "error": "MISSING_TOKEN", "message": "Provide token via Bearer header or ?key= param"}), 401
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        cur.execute("SELECT email, app_name, created_at FROM api_keys WHERE key = ?", (token,))
+        row = cur.fetchone()
+        conn.close()
+        if row:
+            return jsonify({
+                "valid": True,
+                "app_name": row[1],
+                "owner": row[0],
+                "created_at": row[2]
+            }), 200
+        else:
+            return jsonify({"valid": False, "error": "INVALID_TOKEN", "message": "Token not found or revoked"}), 403
+    except Exception as e:
+        return jsonify({"valid": False, "error": "SERVER_ERROR", "message": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
