@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AKHIL DEV PLATFORM</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #030712;
+            --bg-sidebar: #060d1f;
+            --bg-card: rgba(10, 20, 42, 0.85);
+            --border-line: rgba(0, 240, 255, 0.22);
+            --cyan: #00f0ff;
+            --cyan-glow: rgba(0, 240, 255, 0.35);
+            --magenta: #ff007f;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --font-code: 'JetBrains Mono', monospace;
+            --font-ui: 'Space Grotesk', sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            width: 260px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-line);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .brand-section {
+            padding: 22px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .brand-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--cyan);
+            overflow: hidden;
+            background: #000;
+        }
+        .brand-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .brand-title {
+            font-family: var(--font-code);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--cyan);
+            letter-spacing: 1px;
+        }
+        .brand-subtitle { font-size: 0.7rem; color: var(--text-sub); }
+        .nav-list {
+            list-style: none;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .nav-section-title {
+            font-family: var(--font-code);
+            font-size: 0.65rem;
+            color: var(--text-sub);
+            letter-spacing: 1.5px;
+            padding: 10px 12px 4px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 8px;
+            color: var(--text-sub);
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
+        .nav-item:hover, .nav-item.active {
+            color: var(--cyan);
+            background: rgba(0, 240, 255, 0.08);
+            border-color: var(--border-line);
+        }
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            text-align: center;
+            font-family: var(--font-code);
+        }
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header-bar {
+            padding: 18px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(14px);
+            position: sticky;
+            top: 0;
+            z-index: 500;
+        }
+        .hamburger-btn {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--border-line);
+            border-radius: 6px;
+            color: var(--cyan);
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+        .header-actions { display: flex; align-items: center; gap: 14px; }
+        .btn-issue-key {
+            background: rgba(0, 240, 255, 0.12);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-code);
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-issue-key:hover { background: var(--cyan); color: #000; box-shadow: 0 0 16px var(--cyan-glow); }
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 12px 5px 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .user-avatar-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--cyan);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+        }
+        .content-body { padding: 28px; flex: 1; }
+        .panel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section-view { display: none; }
+        .section-view.active { display: block; }
+        .hud-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: #000;
+            border: 1px solid var(--border-line);
+            border-radius: 6px;
+            color: #fff;
+            font-family: var(--font-code);
+            font-size: 0.88rem;
+            margin-bottom: 14px;
+            outline: none;
+        }
+        .hud-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-glow); }
+        .btn-action {
+            background: rgba(0, 240, 255, 0.12);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        .btn-action:hover { background: var(--cyan); color: #000; }
+        .btn-auth-prov {
+            width: 100%;
+            padding: 11px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+            font-family: var(--font-code);
+            font-size: 0.82rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .btn-auth-prov svg { width: 16px; height: 16px; fill: currentColor; }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-wrapper { margin-left: 0; }
+            .hamburger-btn { display: block; }
+            .header-bar { padding: 14px 16px; }
+            .content-body { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="brand-section">
+            <div class="brand-avatar">
+                <img src="/public/image.png" onerror="this.src='/public/second-image.png'; this.onerror=null;" alt="Logo">
+            </div>
+            <div>
+                <div class="brand-title">AKHIL DEV</div>
+                <div class="brand-subtitle">PLATFORM CORE</div>
+            </div>
+        </div>
+
+        <ul class="nav-list">
+            <li class="nav-section-title">NAVIGATION</li>
+            <li class="nav-item active" onclick="navigateTab('home')">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span>Home</span>
+            </li>
+            <li class="nav-item" onclick="navigateTab('api-vault')">
+                <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                <span>API Keys</span>
+            </li>
+            <li class="nav-item" onclick="navigateTab('sandbox')">
+                <svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+                <span>Transmission Sandbox</span>
+            </li>
+            <li class="nav-item" onclick="navigateTab('media')">
+                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <span>Media Core Vault</span>
+            </li>
+            <li class="nav-item" onclick="navigateTab('docs')">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>Protocol Docs</span>
+            </li>
+
+            <li class="nav-section-title">SYSTEM CONTROL</li>
+            <li class="nav-item" onclick="navigateTab('database')">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 6c-3.87 0-7-1.12-7-2.5S8.13 3 12 3s7 1.12 7 2.5S15.87 8 12 8zm-7 5.5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5V11c-1.78 1.24-4.24 2-7 2s-5.22-.76-7-2v2.5zm0 5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5V16c-1.78 1.24-4.24 2-7 2s-5.22-.76-7-2v2.5z"/></svg>
+                <span>Database</span>
+            </li>
+            <li class="nav-item" onclick="navigateTab('system')">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                <span>System Status</span>
+            </li>
+            <li class="nav-item" onclick="navigateTab('identity')">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span>Identity Gate</span>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            DEVELOPER AKHIL<br>
+            <span style="opacity:0.6;">Built with vision.</span>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="header-bar">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button class="hamburger-btn" onclick="toggleSidebar()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                </button>
+                <div>
+                    <h3 style="font-family:var(--font-code); color:var(--cyan); font-size:0.95rem;">AKHIL DEV PLATFORM</h3>
+                    <p style="font-size:0.72rem; color:var(--text-sub);">YOUR IDEAS × OUR INFRASTRUCTURE</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn-issue-key" onclick="navigateTab('api-vault')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+                    Issue API Key
+                </button>
+                <div class="user-badge" onclick="navigateTab('identity')">
+                    <div class="user-avatar-circle" id="user-initial">A</div>
+                    <span id="user-name-tag" style="font-family:var(--font-code); font-size:0.78rem;">AKHIL DEV</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-body">
+            <section id="tab-home" class="section-view active">
+                <div class="panel-card">
+                    <h2 style="font-size:1.8rem; margin-bottom:8px;">AKHIL DEV PLATFORM</h2>
+                    <p style="color:var(--text-sub); margin-bottom:20px;">Futuristic Developer Console & Quantum Infrastructure Engine</p>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <button class="btn-action" onclick="navigateTab('api-vault')">GET API KEY</button>
+                        <button class="btn-action" style="border-color:var(--magenta); color:var(--magenta);" onclick="navigateTab('sandbox')">OPEN CONSOLE</button>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+                    <div class="panel-card">
+                        <span style="font-family:var(--font-code); font-size:0.75rem; color:var(--text-sub);">CLUSTER HEALTH</span>
+                        <h3 style="color:var(--cyan); font-family:var(--font-code); margin-top:6px;">HEALTHY 100%</h3>
+                    </div>
+                    <div class="panel-card">
+                        <span style="font-family:var(--font-code); font-size:0.75rem; color:var(--text-sub);">FIREBASE AUTH</span>
+                        <h3 style="color:var(--cyan); font-family:var(--font-code); margin-top:6px;" id="auth-status-lbl">UNAUTHENTICATED</h3>
+                    </div>
+                    <div class="panel-card">
+                        <span style="font-family:var(--font-code); font-size:0.75rem; color:var(--text-sub);">ACTIVE PASSES</span>
+                        <h3 style="color:var(--magenta); font-family:var(--font-code); margin-top:6px;" id="pass-count-lbl">0 ACTIVE</h3>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-api-vault" class="section-view">
+                <div class="panel-card">
+                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">API KEY VAULT</h2>
+                    <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:18px;">Generate and manage your authentic platform access passes.</p>
+                    
+                    <div style="max-width:500px;">
+                        <label style="font-family:var(--font-code); font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:6px;">APPLICATION IDENTIFIER</label>
+                        <input type="text" id="app-key-name" class="hud-input" placeholder="e.g. eva_units">
+                        <button class="btn-action" id="gen-key-btn" onclick="requestBackendApiKey()">GENERATE API KEY</button>
+
+                        <div id="key-result-box" style="display:none; margin-top:20px; padding:16px; background:#000; border:1px dashed var(--border-line); border-radius:6px;">
+                            <span style="font-family:var(--font-code); font-size:0.72rem; color:var(--magenta);">GENERATED CRYPTOGRAPHIC PASS:</span>
+                            <div id="key-output-val" style="font-family:var(--font-code); color:var(--cyan); font-size:0.95rem; word-break:break-all; margin:8px 0;"></div>
+                            <button class="btn-action" onclick="copyApiKeyClipboard()">COPY PASS</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-identity" class="section-view">
+                <div class="panel-card" style="max-width:440px; margin:0 auto; text-align:center;">
+                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:6px;">IDENTITY GATE</h2>
+                    <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:20px;">AUTHENTICATE TO ACCESS YOUR DEVELOPER CORE</p>
+
+                    <div id="login-form-area">
+                        <input type="email" id="user-email" class="hud-input" placeholder="Enter Your Email">
+                        <input type="password" id="user-pass" class="hud-input" placeholder="Enter Your Password">
+                        <button class="btn-action" style="width:100%; justify-content:center; margin-bottom:14px;" onclick="emailAuthCall()">AUTHORIZE & SIGN IN</button>
+
+                        <button class="btn-auth-prov" onclick="googleAuthCall()">
+                            <svg viewBox="0 0 24 24"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
+                            Continue with Google
+                        </button>
+                        <button class="btn-auth-prov" style="border-color:#1877f2; color:#1877f2;" onclick="facebookAuthCall()">
+                            <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Continue with Facebook
+                        </button>
+                        <button class="btn-auth-prov" onclick="githubAuthCall()">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                            Continue with GitHub
+                        </button>
+                    </div>
+
+                    <div id="logged-user-area" style="display:none; text-align:left;">
+                        <p id="logged-email-text" style="font-family:var(--font-code); color:var(--cyan); margin-bottom:14px; font-size:0.85rem;"></p>
+                        <button class="btn-action" style="border-color:var(--magenta); color:var(--magenta); width:100%; justify-content:center;" onclick="signOutCall()">SIGN OUT</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-sandbox" class="section-view">
+                <div class="panel-card">
+                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">TRANSMISSION SANDBOX</h2>
+                    <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:16px;">Test API endpoints against live backend routes.</p>
+                    <div style="display:flex; gap:10px; margin-bottom:14px;">
+                        <input type="text" id="sb-url" class="hud-input" style="margin-bottom:0;" value="/api/admin/keys/create">
+                        <button class="btn-action" onclick="runSandboxTest()">SEND REQUEST</button>
+                    </div>
+                    <pre id="sb-console" style="background:#000; padding:16px; border-radius:6px; font-family:var(--font-code); font-size:0.8rem; color:var(--cyan); overflow-x:auto;">// Ready for operational request</pre>
+                </div>
+            </section>
+
+            <section id="tab-database" class="section-view">
+                <div class="panel-card">
+                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">DATABASE TELEMETRY</h2>
+                    <p style="color:var(--text-sub); font-size:0.85rem;">Persistence Engine: Cloud SQLite / JSON Store</p>
+                    <p style="color:var(--cyan); font-family:var(--font-code); margin-top:8px;">Status: Synchronized & Online</p>
+                </div>
+            </section>
+
+            <section id="tab-media" class="section-view">
+                <div class="panel-card">
+                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">MEDIA CORE VAULT</h2>
+                    <p style="color:var(--text-sub); font-size:0.85rem;">Active Storage Path: /storage_vault & /public</p>
+                </div>
+            </section>
+
+            <section id="tab-docs" class="section-view">
+                <div class="panel-card">
+                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">PROTOCOL DOCS</h2>
+                    <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:12px;">Authorize API requests by attaching Bearer tokens in headers:</p>
+                    <pre style="background:#000; padding:12px; border-radius:6px; font-family:var(--font-code); font-size:0.8rem; color:var(--cyan);">Authorization: Bearer &lt;YOUR_API_KEY&gt;</pre>
+                </div>
+            </section>
+
+            <section id="tab-system" class="section-view">
+                <div class="panel-card">
+                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">SYSTEM STATUS</h2>
+                    <p style="font-family:var(--font-code); font-size:0.85rem; color:var(--cyan);">API Engine: 100% ONLINE</p>
+                    <p style="font-family:var(--font-code); font-size:0.85rem; color:var(--cyan); margin-top:6px;">Auth Gateway: Firebase v10.8 Connected</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            FacebookAuthProvider, 
+            GithubAuthProvider, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCr-q7bWfNuKLeui0LWl_FvoAlikfzuMFE",
+            authDomain: "free-api-web-2a7bc-e81f3.firebaseapp.com",
+            projectId: "free-api-web-2a7bc-e81f3",
+            storageBucket: "free-api-web-2a7bc-e81f3.firebasestorage.app",
+            messagingSenderId: "22422848110",
+            appId: "1:22422848110:web:92e6ad4a7995b48369dc7f",
+            measurementId: "G-FPZF166PW4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        window.currentFirebaseUser = null;
+
+        onAuthStateChanged(auth, user => {
+            window.currentFirebaseUser = user;
+            if (user) {
+                const name = user.displayName || user.email.split('@')[0];
+                document.getElementById('user-name-tag').innerText = name.toUpperCase();
+                document.getElementById('user-initial').innerText = name.charAt(0).toUpperCase();
+                document.getElementById('auth-status-lbl').innerText = 'ONLINE';
+                document.getElementById('login-form-area').style.display = 'none';
+                document.getElementById('logged-user-area').style.display = 'block';
+                document.getElementById('logged-email-text').innerText = 'AUTHENTICATED: ' + (user.email || name);
+            } else {
+                document.getElementById('user-name-tag').innerText = 'AKHIL DEV';
+                document.getElementById('user-initial').innerText = 'A';
+                document.getElementById('auth-status-lbl').innerText = 'UNAUTHENTICATED';
+                document.getElementById('login-form-area').style.display = 'block';
+                document.getElementById('logged-user-area').style.display = 'none';
+            }
+        });
+
+        window.emailAuthCall = async () => {
+            const em = document.getElementById('user-email').value.trim();
+            const pw = document.getElementById('user-pass').value.trim();
+            try {
+                await signInWithEmailAndPassword(auth, em, pw);
+                navigateTab('api-vault');
+            } catch(e) {
+                try {
+                    await createUserWithEmailAndPassword(auth, em, pw);
+                    navigateTab('api-vault');
+                } catch(err) {
+                    alert('Authentication Error: ' + err.message);
+                }
+            }
+        };
+
+        window.googleAuthCall = async () => {
+            try {
+                const prov = new GoogleAuthProvider();
+                await signInWithPopup(auth, prov);
+                navigateTab('api-vault');
+            } catch(e) {
+                alert('Google Login: ' + e.message);
+            }
+        };
+
+        window.facebookAuthCall = async () => {
+            try {
+                const prov = new FacebookAuthProvider();
+                prov.addScope('email');
+                prov.addScope('public_profile');
+                await signInWithPopup(auth, prov);
+                navigateTab('api-vault');
+            } catch(e) {
+                alert('Facebook Login: ' + e.message);
+            }
+        };
+
+        window.githubAuthCall = async () => {
+            try {
+                const prov = new GithubAuthProvider();
+                await signInWithPopup(auth, prov);
+                navigateTab('api-vault');
+            } catch(e) {
+                alert('GitHub Login: ' + e.message);
+            }
+        };
+
+        window.signOutCall = () => signOut(auth);
+    </script>
+
+    <script>
+        let currentPassKey = '';
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function navigateTab(tabKey) {
+            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            const target = document.getElementById('tab-' + tabKey);
+            if (target) target.classList.add('active');
+
+            const clickedNav = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick')?.includes(tabKey));
+            if (clickedNav) clickedNav.classList.add('active');
+
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function requestBackendApiKey() {
+            const appName = document.getElementById('app-key-name').value.trim() || 'eva_units';
+            const btn = document.getElementById('gen-key-btn');
+            btn.innerText = 'GENERATING...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/admin/keys/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: window.currentFirebaseUser ? window.currentFirebaseUser.email : 'akhil@akhil.dev',
+                        app_name: appName
+                    })
+                });
+                const d = await res.json();
+                if (d.status === 'success' || d.key) {
+                    currentPassKey = d.key;
+                    document.getElementById('key-output-val').innerText = currentPassKey;
+                    document.getElementById('key-result-box').style.display = 'block';
+                    document.getElementById('pass-count-lbl').innerText = '1 ACTIVE';
+                } else {
+                    alert(d.message || 'Key generation failed');
+                }
+            } catch(e) {
+                alert('Backend Connection Error: ' + e.message);
+            } finally {
+                btn.innerText = 'GENERATE API KEY';
+                btn.disabled = false;
+            }
+        }
+
+        function copyApiKeyClipboard() {
+            navigator.clipboard.writeText(currentPassKey).then(() => {
+                alert('API Key copied to memory!');
+            });
+        }
+
+        async function runSandboxTest() {
+            const ep = document.getElementById('sb-url').value;
+            const con = document.getElementById('sb-console');
+            con.innerText = 'Connecting...';
+            try {
+                const res = await fetch(ep, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'test@akhil.dev', app_name: 'probe' })
+                });
+                const d = await res.json();
+                con.innerText = JSON.stringify(d, null, 2);
+            } catch(e) {
+                con.innerText = e.toString();
+            }
+        }
+    </script>
+</body>
+</html>
