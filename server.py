@@ -1037,11 +1037,18 @@ def key_provision_portal():
 
 
 
+import os
+
 @app.route('/')
 @app.route('/portal')
 def main_dashboard():
-    return render_template('index.html')
+    template_path = os.path.join(os.path.dirname(__file__), 'templates', 'index.html')
+    if not os.path.exists(template_path):
+        template_path = 'templates/index.html'
+    if os.path.exists(template_path):
+        with open(template_path, 'r', encoding='utf-8') as f:
+            return f.read(), 200, {'Content-Type': 'text/html; charset=utf-8'}
+    return '<h1>Dashboard Core Ready</h1>', 200
 
 if __name__ == '__main__':
-    import os
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
