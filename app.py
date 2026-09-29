@@ -370,7 +370,7 @@ def page_api_keys():
         }
 
         async function revokeKey(id) {
-            if (!confirm("Revoke this token permanently?")) return;
+            const ok = await window.showSaasConfirm("Revoke Token", "Are you sure you want to revoke this pass token permanently? Connected services will immediately lose access."); if (!ok) return;
             try {
                 const res = await fetch("/api/admin/keys/revoke", {
                     method: "POST",

@@ -610,5 +610,47 @@
             window.location.reload();
         };
     </script>
+
+    <!-- Premium Centered Confirmation Modal -->
+    <div id="saas-confirm-modal" style="display:none; position:fixed; inset:0; background:rgba(9, 9, 11, 0.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:1000000; align-items:center; justify-content:center; padding:20px;">
+        <div class="saas-error-card" style="max-width:400px; text-align:center;">
+            <div class="saas-error-icon-box" style="background:#fef2f2; border:1px solid #fee2e2; color:#ef4444;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+            </div>
+            <div class="saas-error-title" id="confirm-modal-title">Revoke Pass Token</div>
+            <p class="saas-error-desc" id="confirm-modal-desc">Are you sure you want to permanently revoke this token? Applications using it will immediately lose API clearance.</p>
+            <div style="display:flex; gap:10px; width:100%; margin-top:6px;">
+                <button type="button" class="btn-secondary" style="flex:1; justify-content:center; padding:11px; border-radius:10px;" onclick="closeSaasConfirm(false)">Cancel</button>
+                <button type="button" class="btn-primary" id="confirm-modal-action-btn" style="flex:1; justify-content:center; padding:11px; border-radius:10px; background:#ef4444; border-color:#ef4444;" onclick="closeSaasConfirm(true)">Revoke</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let _confirmResolve = null;
+        window.showSaasConfirm = function(title, desc) {
+            const modal = document.getElementById("saas-confirm-modal");
+            if (title) document.getElementById("confirm-modal-title").innerText = title;
+            if (desc) document.getElementById("confirm-modal-desc").innerText = desc;
+            modal.style.display = "flex";
+            return new Promise((resolve) => {
+                _confirmResolve = resolve;
+            });
+        };
+        window.closeSaasConfirm = function(confirmed) {
+            document.getElementById("saas-confirm-modal").style.display = "none";
+            if (_confirmResolve) {
+                _confirmResolve(confirmed);
+                _confirmResolve = null;
+            }
+        };
+    </script>
+
 </body>
 </html>
