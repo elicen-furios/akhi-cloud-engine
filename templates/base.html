@@ -17,7 +17,7 @@
             --font-ui: "Plus Jakarta Sans", sans-serif;
             --font-mono: "JetBrains Mono", monospace;
             --shadow-subtle: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-float: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --shadow-float: 0 20px 40px -10px rgba(0,0,0,0.08);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -59,7 +59,7 @@
         .brand-avatar {
             width: 38px;
             height: 38px;
-            border-radius: 8px;
+            border-radius: 10px;
             background: #18181b;
             overflow: hidden;
             display: flex;
@@ -190,7 +190,9 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.15s ease;
         }
+        .btn-primary:hover { background: #27272a; }
         .btn-secondary {
             background: #ffffff;
             color: var(--text-title);
@@ -204,7 +206,9 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.15s ease;
         }
+        .btn-secondary:hover { background: #f4f4f5; }
         .input-text {
             width: 100%;
             padding: 12px 14px;
@@ -214,7 +218,9 @@
             font-size: 0.9rem;
             margin-bottom: 14px;
             outline: none;
+            font-family: inherit;
         }
+        .input-text:focus { border-color: #18181b; }
         .code-box {
             background: #fafafa;
             border: 1px solid var(--border-soft);
@@ -236,32 +242,107 @@
             padding: 12px 14px;
             text-align: left;
         }
-        /* Error Toast */
-        #custom-toast {
+
+        /* Centered SaaS Error Modal */
+        #saas-error-modal {
             display: none;
             position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ffffff;
-            border: 1px solid #fecaca;
-            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.15);
-            border-radius: 12px;
-            padding: 12px 18px;
-            z-index: 99999;
+            inset: 0;
+            background: rgba(9, 9, 11, 0.45);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000000;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            padding: 20px;
         }
-        .toast-pill {
+        .saas-error-card {
+            background: #ffffff;
+            border: 1px solid #f4f4f5;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.02);
+            padding: 36px 30px;
+            max-width: 390px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes modalPop {
+            0% { opacity: 0; transform: scale(0.92) translateY(8px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .saas-error-icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
             background: #fef2f2;
+            border: 1px solid #fee2e2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #ef4444;
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
-            border: 1px solid #fecaca;
+            margin-bottom: 2px;
         }
-        /* Animated Done Modal */
+        .saas-error-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #09090b;
+            letter-spacing: -0.3px;
+        }
+        .saas-error-desc {
+            font-size: 0.90rem;
+            color: #52525b;
+            line-height: 1.55;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .saas-btn-retry {
+            width: 100%;
+            background: #18181b;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+        }
+        .saas-btn-retry:hover { background: #27272a; }
+
+        /* Login / Sign-up Segmented Pill Switcher */
+        .auth-segmented-nav {
+            display: flex;
+            background: #f4f4f5;
+            padding: 4px;
+            border-radius: 30px;
+            margin-bottom: 22px;
+            border: 1px solid #e4e4e7;
+        }
+        .auth-tab-btn {
+            flex: 1;
+            padding: 9px 16px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            border-radius: 24px;
+            border: none;
+            background: transparent;
+            color: #71717a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .auth-tab-btn.active {
+            background: #ffffff;
+            color: #09090b;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        /* Done Animation Modal */
         #done-screen {
             display: none;
             position: fixed;
@@ -276,20 +357,21 @@
             background: #fff;
             border: 1px solid var(--border-soft);
             box-shadow: var(--shadow-float);
-            border-radius: 16px;
-            padding: 32px 40px;
+            border-radius: 18px;
+            padding: 34px 44px;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 12px;
         }
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
             .main-wrapper { margin-left: 0; }
             .hamburger-btn { display: block; }
-            .content-body { padding: 20px 14px; }
+            .content-body { padding: 18px 14px; }
         }
     </style>
 </head>
@@ -299,7 +381,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="brand-box">
             <div class="brand-avatar">
-                <img src="/image.png?v=3" onerror="this.onerror=null; this.src='/logo.png';" alt="Logo">
+                <img src="/image.png" onerror="this.onerror=null; this.src='/logo.png';" alt="Logo">
             </div>
             <div class="brand-text">
                 <h2>AKHIL DEV</h2>
@@ -340,10 +422,20 @@
         </div>
     </div>
 
-    <!-- Error Toast -->
-    <div id="custom-toast">
-        <span class="toast-pill">ERROR</span>
-        <span id="toast-text" style="font-size:0.84rem; font-weight:500;"></span>
+    <!-- Centered SaaS Error Modal -->
+    <div id="saas-error-modal">
+        <div class="saas-error-card">
+            <div class="saas-error-icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <div class="saas-error-title" id="saas-error-title-text">Something went wrong</div>
+            <p class="saas-error-desc" id="saas-error-desc-text">We encountered an unexpected issue while processing your request. Please try again.</p>
+            <button class="saas-btn-retry" onclick="closeSaasError()">Try Again</button>
+        </div>
     </div>
 
     <!-- Done Modal -->
@@ -355,24 +447,30 @@
         </div>
     </div>
 
-    <!-- Toast Helper -->
+    <!-- Global Helper Scripts -->
     <script>
-        window.showToast = function(msg) {
-            const toast = document.getElementById("custom-toast");
-            const text = document.getElementById("toast-text");
-            if (!toast || !text) return;
-            text.innerText = msg;
-            toast.style.display = "flex";
-            setTimeout(() => { toast.style.display = "none"; }, 3200);
+        window.showSaasError = function(customMsg, customTitle) {
+            const modal = document.getElementById("saas-error-modal");
+            const titleElem = document.getElementById("saas-error-title-text");
+            const descElem = document.getElementById("saas-error-desc-text");
+            if (customTitle && titleElem) titleElem.innerText = customTitle;
+            if (customMsg && descElem) descElem.innerText = customMsg;
+            if (modal) modal.style.display = "flex";
         };
-        window.alert = function(msg) { window.showToast(msg); };
+        window.closeSaasError = function() {
+            const modal = document.getElementById("saas-error-modal");
+            if (modal) modal.style.display = "none";
+        };
+        window.alert = function(msg) {
+            window.showSaasError(msg);
+        };
         function toggleSidebar() {
             document.getElementById("sidebar").classList.toggle("open");
             document.getElementById("overlay").classList.toggle("active");
         }
     </script>
 
-    <!-- Modular Firebase -->
+    <!-- Firebase Authentication SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -399,6 +497,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         window.auth = auth;
+        window.currentFirebaseUser = null;
 
         async function syncSessionWithBackend(user) {
             if (!user) return;
@@ -416,8 +515,6 @@
             } catch(e) { console.error('Session sync error:', e); }
         }
 
-        window.currentFirebaseUser = null;
-
         function showDoneAndRedirect(name) {
             const screen = document.getElementById("done-screen");
             const lbl = document.getElementById("done-user-label");
@@ -434,22 +531,23 @@
         getRedirectResult(auth).then(res => {
             if (res && res.user) {
                 const name = res.user.displayName || res.user.email?.split("@")[0] || "User";
+                syncSessionWithBackend(res.user);
                 showDoneAndRedirect(name);
             }
         }).catch(err => {
-            window.showToast("Login error: " + err.message);
+            window.showSaasError(err.message, "Authentication Failed");
         });
 
         onAuthStateChanged(auth, user => {
             window.currentFirebaseUser = user;
-            if (user) { syncSessionWithBackend(user); }
             const tag = document.getElementById("user-name-tag");
             const init = document.getElementById("user-initial");
-            const loginForm = document.getElementById("login-box-card");
+            const loginCard = document.getElementById("login-box-card");
             const loggedCard = document.getElementById("logged-in-profile-card");
             const profileDisplay = document.getElementById("profile-display-info");
 
             if (user) {
+                syncSessionWithBackend(user);
                 const name = user.displayName || user.email?.split("@")[0] || "User";
                 const firstChar = name.trim().charAt(0).toUpperCase();
                 if (tag) tag.innerText = name.toUpperCase();
@@ -457,7 +555,7 @@
                     init.innerText = firstChar;
                     init.style.display = "flex";
                 }
-                if (loginForm) loginForm.style.display = "none";
+                if (loginCard) loginCard.style.display = "none";
                 if (loggedCard) {
                     loggedCard.style.display = "block";
                     if (profileDisplay) profileDisplay.innerText = user.email || user.phoneNumber || name;
@@ -468,7 +566,7 @@
                     init.innerText = "";
                     init.style.display = "none";
                 }
-                if (loginForm) loginForm.style.display = "block";
+                if (loginCard) loginCard.style.display = "block";
                 if (loggedCard) loggedCard.style.display = "none";
             }
         });
@@ -480,14 +578,14 @@
                 const res = await signInWithPopup(auth, prov);
                 if (res && res.user) {
                     const name = res.user.displayName || res.user.email?.split("@")[0] || "User";
+                    await syncSessionWithBackend(res.user);
                     showDoneAndRedirect(name);
                 }
             } catch(e) {
-                // If popup was blocked by mobile browser, switch to redirect
                 if (e.code === "auth/popup-blocked" || e.code === "auth/cancelled-popup-request") {
                     await signInWithRedirect(auth, prov);
                 } else {
-                    window.showToast("Google Login failed: " + e.message);
+                    window.showSaasError("Google sign-in could not be completed: " + e.message);
                 }
             }
         };
@@ -498,6 +596,7 @@
                 const res = await signInWithPopup(auth, prov);
                 if (res && res.user) {
                     const name = res.user.displayName || "User";
+                    await syncSessionWithBackend(res.user);
                     showDoneAndRedirect(name);
                 }
             } catch(e) {
@@ -506,6 +605,7 @@
         };
 
         window.signOutAccount = async () => {
+            await fetch('/api/auth/logout', { method: 'POST' });
             await signOut(auth);
             window.location.reload();
         };
