@@ -2,24 +2,7 @@
 from flask import send_from_directory
 
 
-@app.route("/logo.png")
-@app.route("/static/logo.png")
-def serve_logo_img():
-    for f in ["logo.png", "image.png", "static/logo.png", "static/image.png"]:
-        if os.path.exists(f):
-            return send_file(f, mimetype="image/png")
-    return ("", 404)
 
-@app.route('/image.png')
-@app.route('/static/image.png')
-@app.route('/public/image.png')
-def serve_brand_logo():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    for loc in [base_dir, os.path.join(base_dir, 'static')]:
-        target = os.path.join(loc, 'image.png')
-        if os.path.exists(target):
-            return send_from_directory(loc, 'image.png')
-    return ('', 404)
 
 import os
 import json
@@ -30,6 +13,26 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+
+from flask import send_file
+
+@app.route("/image.png")
+@app.route("/static/image.png")
+@app.route("/public/image.png")
+def serve_main_image():
+    for f in ["image.png", "static/image.png"]:
+        if os.path.exists(f):
+            return send_file(f, mimetype="image/png")
+    return ("", 404)
+
+@app.route("/logo.png")
+@app.route("/static/logo.png")
+def serve_main_logo():
+    for f in ["logo.png", "image.png", "static/logo.png", "static/image.png"]:
+        if os.path.exists(f):
+            return send_file(f, mimetype="image/png")
+    return ("", 404)
+
 CORS(app)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
