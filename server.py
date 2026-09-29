@@ -730,6 +730,104 @@ def page_admin_panel():
             }
         }
     </script>
+
+<!-- PERMANENT AI CHATBOT WIDGET -->
+<div id="ai-chat-window" style="display: flex !important; position: fixed !important; bottom: 20px !important; right: 20px !important; width: 340px !important; max-width: calc(100vw - 32px) !important; height: 460px !important; background: #09090b !important; border: 1px solid #27272a !important; border-radius: 10px !important; z-index: 9999999 !important; flex-direction: column !important; box-shadow: 0 10px 30px rgba(0,0,0,0.85) !important; font-family: monospace, sans-serif !important;">
+    <div style="padding: 12px 16px; background: #121215; border-bottom: 1px solid #27272a; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 700; color: #f4f4f5; font-size: 13px; letter-spacing: 0.5px;">ARIA // CORE</span>
+        <span style="font-size: 11px; color: #10b981; font-weight: 600;">ACTIVE</span>
+    </div>
+    <div id="ai-chat-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #d4d4d8;">
+        <div style="background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; border: 1px solid #27272a;">
+            Aria core online. Ready for queries or commands.
+        </div>
+    </div>
+    <div style="padding: 10px; border-top: 1px solid #27272a; background: #0c0c0e; display: flex; gap: 8px;">
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." style="flex: 1; background: #18181b; border: 1px solid #27272a; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none;">
+        <button id="ai-chat-send-btn" style="background: #27272a; border: 1px solid #3f3f46; color: #fff; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">SEND</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const input = document.getElementById("ai-chat-input");
+    const sendBtn = document.getElementById("ai-chat-send-btn");
+    const box = document.getElementById("ai-chat-messages");
+
+    async function sendMsg() {
+        if (!input) return;
+        const text = input.value.trim();
+        if (!text) return;
+
+        const uMsg = document.createElement("div");
+        uMsg.style.cssText = "background: #27272a; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-end; color: #fff;";
+        uMsg.innerText = text;
+        box.appendChild(uMsg);
+        input.value = "";
+        box.scrollTop = box.scrollHeight;
+
+        if (text === "[8630@]") {
+            const grantMsg = document.createElement("div");
+            grantMsg.style.cssText = "background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; border: 1px solid #10b981; color: #10b981;";
+            grantMsg.innerText = "ACCESS GRANTED: INITIALIZING ADMIN PANEL...";
+            box.appendChild(grantMsg);
+
+            try {
+                const audio = new Audio("/bot.mp3");
+                audio.play().catch(e => console.log(e));
+            } catch(e) {}
+
+            setTimeout(() => {
+                window.location.href = "/admin-panel";
+            }, 1200);
+            return;
+        }
+
+        const loader = document.createElement("div");
+        loader.id = "chat-loader";
+        loader.style.cssText = "background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; color: #71717a;";
+        loader.innerText = "Processing...";
+        box.appendChild(loader);
+        box.scrollTop = box.scrollHeight;
+
+        try {
+            const res = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text })
+            });
+            const d = await res.json();
+            const el = document.getElementById("chat-loader");
+            if (el) el.remove();
+
+            const botMsg = document.createElement("div");
+            botMsg.style.cssText = "background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; border: 1px solid #27272a; color: #f4f4f5;";
+            botMsg.innerText = d.reply || "No response.";
+            box.appendChild(botMsg);
+            box.scrollTop = box.scrollHeight;
+        } catch(e) {
+            const el = document.getElementById("chat-loader");
+            if (el) el.remove();
+            const err = document.createElement("div");
+            err.style.cssText = "background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; color: #ef4444;";
+            err.innerText = "AI service offline.";
+            box.appendChild(err);
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    if (sendBtn) sendBtn.addEventListener("click", sendMsg);
+    if (input) {
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendMsg();
+            }
+        });
+    }
+});
+</script>
+
 </body>
 </html>""", 200, {"Content-Type": "text/html; charset=utf-8"}
 
@@ -873,6 +971,104 @@ def page_admin_panel():
         }
         fetchTokens();
     </script>
+
+<!-- PERMANENT AI CHATBOT WIDGET -->
+<div id="ai-chat-window" style="display: flex !important; position: fixed !important; bottom: 20px !important; right: 20px !important; width: 340px !important; max-width: calc(100vw - 32px) !important; height: 460px !important; background: #09090b !important; border: 1px solid #27272a !important; border-radius: 10px !important; z-index: 9999999 !important; flex-direction: column !important; box-shadow: 0 10px 30px rgba(0,0,0,0.85) !important; font-family: monospace, sans-serif !important;">
+    <div style="padding: 12px 16px; background: #121215; border-bottom: 1px solid #27272a; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 700; color: #f4f4f5; font-size: 13px; letter-spacing: 0.5px;">ARIA // CORE</span>
+        <span style="font-size: 11px; color: #10b981; font-weight: 600;">ACTIVE</span>
+    </div>
+    <div id="ai-chat-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #d4d4d8;">
+        <div style="background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; border: 1px solid #27272a;">
+            Aria core online. Ready for queries or commands.
+        </div>
+    </div>
+    <div style="padding: 10px; border-top: 1px solid #27272a; background: #0c0c0e; display: flex; gap: 8px;">
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." style="flex: 1; background: #18181b; border: 1px solid #27272a; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none;">
+        <button id="ai-chat-send-btn" style="background: #27272a; border: 1px solid #3f3f46; color: #fff; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">SEND</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const input = document.getElementById("ai-chat-input");
+    const sendBtn = document.getElementById("ai-chat-send-btn");
+    const box = document.getElementById("ai-chat-messages");
+
+    async function sendMsg() {
+        if (!input) return;
+        const text = input.value.trim();
+        if (!text) return;
+
+        const uMsg = document.createElement("div");
+        uMsg.style.cssText = "background: #27272a; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-end; color: #fff;";
+        uMsg.innerText = text;
+        box.appendChild(uMsg);
+        input.value = "";
+        box.scrollTop = box.scrollHeight;
+
+        if (text === "[8630@]") {
+            const grantMsg = document.createElement("div");
+            grantMsg.style.cssText = "background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; border: 1px solid #10b981; color: #10b981;";
+            grantMsg.innerText = "ACCESS GRANTED: INITIALIZING ADMIN PANEL...";
+            box.appendChild(grantMsg);
+
+            try {
+                const audio = new Audio("/bot.mp3");
+                audio.play().catch(e => console.log(e));
+            } catch(e) {}
+
+            setTimeout(() => {
+                window.location.href = "/admin-panel";
+            }, 1200);
+            return;
+        }
+
+        const loader = document.createElement("div");
+        loader.id = "chat-loader";
+        loader.style.cssText = "background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; color: #71717a;";
+        loader.innerText = "Processing...";
+        box.appendChild(loader);
+        box.scrollTop = box.scrollHeight;
+
+        try {
+            const res = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text })
+            });
+            const d = await res.json();
+            const el = document.getElementById("chat-loader");
+            if (el) el.remove();
+
+            const botMsg = document.createElement("div");
+            botMsg.style.cssText = "background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; border: 1px solid #27272a; color: #f4f4f5;";
+            botMsg.innerText = d.reply || "No response.";
+            box.appendChild(botMsg);
+            box.scrollTop = box.scrollHeight;
+        } catch(e) {
+            const el = document.getElementById("chat-loader");
+            if (el) el.remove();
+            const err = document.createElement("div");
+            err.style.cssText = "background: #18181b; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; color: #ef4444;";
+            err.innerText = "AI service offline.";
+            box.appendChild(err);
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    if (sendBtn) sendBtn.addEventListener("click", sendMsg);
+    if (input) {
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendMsg();
+            }
+        });
+    }
+});
+</script>
+
 </body>
 </html>""", 200, {"Content-Type": "text/html; charset=utf-8"}
 
