@@ -347,7 +347,8 @@
         import { 
             getAuth, 
             onAuthStateChanged, 
-            signInWithPopup, 
+            signInWithRedirect,
+            getRedirectResult,
             GoogleAuthProvider, 
             GithubAuthProvider,
             signInWithPhoneNumber,
@@ -371,21 +372,32 @@
         window.auth = auth;
         window.currentFirebaseUser = null;
 
+        // Catch Google redirect back
+        getRedirectResult(auth).then(result => {
+            if (result && result.user) {
+                window.location.href = "/api-keys";
+            }
+        }).catch(err => {
+            console.error("Redirect Auth Error:", err);
+            showLoginError("Google Sign-In failed: " + err.message);
+        });
+
         onAuthStateChanged(auth, user => {
             window.currentFirebaseUser = user;
             const tag = document.getElementById("user-name-tag");
             const init = document.getElementById("user-initial");
             const loginForm = document.getElementById("login-box-card");
             const loggedCard = document.getElementById("logged-in-profile-card");
+            const profileDisplay = document.getElementById("profile-display-info");
 
-            if (user) {
-                const name = user.displayName || user.phoneNumber || user.email?.split("@")[0] || "DEVELOPER";
-                if (tag) tag.innerText = name.toUpperCase();
-                if (init) init.innerText = name.charAt(0).toUpperCase();
+            if (user && (user.email || user.phoneNumber)) {
+                const displayName = user.email || user.phoneNumber || user.displayName;
+                if (tag) tag.innerText = (user.displayName || user.email?.split("@")[0] || "USER").toUpperCase();
+                if (init) init.innerText = (user.displayName || user.email || "U").charAt(0).toUpperCase();
                 if (loginForm) loginForm.style.display = "none";
                 if (loggedCard) {
                     loggedCard.style.display = "block";
-                    document.getElementById("profile-display-info").innerText = user.phoneNumber || user.email || user.displayName || "Active Session";
+                    if (profileDisplay) profileDisplay.innerText = displayName;
                 }
             } else {
                 if (tag) tag.innerText = "SIGN IN";
@@ -395,68 +407,15 @@
             }
         });
 
-        // Phone Authentication with Recaptcha
-        window.initRecaptcha = () => {
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-anchor", {
-                    size: "invisible"
-                });
-            }
-        };
-
-        window.sendPhoneOtp = async () => {
-            const phone = document.getElementById("phone-input").value.trim();
-            const btn = document.getElementById("btn-send-otp");
-            const errBox = document.getElementById("login-error-container");
-            if (!phone || phone.length < 10) {
-                showLoginError("Enter valid phone number with country code (e.g. +91...)");
-                return;
-            }
-            btn.innerText = "Sending Code...";
-            btn.disabled = true;
-            try {
-                window.initRecaptcha();
-                window.confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
-                document.getElementById("phone-step-1").style.display = "none";
-                document.getElementById("phone-step-2").style.display = "block";
-                hideLoginError();
-            } catch(e) {
-                console.error("Phone Auth Error:", e);
-                showLoginError("SMS delivery failed. Check phone format or use Google sign-in.");
-            } finally {
-                btn.innerText = "Send Verification Code";
-                btn.disabled = false;
-            }
-        };
-
-        window.verifyPhoneOtp = async () => {
-            const otp = document.getElementById("otp-input").value.trim();
-            const btn = document.getElementById("btn-verify-otp");
-            if (!otp) return showLoginError("Enter 6-digit verification code");
-            btn.innerText = "Verifying...";
-            btn.disabled = true;
-            try {
-                await window.confirmationResult.confirm(otp);
-                hideLoginError();
-                window.location.href = "/api-keys";
-            } catch(e) {
-                console.error(e);
-                showLoginError("Verification failed: Invalid code entered.");
-            } finally {
-                btn.innerText = "Confirm & Authenticate";
-                btn.disabled = false;
-            }
-        };
-
         window.loginGoogle = async () => {
             hideLoginError();
             try {
                 const prov = new GoogleAuthProvider();
-                await signInWithPopup(auth, prov);
-                window.location.href = "/api-keys";
+                prov.setCustomParameters({ prompt: "select_account" });
+                await signInWithRedirect(auth, prov);
             } catch(e) {
                 console.error(e);
-                showLoginError("Google Sign-In failed. Please try again.");
+                showLoginError("Unable to open Google login. Try again.");
             }
         };
 
@@ -464,15 +423,17 @@
             hideLoginError();
             try {
                 const prov = new GithubAuthProvider();
-                await signInWithPopup(auth, prov);
-                window.location.href = "/api-keys";
+                await signInWithRedirect(auth, prov);
             } catch(e) {
                 console.error(e);
-                showLoginError("GitHub Sign-In failed. Please try again.");
+                showLoginError("GitHub sign-in redirection failed.");
             }
         };
 
-        window.signOutAccount = () => signOut(auth);
+        window.signOutAccount = async () => {
+            await signOut(auth);
+            window.location.reload();
+        };
 
         function showLoginError(msg) {
             const errBox = document.getElementById("login-error-container");
