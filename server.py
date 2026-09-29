@@ -1,3 +1,17 @@
+
+from flask import send_from_directory
+
+@app.route('/image.png')
+@app.route('/static/image.png')
+@app.route('/public/image.png')
+def serve_brand_logo():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    for loc in [base_dir, os.path.join(base_dir, 'static')]:
+        target = os.path.join(loc, 'image.png')
+        if os.path.exists(target):
+            return send_from_directory(loc, 'image.png')
+    return ('', 404)
+
 import os
 import json
 import time
