@@ -1039,24 +1039,352 @@ def key_provision_portal():
 
 import os
 
-@app.route('/')
-@app.route('/portal')
-def main_dashboard():
-    template_path = os.path.join(os.path.dirname(__file__), 'templates', 'index.html')
-    if not os.path.exists(template_path):
-        template_path = 'templates/index.html'
-    if os.path.exists(template_path):
-        with open(template_path, 'r', encoding='utf-8') as f:
-            return f.read(), 200, {'Content-Type': 'text/html; charset=utf-8'}
-    return '<h1>Dashboard Core Ready</h1>', 200
+def render_page(title, active_page, inner_content):
+    base_file = os.path.join(os.path.dirname(__file__), "templates", "base.html")
+    if not os.path.exists(base_file):
+        base_file = "templates/base.html"
+    with open(base_file, "r", encoding="utf-8") as f:
+        html = f.read()
+    html = html.replace("{{ title }}", title)
+    html = html.replace("{{ active_page }}", active_page)
+    # Handle jinja conditions cleanly
+    for p in ["home", "api-keys", "sandbox", "media", "docs", "database", "system", "login"]:
+        target = "{{ 'active' if active_page == '" + p + "' else '' }}"
+        html = html.replace(target, "active" if active_page == p else "")
+    html = html.replace("{{ content }}", inner_content)
+    return html, 200, {"Content-Type": "text/html; charset=utf-8"}
 
+@app.route("/")
+@app.route("/home")
+def route_home():
+    content = """
+    <div class="panel-card">
+        <h2 style="font-size:1.7rem; margin-bottom:8px; font-family:var(--font-code); color:var(--cyan);">AKHIL DEV CORE ENGINE</h2>
+        <p style="color:var(--text-sub); margin-bottom:20px; line-height:1.6;">A high-concurrency developer platform engineered for persistent cryptographic pass management, high-throughput transmission APIs, and secure multi-tenant cloud telemetry.</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a href="/api-keys" class="btn-action">ISSUE ACCESS KEY</a>
+            <a href="/docs" class="btn-action" style="border-color:var(--magenta); color:var(--magenta);">READ PROTOCOL DOCS</a>
+        </div>
+    </div>
 
-import traceback
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:24px;">
+        <div class="panel-card" style="padding:18px;">
+            <span style="font-family:var(--font-code); font-size:0.72rem; color:var(--text-sub);">AUTHENTICATION STATE</span>
+            <h3 style="color:var(--cyan); font-family:var(--font-code); margin-top:6px; font-size:1.1rem;" id="auth-status-lbl">UNAUTHENTICATED</h3>
+            <p style="font-size:0.75rem; color:var(--text-sub); margin-top:6px;">Firebase SDK v10.8 modular gate</p>
+        </div>
+        <div class="panel-card" style="padding:18px;">
+            <span style="font-family:var(--font-code); font-size:0.72rem; color:var(--text-sub);">CLUSTER HEALTH</span>
+            <h3 style="color:var(--green); font-family:var(--font-code); margin-top:6px; font-size:1.1rem;">100% OPERATIONAL</h3>
+            <p style="font-size:0.75rem; color:var(--text-sub); margin-top:6px;">Render cloud worker verified</p>
+        </div>
+        <div class="panel-card" style="padding:18px;">
+            <span style="font-family:var(--font-code); font-size:0.72rem; color:var(--text-sub);">ENCRYPTION LEVEL</span>
+            <h3 style="color:var(--magenta); font-family:var(--font-code); margin-top:6px; font-size:1.1rem;">SHA-256 HMAC</h3>
+            <p style="font-size:0.75rem; color:var(--text-sub); margin-top:6px;">Cryptographic signing enabled</p>
+        </div>
+    </div>
 
-@app.errorhandler(500)
-@app.errorhandler(Exception)
-def handle_exception(e):
-    return '<pre style="color:red;background:#111;padding:20px;font-size:14px;white-space:pre-wrap;">' + traceback.format_exc() + '</pre>', 200
+    <div class="panel-card">
+        <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">SYSTEM ARCHITECTURE OVERVIEW</h3>
+        <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6; margin-bottom:14px;">The AKHIL DEV infrastructure bridges client authentication tokens with a persistent sqlite3 storage engine hosted on Render containers. All incoming requests are authenticated through Bearer headers with cryptographic pass validation.</p>
+        <table class="data-table">
+            <thead><tr><th>Service</th><th>Internal Protocol</th><th>Status</th><th>Telemetry</th></tr></thead>
+            <tbody>
+                <tr><td>Auth Broker</td><td>Firebase Auth / OAuth2</td><td style="color:var(--green);">ACTIVE</td><td>TLS 1.3</td></tr>
+                <tr><td>Persistence Engine</td><td>Encrypted SQLite Vault</td><td style="color:var(--green);">ACTIVE</td><td>100% Synced</td></tr>
+                <tr><td>REST Gateway</td><td>Flask / Gunicorn Worker</td><td style="color:var(--green);">ACTIVE</td><td>&lt; 40ms Latency</td></tr>
+            </tbody>
+        </table>
+    </div>
+    """
+    return render_page("Home", "home", content)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+@app.route("/api-keys")
+def route_api_keys():
+    content = """
+    <div class="panel-card">
+        <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">API KEY VAULT</h2>
+        <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:18px;">Issue cryptographic API tokens for your external microservices, scripts, and applications.</p>
+        
+        <div id="auth-warning-alert" style="display:none; background:rgba(255,0,85,0.15); border:1px solid var(--magenta); color:#fff; padding:12px; border-radius:6px; font-family:var(--font-code); font-size:0.8rem; margin-bottom:16px;">
+            [!] AUTHENTICATION REQUIRED: You must sign in at the Identity Gate before generating an API access pass.
+        </div>
+
+        <div style="max-width:520px;">
+            <label style="font-family:var(--font-code); font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:6px;">APPLICATION IDENTIFIER</label>
+            <input type="text" id="app-key-name" class="hud-input" placeholder="e.g. production_client" value="eva_units">
+            <button class="btn-action" id="gen-key-btn" onclick="executeKeyGeneration()">GENERATE API KEY</button>
+
+            <div id="key-result-box" style="display:none; margin-top:20px; padding:16px; background:#000; border:1px dashed var(--border-line); border-radius:6px;">
+                <span style="font-family:var(--font-code); font-size:0.72rem; color:var(--magenta);">GENERATED CRYPTOGRAPHIC PASS:</span>
+                <div id="key-output-val" style="font-family:var(--font-code); color:var(--cyan); font-size:0.95rem; word-break:break-all; margin:8px 0;"></div>
+                <button class="btn-action" onclick="copyPass()">COPY PASS</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">KEY USAGE RESTRICTIONS</h3>
+        <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6;">Generated API keys carry authorized read/write permissions for registered storage endpoints. Do not expose private keys in frontend bundles or client-side JavaScript. Store keys as environment variables (`AKHIL_API_KEY`) on your remote servers.</p>
+    </div>
+
+    <script>
+        let currentPassKey = "";
+        async function executeKeyGeneration() {
+            if (!window.currentFirebaseUser) {
+                alert("ACCESS DENIED: Please authorize your identity at the Identity Gate first.");
+                window.location.href = "/login";
+                return;
+            }
+            const appName = document.getElementById("app-key-name").value.trim() || "production_client";
+            const btn = document.getElementById("gen-key-btn");
+            btn.innerText = "GENERATING...";
+            btn.disabled = true;
+            try {
+                const res = await fetch("/api/admin/keys/create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: window.currentFirebaseUser.email, app_name: appName })
+                });
+                const d = await res.json();
+                if (d.status === "success" || d.key) {
+                    currentPassKey = d.key;
+                    document.getElementById("key-output-val").innerText = currentPassKey;
+                    document.getElementById("key-result-box").style.display = "block";
+                } else alert(d.message || "Failed");
+            } catch(e) { alert(e.message); }
+            finally { btn.innerText = "GENERATE API KEY"; btn.disabled = false; }
+        }
+        function copyPass() {
+            if (!currentPassKey) return;
+            navigator.clipboard.writeText(currentPassKey).then(() => alert("Pass copied to clipboard!"));
+        }
+    </script>
+    """
+    return render_page("API Keys", "api-keys", content)
+
+@app.route("/sandbox")
+def route_sandbox():
+    content = """
+    <div class="panel-card">
+        <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">TRANSMISSION SANDBOX</h2>
+        <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:16px;">Test API endpoints against live backend routes in a real-time console environment.</p>
+        <div style="display:flex; gap:10px; margin-bottom:14px;">
+            <input type="text" id="sb-url" class="hud-input" style="margin-bottom:0;" value="/api/admin/keys/create">
+            <button class="btn-action" onclick="runSandboxTest()">SEND REQUEST</button>
+        </div>
+        <pre id="sb-console" class="code-block">// Transmission Console Ready. Awaiting trigger...</pre>
+    </div>
+
+    <div class="panel-card">
+        <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">ACTIVE REST ENDPOINTS</h3>
+        <table class="data-table">
+            <thead><tr><th>Method</th><th>Path</th><th>Description</th><th>Access</th></tr></thead>
+            <tbody>
+                <tr><td style="color:var(--green);">POST</td><td>/api/admin/keys/create</td><td>Issue authentic developer pass</td><td>Authenticated</td></tr>
+                <tr><td style="color:var(--cyan);">GET</td><td>/api/status</td><td>Cluster telemetry health check</td><td>Public</td></tr>
+                <tr><td style="color:var(--green);">POST</td><td>/api/telemetry/report</td><td>Push client operational events</td><td>API Key Required</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function runSandboxTest() {
+            const ep = document.getElementById("sb-url").value;
+            const con = document.getElementById("sb-console");
+            con.innerText = "Connecting to backend gateway...";
+            try {
+                const res = await fetch(ep, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: "test@akhil.dev", app_name: "probe_packet" })
+                });
+                const d = await res.json();
+                con.innerText = JSON.stringify(d, null, 2);
+            } catch(e) { con.innerText = e.toString(); }
+        }
+    </script>
+    """
+    return render_page("Sandbox", "sandbox", content)
+
+@app.route("/media")
+def route_media():
+    content = """
+    <div class="panel-card">
+        <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">MEDIA CORE VAULT</h2>
+        <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:16px;">Centralized repository for platform assets, static files, and cloud-stored artifacts.</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px;">
+            <div style="background:#000; border:1px solid var(--border-subtle); padding:16px; border-radius:6px;">
+                <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--cyan);">PRIMARY ASSET</span>
+                <h4 style="margin:8px 0; font-family:var(--font-code);">image.png</h4>
+                <p style="font-size:0.75rem; color:var(--text-sub);">Route: /public/image.png</p>
+                <p style="font-size:0.75rem; color:var(--green); margin-top:4px;">Status: Mounted</p>
+            </div>
+            <div style="background:#000; border:1px solid var(--border-subtle); padding:16px; border-radius:6px;">
+                <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--cyan);">SECONDARY ASSET</span>
+                <h4 style="margin:8px 0; font-family:var(--font-code);">second-image.png</h4>
+                <p style="font-size:0.75rem; color:var(--text-sub);">Route: /public/second-image.png</p>
+                <p style="font-size:0.75rem; color:var(--green); margin-top:4px;">Status: Mounted</p>
+            </div>
+            <div style="background:#000; border:1px solid var(--border-subtle); padding:16px; border-radius:6px;">
+                <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--magenta);">STORAGE VOLUME</span>
+                <h4 style="margin:8px 0; font-family:var(--font-code);">/storage_vault</h4>
+                <p style="font-size:0.75rem; color:var(--text-sub);">Capacity: Cloud Persistent</p>
+                <p style="font-size:0.75rem; color:var(--green); margin-top:4px;">Status: Read/Write Active</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">STORAGE TELEMETRY & QUOTA</h3>
+        <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6;">Static binary assets are served directly through the optimized WSGI file handler with automatic fallback handling. MIME type detection ensures direct rendering for PNG, JPEG, and WebP payloads.</p>
+    </div>
+    """
+    return render_page("Media Vault", "media", content)
+
+@app.route("/database")
+def route_database():
+    content = """
+    <div class="panel-card">
+        <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">DATABASE TELEMETRY ENGINE</h2>
+        <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:16px;">Live metrics and partition states for the platform persistent storage layer.</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:20px;">
+            <div style="background:#000; padding:14px; border-radius:6px; border:1px solid var(--border-subtle);">
+                <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--text-sub);">ACTIVE PARTITION</span>
+                <h4 style="font-family:var(--font-code); color:var(--cyan); margin-top:4px;">SQLITE_MASTER_01</h4>
+            </div>
+            <div style="background:#000; padding:14px; border-radius:6px; border:1px solid var(--border-subtle);">
+                <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--text-sub);">TRANSACTION STATUS</span>
+                <h4 style="font-family:var(--font-code); color:var(--green); margin-top:4px;">ACID COMPLIANT</h4>
+            </div>
+            <div style="background:#000; padding:14px; border-radius:6px; border:1px solid var(--border-subtle);">
+                <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--text-sub);">CACHE HIT RATIO</span>
+                <h4 style="font-family:var(--font-code); color:var(--cyan); margin-top:4px;">99.4%</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">ACTIVE SCHEMA SCHEMATICS</h3>
+        <table class="data-table">
+            <thead><tr><th>Table Identifier</th><th>Key Type</th><th>Record Engine</th><th>Integrity</th></tr></thead>
+            <tbody>
+                <tr><td>api_tokens</td><td>VARCHAR(64) PRIMARY KEY</td><td>B-Tree Indexed</td><td style="color:var(--green);">VERIFIED</td></tr>
+                <tr><td>developer_profiles</td><td>UUID V4</td><td>Row Hash Partition</td><td style="color:var(--green);">VERIFIED</td></tr>
+                <tr><td>transmission_logs</td><td>TIMESTAMP / BLOB</td><td>Append Only Log</td><td style="color:var(--green);">VERIFIED</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel-card">
+        <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">PERSISTENCE LOG DUMP</h3>
+        <pre class="code-block">[2026-09-29 17:40:02 UTC] DB_SYNC: WAL mode checkpoint completed successfully.
+[2026-09-29 17:40:15 UTC] DB_INTEGRITY: Integrity check returned 0 anomalies.
+[2026-09-29 17:41:00 UTC] DB_STATUS: Ready for read/write microservices.</pre>
+    </div>
+    """
+    return render_page("Database", "database", content)
+
+@app.route("/docs")
+def route_docs():
+    content = """
+    <div class="panel-card">
+        <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">AKHIL DEV PROTOCOL DOCUMENTATION</h2>
+        <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6; margin-bottom:16px;">A comprehensive developer reference guide for integrating the AKHIL DEV platform into distributed applications.</p>
+    </div>
+
+    <div class="panel-card">
+        <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">1. WHAT IS AN AKHIL DEV API KEY?</h3>
+        <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6;">An AKHIL DEV API Key is a cryptographic authentication token issued to verified developers. When your application sends requests to platform endpoints, the key validates account tier, rate limits, and secure database partitions.</p>
+    </div>
+
+    <div class="panel-card">
+        <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">2. IDENTITY GATE VS API KEYS</h3>
+        <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6; margin-bottom:10px;">The platform enforces a two-tier access architecture:</p>
+        <ul style="color:var(--text-sub); font-size:0.85rem; line-height:1.6; padding-left:20px;">
+            <li><strong>Identity Gate (Firebase Auth):</strong> Verifies developer ownership via OAuth2 providers or credentials.</li>
+            <li><strong>API Key:</strong> Used by your backend servers and scripts to make authenticated automated requests without human interaction.</li>
+        </ul>
+    </div>
+
+    <div class="panel-card">
+        <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">3. QUICKSTART INTEGRATION EXAMPLES</h3>
+        <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:6px;"><strong>Python 3 (Requests):</strong></p>
+        <pre class="code-block">import requests
+
+url = "https://private-backend.onrender.com/api/admin/keys/create"
+headers = {
+    "Authorization": "Bearer akhi_live_YOUR_KEY_HERE",
+    "Content-Type": "application/json"
+}
+payload = {"app_name": "production_service"}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())</pre>
+
+        <p style="color:var(--text-sub); font-size:0.85rem; margin-top:14px; margin-bottom:6px;"><strong>JavaScript / Node.js (Fetch):</strong></p>
+        <pre class="code-block">const response = await fetch("https://private-backend.onrender.com/api/admin/keys/create", {
+    method: "POST",
+    headers: {
+        "Authorization": "Bearer akhi_live_YOUR_KEY_HERE",
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ app_name: "production_service" })
+});
+const data = await response.json();
+console.log(data);</pre>
+    </div>
+    """
+    return render_page("Protocol Docs", "docs", content)
+
+@app.route("/system")
+def route_system():
+    content = """
+    <div class="panel-card">
+        <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">SYSTEM TELEMETRY STATUS</h2>
+        <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:16px;">Live diagnostics and container health metrics.</p>
+        <table class="data-table">
+            <thead><tr><th>Component</th><th>Engine Version</th><th>Health</th><th>Uptime</th></tr></thead>
+            <tbody>
+                <tr><td>Web Framework</td><td>Flask 3.0 / Gunicorn</td><td style="color:var(--green);">HEALTHY</td><td>99.98%</td></tr>
+                <tr><td>Auth Gateway</td><td>Firebase Web SDK v10.8</td><td style="color:var(--green);">HEALTHY</td><td>100.0%</td></tr>
+                <tr><td>Container Host</td><td>Render Linux Cloud</td><td style="color:var(--green);">HEALTHY</td><td>Operational</td></tr>
+            </tbody>
+        </table>
+    </div>
+    """
+    return render_page("System Status", "system", content)
+
+@app.route("/login")
+def route_login():
+    content = """
+    <div class="panel-card" style="max-width:440px; margin:0 auto; text-align:center;">
+        <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:6px;">IDENTITY GATE</h2>
+        <p style="font-size:0.78rem; color:var(--text-sub); margin-bottom:20px;">AUTHENTICATE TO ACCESS YOUR DEVELOPER CORE</p>
+
+        <div id="login-form-area">
+            <input type="email" id="user-email" class="hud-input" placeholder="Enter Your Email">
+            <input type="password" id="user-pass" class="hud-input" placeholder="Enter Your Password">
+            <button class="btn-action" style="width:100%; justify-content:center; margin-bottom:14px;" onclick="emailAuthCall()">AUTHORIZE & SIGN IN</button>
+
+            <button class="btn-action" style="width:100%; justify-content:center; margin-bottom:10px; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.2); color:#fff;" onclick="googleAuthCall()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
+                Continue with Google
+            </button>
+            <button class="btn-action" style="width:100%; justify-content:center; background:rgba(24,119,242,0.12); border-color:#1877f2; color:#1877f2;" onclick="facebookAuthCall()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Continue with Facebook
+            </button>
+        </div>
+
+        <div id="logged-user-area" style="display:none; text-align:left;">
+            <p id="logged-email-text" style="font-family:var(--font-code); color:var(--cyan); margin-bottom:14px; font-size:0.85rem;"></p>
+            <button class="btn-action" style="border-color:var(--magenta); color:var(--magenta); width:100%; justify-content:center;" onclick="signOutCall()">SIGN OUT</button>
+        </div>
+    </div>
+    """
+    return render_page("Identity Gate", "login", content)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

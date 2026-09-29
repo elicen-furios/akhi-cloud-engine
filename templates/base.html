@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ title }} // AKHIL DEV PLATFORM</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #03060d;
+            --bg-sidebar: #060b14;
+            --bg-card: rgba(8, 14, 26, 0.95);
+            --border-line: rgba(0, 240, 255, 0.2);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --cyan: #00f0ff;
+            --cyan-glow: rgba(0, 240, 255, 0.25);
+            --green: #00ff66;
+            --magenta: #ff0055;
+            --text-main: #f8fafc;
+            --text-sub: #8492a6;
+            --font-code: "JetBrains Mono", monospace;
+            --font-ui: "Space Grotesk", sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            z-index: 998;
+        }
+        .drawer-overlay.active { display: block; }
+        .sidebar {
+            width: 270px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-line);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            z-index: 999;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .brand-section {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .brand-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid var(--cyan);
+            overflow: hidden;
+            background: #000;
+        }
+        .brand-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .brand-title {
+            font-family: var(--font-code);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--cyan);
+        }
+        .brand-subtitle { font-size: 0.68rem; color: var(--text-sub); font-family: var(--font-code); }
+        .nav-list {
+            list-style: none;
+            padding: 14px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .nav-section-title {
+            font-family: var(--font-code);
+            font-size: 0.65rem;
+            color: var(--text-sub);
+            letter-spacing: 1.5px;
+            padding: 10px 14px 4px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 6px;
+            color: var(--text-sub);
+            font-size: 0.86rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
+        .nav-item:hover, .nav-item.active {
+            color: var(--cyan);
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid var(--border-line);
+        }
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            text-align: center;
+            font-family: var(--font-code);
+        }
+        .main-wrapper {
+            margin-left: 270px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header-bar {
+            padding: 16px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(3, 6, 13, 0.95);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 500;
+        }
+        .hamburger-btn {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--border-line);
+            border-radius: 6px;
+            color: var(--cyan);
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+        .header-title-box { display: flex; align-items: center; gap: 12px; }
+        .header-title {
+            font-family: var(--font-code);
+            color: var(--cyan);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px 6px 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 20px;
+            text-decoration: none;
+            color: #fff;
+        }
+        .user-avatar-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--cyan);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+        }
+        .content-body { padding: 28px; flex: 1; }
+        .panel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .hud-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: #000;
+            border: 1px solid var(--border-line);
+            border-radius: 6px;
+            color: #fff;
+            font-family: var(--font-code);
+            font-size: 0.88rem;
+            margin-bottom: 14px;
+            outline: none;
+        }
+        .hud-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-glow); }
+        .btn-action {
+            background: rgba(0, 240, 255, 0.12);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .btn-action:hover { background: var(--cyan); color: #000; }
+        .code-block {
+            background: #000;
+            border: 1px solid var(--border-subtle);
+            padding: 16px;
+            border-radius: 6px;
+            font-family: var(--font-code);
+            font-size: 0.82rem;
+            color: var(--cyan);
+            overflow-x: auto;
+            margin: 14px 0;
+            line-height: 1.5;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            margin: 14px 0;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid var(--border-subtle);
+            padding: 10px 14px;
+            text-align: left;
+        }
+        .data-table th { background: rgba(0, 240, 255, 0.08); color: var(--cyan); }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-wrapper { margin-left: 0; }
+            .hamburger-btn { display: block; }
+            .header-bar { padding: 14px 16px; }
+            .content-body { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand-section">
+            <div class="brand-avatar">
+                <img src="/public/image.png" onerror="this.onerror=null; this.src='/public/second-image.png';" alt="">
+            </div>
+            <div>
+                <div class="brand-title">AKHIL DEV</div>
+                <div class="brand-subtitle">PLATFORM CORE</div>
+            </div>
+        </div>
+
+        <ul class="nav-list">
+            <li class="nav-section-title">NAVIGATION</li>
+            <li><a href="/" class="nav-item {{ 'active' if active_page == 'home' else '' }}"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a></li>
+            <li><a href="/api-keys" class="nav-item {{ 'active' if active_page == 'api-keys' else '' }}"><svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg><span>API Keys</span></a></li>
+            <li><a href="/sandbox" class="nav-item {{ 'active' if active_page == 'sandbox' else '' }}"><svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg><span>Transmission Sandbox</span></a></li>
+            <li><a href="/media" class="nav-item {{ 'active' if active_page == 'media' else '' }}"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><span>Media Core Vault</span></a></li>
+            <li><a href="/docs" class="nav-item {{ 'active' if active_page == 'docs' else '' }}"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>Protocol Docs</span></a></li>
+
+            <li class="nav-section-title">SYSTEM CONTROL</li>
+            <li><a href="/database" class="nav-item {{ 'active' if active_page == 'database' else '' }}"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 6c-3.87 0-7-1.12-7-2.5S8.13 3 12 3s7 1.12 7 2.5S15.87 8 12 8zm-7 5.5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5V11c-1.78 1.24-4.24 2-7 2s-5.22-.76-7-2v2.5zm0 5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5V16c-1.78 1.24-4.24 2-7 2s-5.22-.76-7-2v2.5z"/></svg><span>Database</span></a></li>
+            <li><a href="/system" class="nav-item {{ 'active' if active_page == 'system' else '' }}"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><span>System Status</span></a></li>
+            <li><a href="/login" class="nav-item {{ 'active' if active_page == 'login' else '' }}"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Identity Gate</span></a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            DEVELOPER AKHIL<br>
+            <span style="opacity:0.6;">Built with vision.</span>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="header-bar">
+            <div class="header-title-box">
+                <button class="hamburger-btn" onclick="toggleSidebar()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                </button>
+                <div class="header-title">AKHIL DEV PLATFORM</div>
+            </div>
+
+            <a href="/login" class="user-badge">
+                <div class="user-avatar-circle" id="user-initial">A</div>
+                <span id="user-name-tag" style="font-family:var(--font-code); font-size:0.75rem;">AKHIL DEV</span>
+            </a>
+        </header>
+
+        <div class="content-body">
+            <!-- PAGE CONTENT BLOCK -->
+            {{ content }}
+        </div>
+    </div>
+
+    <!-- FIREBASE SDK MODULAR -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            FacebookAuthProvider, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCr-q7bWfNuKLeui0LWl_FvoAlikfzuMFE",
+            authDomain: "free-api-web-2a7bc-e81f3.firebaseapp.com",
+            projectId: "free-api-web-2a7bc-e81f3",
+            storageBucket: "free-api-web-2a7bc-e81f3.firebasestorage.app",
+            messagingSenderId: "22422848110",
+            appId: "1:22422848110:web:92e6ad4a7995b48369dc7f",
+            measurementId: "G-FPZF166PW4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        window.currentFirebaseUser = null;
+
+        onAuthStateChanged(auth, user => {
+            window.currentFirebaseUser = user;
+            if (user) {
+                const name = user.displayName || user.email.split("@")[0];
+                const tag = document.getElementById("user-name-tag");
+                const init = document.getElementById("user-initial");
+                if (tag) tag.innerText = name.toUpperCase();
+                if (init) init.innerText = name.charAt(0).toUpperCase();
+
+                const authStateLbl = document.getElementById("auth-status-lbl");
+                if (authStateLbl) authStateLbl.innerText = "ONLINE";
+
+                const loginForm = document.getElementById("login-form-area");
+                const loggedUser = document.getElementById("logged-user-area");
+                const loggedEmail = document.getElementById("logged-email-text");
+                if (loginForm) loginForm.style.display = "none";
+                if (loggedUser) loggedUser.style.display = "block";
+                if (loggedEmail) loggedEmail.innerText = "AUTHENTICATED: " + (user.email || name);
+            } else {
+                const tag = document.getElementById("user-name-tag");
+                const init = document.getElementById("user-initial");
+                if (tag) tag.innerText = "AKHIL DEV";
+                if (init) init.innerText = "A";
+
+                const authStateLbl = document.getElementById("auth-status-lbl");
+                if (authStateLbl) authStateLbl.innerText = "UNAUTHENTICATED";
+
+                const loginForm = document.getElementById("login-form-area");
+                const loggedUser = document.getElementById("logged-user-area");
+                if (loginForm) loginForm.style.display = "block";
+                if (loggedUser) loggedUser.style.display = "none";
+            }
+        });
+
+        window.emailAuthCall = async () => {
+            const em = document.getElementById("user-email").value.trim();
+            const pw = document.getElementById("user-pass").value.trim();
+            if (!em || !pw) return alert("Please enter email and password");
+            try {
+                await signInWithEmailAndPassword(auth, em, pw);
+                window.location.href = "/api-keys";
+            } catch(e) {
+                try {
+                    await createUserWithEmailAndPassword(auth, em, pw);
+                    window.location.href = "/api-keys";
+                } catch(err) {
+                    alert("Authentication Error: " + err.message);
+                }
+            }
+        };
+
+        window.googleAuthCall = async () => {
+            try {
+                const prov = new GoogleAuthProvider();
+                await signInWithPopup(auth, prov);
+                window.location.href = "/api-keys";
+            } catch(e) {
+                alert("Google Login: " + e.message);
+            }
+        };
+
+        window.facebookAuthCall = async () => {
+            try {
+                const prov = new FacebookAuthProvider();
+                await signInWithPopup(auth, prov);
+                window.location.href = "/api-keys";
+            } catch(e) {
+                alert("Facebook Login: " + e.message);
+            }
+        };
+
+        window.signOutCall = () => signOut(auth);
+    </script>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("overlay").classList.toggle("active");
+        }
+    </script>
+</body>
+</html>
