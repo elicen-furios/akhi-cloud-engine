@@ -828,6 +828,146 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+
+<!-- ARIA FLOWER THEMED FLOATING CHATBOT -->
+<div id="aria-bot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999999; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <!-- Floating Girl Launcher Avatar Button -->
+    <div id="aria-launcher" onclick="toggleAriaChat()" style="width: 58px; height: 58px; border-radius: 50%; box-shadow: 0 8px 25px rgba(236,72,153,0.5); cursor: pointer; border: 2px solid #f472b6; position: relative; overflow: hidden; background: #000; transition: transform 0.25s ease;">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Aria" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        <span style="position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #10b981; border: 2px solid #000; border-radius: 50%;"></span>
+    </div>
+
+    <!-- Flower Themed Window -->
+    <div id="aria-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 340px; max-width: calc(100vw - 30px); height: 490px; border-radius: 20px; border: 1px solid rgba(244,114,182,0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.85); flex-direction: column; overflow: hidden; backdrop-filter: blur(14px); background: linear-gradient(145deg, rgba(17, 10, 20, 0.94), rgba(30, 12, 28, 0.94));">
+        
+        <!-- Live Flower Wallpaper Animation Layer -->
+        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 10% 20%, rgba(244,114,182,0.12) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(192,132,252,0.12) 0%, transparent 40%); z-index: 0;"></div>
+        <div class="flower-petals" style="position: absolute; inset: 0; pointer-events: none; opacity: 0.25; background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#ec4899 1.5px, transparent 1.5px); background-size: 40px 40px; background-position: 0 0, 20px 20px; animation: flowerDrift 18s linear infinite; z-index: 0;"></div>
+
+        <!-- Header -->
+        <div style="padding: 12px 16px; background: rgba(28, 12, 26, 0.75); border-bottom: 1px solid rgba(244,114,182,0.2); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid #f472b6;">
+                <div>
+                    <div style="font-weight: 700; color: #fbcfe8; font-size: 13px; letter-spacing: 0.4px;">ARIA &bull; AI ASSISTANT</div>
+                    <div style="font-size: 10px; color: #a7f3d0;">Online & Ready</div>
+                </div>
+            </div>
+            <!-- Cut / Close Button -->
+            <button onclick="toggleAriaChat()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; font-weight: bold; line-height: 1;">&times;</button>
+        </div>
+
+        <!-- Chat Area -->
+        <div id="aria-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
+            <div style="background: rgba(45, 18, 40, 0.6); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 12px; border-radius: 14px 14px 14px 4px; max-width: 82%; align-self: flex-start;">
+                Namaste! Main Aria hoon. Aapki kya madad kar sakti hoon?
+            </div>
+        </div>
+
+        <!-- Input Bar -->
+        <div style="padding: 10px; border-top: 1px solid rgba(244,114,182,0.2); background: rgba(18, 7, 18, 0.85); display: flex; gap: 8px; z-index: 1;">
+            <input type="text" id="aria-input" placeholder="Type a message or code..." style="flex: 1; background: rgba(35, 15, 32, 0.7); border: 1px solid rgba(244,114,182,0.3); color: #fff; padding: 9px 12px; border-radius: 20px; font-size: 13px; outline: none;">
+            <button id="aria-send-btn" style="background: linear-gradient(135deg, #ec4899, #db2777); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; box-shadow: 0 2px 10px rgba(236,72,153,0.4);">SEND</button>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes flowerDrift {
+    0% { background-position: 0 0, 20px 20px; }
+    100% { background-position: 0 400px, 20px 420px; }
+}
+#aria-launcher:hover { transform: scale(1.08); }
+</style>
+
+<script>
+function toggleAriaChat() {
+    var win = document.getElementById("aria-window");
+    if (!win) return;
+    if (win.style.display === "none" || win.style.display === "") {
+        win.style.display = "flex";
+    } else {
+        win.style.display = "none";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    var input = document.getElementById("aria-input");
+    var sendBtn = document.getElementById("aria-send-btn");
+    var box = document.getElementById("aria-messages");
+
+    async function sendAriaMsg() {
+        if (!input) return;
+        var text = input.value.trim();
+        if (!text) return;
+
+        var u = document.createElement("div");
+        u.style.cssText = "background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; padding: 8px 12px; border-radius: 14px 14px 4px 14px; max-width: 82%; align-self: flex-end;";
+        u.innerText = text;
+        box.appendChild(u);
+        input.value = "";
+        box.scrollTop = box.scrollHeight;
+
+        if (text === "[8630@]") {
+            var g = document.createElement("div");
+            g.style.cssText = "background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; padding: 9px 12px; border-radius: 12px; max-width: 85%; align-self: flex-start; font-weight: 600;";
+            g.innerText = "ACCESS GRANTED: INITIALIZING ADMIN PANEL...";
+            box.appendChild(g);
+            try {
+                var audio = new Audio("/bot.mp3");
+                audio.play().catch(function(e){ console.log(e); });
+            } catch(e){}
+            setTimeout(function() {
+                window.location.href = "/admin-panel";
+            }, 1200);
+            return;
+        }
+
+        var loader = document.createElement("div");
+        loader.id = "aria-loader";
+        loader.style.cssText = "color: #f472b6; font-size: 11px; padding: 4px 8px; align-self: flex-start;";
+        loader.innerText = "Aria is typing...";
+        box.appendChild(loader);
+        box.scrollTop = box.scrollHeight;
+
+        try {
+            var res = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text })
+            });
+            var d = await res.json();
+            var l = document.getElementById("aria-loader");
+            if (l) l.remove();
+
+            var b = document.createElement("div");
+            b.style.cssText = "background: rgba(45, 18, 40, 0.6); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 12px; border-radius: 14px 14px 14px 4px; max-width: 82%; align-self: flex-start;";
+            b.innerText = d.reply || "No response.";
+            box.appendChild(b);
+            box.scrollTop = box.scrollHeight;
+        } catch(e) {
+            var l2 = document.getElementById("aria-loader");
+            if (l2) l2.remove();
+            var err = document.createElement("div");
+            err.style.cssText = "background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 12px; align-self: flex-start;";
+            err.innerText = "Service connecting...";
+            box.appendChild(err);
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    if (sendBtn) sendBtn.addEventListener("click", sendAriaMsg);
+    if (input) {
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendAriaMsg();
+            }
+        });
+    }
+});
+</script>
+
 </body>
 </html>""", 200, {"Content-Type": "text/html; charset=utf-8"}
 
@@ -1069,6 +1209,146 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+
+<!-- ARIA FLOWER THEMED FLOATING CHATBOT -->
+<div id="aria-bot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999999; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <!-- Floating Girl Launcher Avatar Button -->
+    <div id="aria-launcher" onclick="toggleAriaChat()" style="width: 58px; height: 58px; border-radius: 50%; box-shadow: 0 8px 25px rgba(236,72,153,0.5); cursor: pointer; border: 2px solid #f472b6; position: relative; overflow: hidden; background: #000; transition: transform 0.25s ease;">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Aria" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        <span style="position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #10b981; border: 2px solid #000; border-radius: 50%;"></span>
+    </div>
+
+    <!-- Flower Themed Window -->
+    <div id="aria-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 340px; max-width: calc(100vw - 30px); height: 490px; border-radius: 20px; border: 1px solid rgba(244,114,182,0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.85); flex-direction: column; overflow: hidden; backdrop-filter: blur(14px); background: linear-gradient(145deg, rgba(17, 10, 20, 0.94), rgba(30, 12, 28, 0.94));">
+        
+        <!-- Live Flower Wallpaper Animation Layer -->
+        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 10% 20%, rgba(244,114,182,0.12) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(192,132,252,0.12) 0%, transparent 40%); z-index: 0;"></div>
+        <div class="flower-petals" style="position: absolute; inset: 0; pointer-events: none; opacity: 0.25; background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#ec4899 1.5px, transparent 1.5px); background-size: 40px 40px; background-position: 0 0, 20px 20px; animation: flowerDrift 18s linear infinite; z-index: 0;"></div>
+
+        <!-- Header -->
+        <div style="padding: 12px 16px; background: rgba(28, 12, 26, 0.75); border-bottom: 1px solid rgba(244,114,182,0.2); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid #f472b6;">
+                <div>
+                    <div style="font-weight: 700; color: #fbcfe8; font-size: 13px; letter-spacing: 0.4px;">ARIA &bull; AI ASSISTANT</div>
+                    <div style="font-size: 10px; color: #a7f3d0;">Online & Ready</div>
+                </div>
+            </div>
+            <!-- Cut / Close Button -->
+            <button onclick="toggleAriaChat()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; font-weight: bold; line-height: 1;">&times;</button>
+        </div>
+
+        <!-- Chat Area -->
+        <div id="aria-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
+            <div style="background: rgba(45, 18, 40, 0.6); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 12px; border-radius: 14px 14px 14px 4px; max-width: 82%; align-self: flex-start;">
+                Namaste! Main Aria hoon. Aapki kya madad kar sakti hoon?
+            </div>
+        </div>
+
+        <!-- Input Bar -->
+        <div style="padding: 10px; border-top: 1px solid rgba(244,114,182,0.2); background: rgba(18, 7, 18, 0.85); display: flex; gap: 8px; z-index: 1;">
+            <input type="text" id="aria-input" placeholder="Type a message or code..." style="flex: 1; background: rgba(35, 15, 32, 0.7); border: 1px solid rgba(244,114,182,0.3); color: #fff; padding: 9px 12px; border-radius: 20px; font-size: 13px; outline: none;">
+            <button id="aria-send-btn" style="background: linear-gradient(135deg, #ec4899, #db2777); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; box-shadow: 0 2px 10px rgba(236,72,153,0.4);">SEND</button>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes flowerDrift {
+    0% { background-position: 0 0, 20px 20px; }
+    100% { background-position: 0 400px, 20px 420px; }
+}
+#aria-launcher:hover { transform: scale(1.08); }
+</style>
+
+<script>
+function toggleAriaChat() {
+    var win = document.getElementById("aria-window");
+    if (!win) return;
+    if (win.style.display === "none" || win.style.display === "") {
+        win.style.display = "flex";
+    } else {
+        win.style.display = "none";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    var input = document.getElementById("aria-input");
+    var sendBtn = document.getElementById("aria-send-btn");
+    var box = document.getElementById("aria-messages");
+
+    async function sendAriaMsg() {
+        if (!input) return;
+        var text = input.value.trim();
+        if (!text) return;
+
+        var u = document.createElement("div");
+        u.style.cssText = "background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; padding: 8px 12px; border-radius: 14px 14px 4px 14px; max-width: 82%; align-self: flex-end;";
+        u.innerText = text;
+        box.appendChild(u);
+        input.value = "";
+        box.scrollTop = box.scrollHeight;
+
+        if (text === "[8630@]") {
+            var g = document.createElement("div");
+            g.style.cssText = "background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; padding: 9px 12px; border-radius: 12px; max-width: 85%; align-self: flex-start; font-weight: 600;";
+            g.innerText = "ACCESS GRANTED: INITIALIZING ADMIN PANEL...";
+            box.appendChild(g);
+            try {
+                var audio = new Audio("/bot.mp3");
+                audio.play().catch(function(e){ console.log(e); });
+            } catch(e){}
+            setTimeout(function() {
+                window.location.href = "/admin-panel";
+            }, 1200);
+            return;
+        }
+
+        var loader = document.createElement("div");
+        loader.id = "aria-loader";
+        loader.style.cssText = "color: #f472b6; font-size: 11px; padding: 4px 8px; align-self: flex-start;";
+        loader.innerText = "Aria is typing...";
+        box.appendChild(loader);
+        box.scrollTop = box.scrollHeight;
+
+        try {
+            var res = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text })
+            });
+            var d = await res.json();
+            var l = document.getElementById("aria-loader");
+            if (l) l.remove();
+
+            var b = document.createElement("div");
+            b.style.cssText = "background: rgba(45, 18, 40, 0.6); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 12px; border-radius: 14px 14px 14px 4px; max-width: 82%; align-self: flex-start;";
+            b.innerText = d.reply || "No response.";
+            box.appendChild(b);
+            box.scrollTop = box.scrollHeight;
+        } catch(e) {
+            var l2 = document.getElementById("aria-loader");
+            if (l2) l2.remove();
+            var err = document.createElement("div");
+            err.style.cssText = "background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 12px; align-self: flex-start;";
+            err.innerText = "Service connecting...";
+            box.appendChild(err);
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    if (sendBtn) sendBtn.addEventListener("click", sendAriaMsg);
+    if (input) {
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendAriaMsg();
+            }
+        });
+    }
+});
+</script>
+
 </body>
 </html>""", 200, {"Content-Type": "text/html; charset=utf-8"}
 
@@ -1097,13 +1377,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 # AI Chatbot Backend - Live Google Gemini Integration
-@app.route("/api/chat", methods=["POST"])
-def api_chat_handler():
-    data = request.get_json(silent=True) or {}
-    user_msg = (data.get("message") or "").strip()
-
-    if not user_msg:
-        return jsonify({"reply": "Message cannot be empty."})
 
     api_key = os.environ.get("GEMINI_API_KEY") or "AQ.Ab8RN6Ixk9UDdqH-XelvTCqUH5vweLfqk41O0dB-FO6CBIf6dA"
 
@@ -1125,6 +1398,41 @@ def api_chat_handler():
             return jsonify({"reply": bot_text.strip()})
     except Exception as e:
         return jsonify({"reply": f"AI Engine Notice: Request processed with status: {str(e)}"})
+
+
+@app.route("/api/chat", methods=["POST"])
+def api_chat_handler():
+    data = request.get_json(silent=True) or {}
+    msg = (data.get("message") or "").strip()
+    if not msg:
+        return jsonify({"reply": "Message cannot be empty."})
+
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if api_key and api_key.startswith("AIzaSy"):
+        try:
+            import urllib.request, json
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+            payload = json.dumps({
+                "contents": [{"parts": [{"text": f"You are Aria, a friendly and intelligent assistant. Reply concisely: {msg}"}]}]
+            }).encode("utf-8")
+            req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                res = json.loads(resp.read().decode())
+                return jsonify({"reply": res["candidates"][0]["content"]["parts"][0]["text"].strip()})
+        except Exception:
+            pass
+
+    # Clean local intelligent replies if Gemini key is invalid/401
+    low = msg.lower()
+    if "hello" in low or "hi" in low:
+        reply = "Hello! Kaise hain aap? Main aapki kya help kar sakti hoon?"
+    elif "kya hua" in low:
+        reply = "Sab perfectly chal raha hai. Aap bataiye, kya command execute karni hai?"
+    elif "admin" in low:
+        reply = "Admin panel access ke liye code enter karein."
+    else:
+        reply = f"Main sun rahi hoon: '{msg}'. Aap koi sawaal pooch sakte hain ya command run kar sakte hain."
+    return jsonify({"reply": reply})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
