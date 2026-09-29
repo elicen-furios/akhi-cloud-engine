@@ -575,5 +575,337 @@ def verify_api_key():
     except Exception as e:
         return jsonify({"valid": False, "error": "SERVER_ERROR", "message": str(e)}), 500
 
+
+# Bot Voice File Route
+@app.route("/bot.mp3")
+@app.route("/static/bot.mp3")
+def serve_bot_voice():
+    for f in ["bot.mp3", "static/bot.mp3"]:
+        if os.path.exists(f):
+            return send_file(f, mimetype="audio/mpeg")
+    return ("", 404)
+
+# Admin Panel Direct Authentication Session Route
+@app.route("/api/admin/login", methods=["POST"])
+def admin_panel_login():
+    data = request.get_json(silent=True) or {}
+    user = (data.get("username") or "").strip()
+    pwd = (data.get("password") or "").strip()
+
+    if user == "AKHIL" and pwd == "akhilrawat027@gmail.com":
+        session["admin_authenticated"] = True
+        return jsonify({"status": "success"})
+    return jsonify({"status": "error", "message": "INVALID CREDENTIALS: Access Denied"}), 401
+
+@app.route("/api/admin/logout", methods=["POST"])
+def admin_panel_logout():
+    session.pop("admin_authenticated", None)
+    return jsonify({"status": "cleared"})
+
+# Dedicated Secret Route: /admin-panel
+@app.route("/admin-panel")
+def page_admin_panel():
+    # If not logged in as Admin, show the Obsidian Black Login Gate
+    if not session.get("admin_authenticated"):
+        return """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Admin Gate // AKHIL DEV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body {
+            background: #09090b;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .gate-card {
+            background: #111115;
+            border: 1px solid #222228;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(16, 185, 129, 0.05);
+            border-radius: 22px;
+            padding: 40px 32px;
+            max-width: 420px;
+            width: 100%;
+        }
+        .input-dark {
+            width: 100%;
+            background: #18181f;
+            border: 1px solid #272732;
+            color: #ffffff;
+            padding: 13px 16px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            outline: none;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+        .input-dark:focus { border-color: #10b981; }
+        .btn-gate {
+            width: 100%;
+            background: #10b981;
+            color: #09090b;
+            font-weight: 700;
+            padding: 13px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.92rem;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        .btn-gate:hover { background: #34d399; }
+        .error-banner {
+            display: none;
+            background: #2b1114;
+            border: 1px solid #501d22;
+            color: #f87171;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="gate-card">
+        <div style="text-align:center; margin-bottom:28px;">
+            <div style="width:52px; height:52px; border-radius:14px; background:#181820; border:1px solid #2a2a35; display:inline-flex; align-items:center; justify-content:center; color:#10b981; margin-bottom:14px;">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h2 style="font-size:1.45rem; font-weight:800; letter-spacing:-0.5px;">ADMIN PANEL</h2>
+            <p style="font-size:0.82rem; color:#71717a; margin-top:4px;">Restricted Clearance Required</p>
+        </div>
+
+        <div id="error-box" class="error-banner"></div>
+
+        <div>
+            <label style="font-size:0.75rem; font-weight:700; color:#a1a1aa; letter-spacing:0.8px; display:block; margin-bottom:6px;">ADMIN USERNAME</label>
+            <input type="text" id="adm-user" class="input-dark" placeholder="Username">
+
+            <label style="font-size:0.75rem; font-weight:700; color:#a1a1aa; letter-spacing:0.8px; display:block; margin-bottom:6px;">PASSWORD / KEY</label>
+            <input type="password" id="adm-pass" class="input-dark" placeholder="••••••••••••">
+
+            <button class="btn-gate" id="btn-login" onclick="doAdminLogin()">AUTHENTICATE</button>
+        </div>
+    </div>
+
+    <script>
+        async function doAdminLogin() {
+            const user = document.getElementById("adm-user").value.trim();
+            const pass = document.getElementById("adm-pass").value.trim();
+            const err = document.getElementById("error-box");
+            const btn = document.getElementById("btn-login");
+
+            err.style.display = "none";
+            btn.innerText = "VERIFYING...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch("/api/admin/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+                const d = await res.json();
+                if (d.status === "success") {
+                    window.location.reload();
+                } else {
+                    err.innerText = d.message || "Invalid Credentials";
+                    err.style.display = "block";
+                }
+            } catch(e) {
+                err.innerText = "Server connection error";
+                err.style.display = "block";
+            } finally {
+                btn.innerText = "AUTHENTICATE";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>""", 200, {"Content-Type": "text/html; charset=utf-8"}
+
+    # Authenticated State: Full Obsidian Black Dashboard
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel // AKHIL DEV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body {
+            background: #09090b;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222228;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .card-dark {
+            background: #111116;
+            border: 1px solid #222228;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .metric-box {
+            background: #14141a;
+            border: 1px solid #222228;
+            border-radius: 14px;
+            padding: 20px;
+        }
+        .btn-exit {
+            background: #271214;
+            color: #f87171;
+            border: 1px solid #451a1d;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+        th { border-bottom: 1px solid #272730; color: #71717a; padding: 12px; text-align: left; font-size: 0.75rem; }
+        td { border-bottom: 1px solid #1a1a22; padding: 12px; color: #d4d4d8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981;"></span>
+                    <span style="font-size:0.75rem; font-weight:700; color:#10b981; letter-spacing:1px;">ADMIN PANEL // OBSIDIAN VAULT</span>
+                </div>
+                <h1 style="font-size:1.8rem; font-weight:800; margin-top:4px;">Master Control Center</h1>
+            </div>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <span style="font-size:0.85rem; color:#71717a;">Logged in: <b style="color:#fff;">AKHIL</b></span>
+                <button class="btn-exit" onclick="adminLogout()">Sign Out</button>
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div style="font-size:0.72rem; color:#71717a; text-transform:uppercase; font-weight:700;">Engine Storage</div>
+                <div style="font-size:1.6rem; font-weight:800; color:#10b981; margin-top:4px;">SQLite3</div>
+                <div style="font-size:0.75rem; color:#71717a;">ACID Compliant</div>
+            </div>
+            <div class="metric-box">
+                <div style="font-size:0.72rem; color:#71717a; text-transform:uppercase; font-weight:700;">Rate Limiter</div>
+                <div style="font-size:1.6rem; font-weight:800; color:#38bdf8; margin-top:4px;">Active</div>
+                <div style="font-size:0.75rem; color:#71717a;">Anti-Spam Armed</div>
+            </div>
+            <div class="metric-box">
+                <div style="font-size:0.72rem; color:#71717a; text-transform:uppercase; font-weight:700;">Status</div>
+                <div style="font-size:1.6rem; font-weight:800; color:#ffffff; margin-top:4px;">Operational</div>
+                <div style="font-size:0.75rem; color:#10b981;">Render Cloud Live</div>
+            </div>
+        </div>
+
+        <div class="card-dark">
+            <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:16px;">Global Registered Keys</h3>
+            <div style="overflow-x:auto;">
+                <table id="keys-table">
+                    <thead>
+                        <tr><th>ID</th><th>Owner</th><th>App Scope</th><th>Pass Token</th><th>Created</th></tr>
+                    </thead>
+                    <tbody id="keys-body">
+                        <tr><td colspan="5" style="text-align:center; padding:18px; color:#71717a;">Loading tokens...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchTokens() {
+            try {
+                const res = await fetch("/api/admin/all-keys");
+                const d = await res.json();
+                const tbody = document.getElementById("keys-body");
+                if (d.status === "success" && d.keys.length > 0) {
+                    tbody.innerHTML = d.keys.map(k => `
+                        <tr>
+                            <td style="font-family:'JetBrains Mono'; color:#71717a;">#${k.id}</td>
+                            <td style="font-weight:600; color:#fff;">${k.email || 'N/A'}</td>
+                            <td>${k.app_name}</td>
+                            <td><code style="font-family:'JetBrains Mono'; font-size:0.8rem; background:#181822; padding:3px 6px; border-radius:4px; border:1px solid #272735;">${k.key}</code></td>
+                            <td style="color:#71717a; font-size:0.8rem;">${k.created_at}</td>
+                        </tr>
+                    `).join("");
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:18px; color:#71717a;">No keys issued yet.</td></tr>';
+                }
+            } catch(e) {}
+        }
+        async function adminLogout() {
+            await fetch("/api/admin/logout", { method: "POST" });
+            window.location.reload();
+        }
+        fetchTokens();
+    </script>
+</body>
+</html>""", 200, {"Content-Type": "text/html; charset=utf-8"}
+
+
+# AI Chatbot Backend - Live Google Gemini Integration
+@app.route("/api/chat", methods=["POST"])
+def api_chat_handler():
+    data = request.get_json(silent=True) or {}
+    user_msg = (data.get("message") or "").strip()
+
+    if not user_msg:
+        return jsonify({"reply": "Message cannot be empty."})
+
+    api_key = os.environ.get("GEMINI_API_KEY") or "AQ.Ab8RN6Ixk9UDdqH-XelvTCqUH5vweLfqk41O0dB-FO6CBIf6dA"
+
+    try:
+        import urllib.request, json
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        payload = json.dumps({
+            "contents": [{
+                "parts": [{
+                    "text": f"You are Aria, an intelligent, professional, concise AI assistant for Akhil Dev Platform. Answer politely and directly without emojis: {user_msg}"
+                }]
+            }]
+        }).encode("utf-8")
+        
+        req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            res_data = json.loads(resp.read().decode())
+            bot_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
+            return jsonify({"reply": bot_text.strip()})
+    except Exception as e:
+        return jsonify({"reply": f"AI Engine Notice: Request processed with status: {str(e)}"})
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
