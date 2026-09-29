@@ -5,6 +5,28 @@ from flask import Flask, request, jsonify, send_file, session
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "akhil_dev_platform_secret_vault_2026")
+
+import time
+from collections import defaultdict
+
+# IP-based rate limiting memory store
+REQUEST_LOGS = defaultdict(list)
+
+def is_rate_limited(ip, max_requests=5, window_seconds=60):
+    now = time.time()
+    REQUEST_LOGS[ip] = [t for t in REQUEST_LOGS[ip] if now - t < window_seconds]
+    if len(REQUEST_LOGS[ip]) >= max_requests:
+        return True
+    REQUEST_LOGS[ip].append(now)
+    return False
+
+@app.after_request
+def inject_security_headers(response):
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
 DB_PATH = "data.db"
 
 def init_db():
@@ -58,10 +80,21 @@ def auth_logout():
 # API Key Generation Route
 @app.route("/api/admin/keys/create", methods=["POST"])
 def create_key():
+    client_ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
+    
+    # Layer 1: Anti-Spam Rate Limit Guard
+    if is_rate_limited(client_ip, max_requests=5, window_seconds=60):
+        return jsonify({"status": "error", "message": "RATE_LIMIT_EXCEEDED: Maximum 5 keys per minute allowed. Try again later."}), 429
+
+    # Layer 2: Strict Server-Side Session Enforcement (Blocks direct curl/Postman bypass)
+    if not session.get("authenticated") or not session.get("user_email"):
+        return jsonify({"status": "error", "message": "UNAUTHORIZED_ACCESS: Identity gate clearance required."}), 403
+
     data = request.get_json(silent=True) or {}
-    email = session.get("user_email") or data.get("email", "auth_user")
-    app_name = data.get("app_name", "prod_service")
+    email = session.get("user_email")
+    app_name = (data.get("app_name") or "production_client").strip()[:50]
     new_key = f"akhi_live_{secrets.token_hex(16)}"
+
     try:
         conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
@@ -70,7 +103,7 @@ def create_key():
         conn.close()
         return jsonify({"status": "success", "key": new_key})
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        return jsonify({"status": "error", "message": "Database write error"}), 500
 
 @app.route("/api/status")
 def status_api():
