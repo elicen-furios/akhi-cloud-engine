@@ -1,6 +1,15 @@
 
 from flask import send_from_directory
 
+
+@app.route("/logo.png")
+@app.route("/static/logo.png")
+def serve_logo_img():
+    for f in ["logo.png", "image.png", "static/logo.png", "static/image.png"]:
+        if os.path.exists(f):
+            return send_file(f, mimetype="image/png")
+    return ("", 404)
+
 @app.route('/image.png')
 @app.route('/static/image.png')
 @app.route('/public/image.png')
@@ -1122,7 +1131,9 @@ def route_login():
     <div style="max-width: 420px; margin: 40px auto 0;">
         <div class="card" id="login-box-card" style="padding: 36px 32px; border-radius:16px; box-shadow: var(--shadow-float);">
             <div style="text-align:center; margin-bottom:28px;">
-                <div style="width:48px; height:48px; background:#18181b; color:#fff; border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-weight:700; font-size:1.2rem;">A</div>
+                <div style="width:54px; height:54px; border-radius:14px; margin:0 auto 16px; overflow:hidden; border:1px solid #e4e4e7; background:#fafafa; display:flex; align-items:center; justify-content:center;">
+                <img src="/logo.png" onerror="this.onerror=null; this.src='/image.png';" alt="Logo" style="width:100%; height:100%; object-fit:cover; display:block;">
+            </div>
                 <h2 style="font-size:1.4rem; font-weight:800; letter-spacing:-0.5px; margin-bottom:6px;">Welcome Back</h2>
                 <p style="font-size:0.85rem; color:#71717a;">Authenticate to access your developer console</p>
             </div>
@@ -1207,7 +1218,7 @@ def route_api_keys():
     <script>
         async function issueDevKey() {
             if (!window.currentFirebaseUser) {
-                alert("ACCESS RESTRICTED: Please authenticate at the Identity Gate first.");
+                window.showToast("ACCESS RESTRICTED: Please authenticate at the Identity Gate first.");
                 window.location.href = "/login";
                 return;
             }

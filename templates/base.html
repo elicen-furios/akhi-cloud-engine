@@ -353,6 +353,47 @@
             to { opacity: 1; }
         }
     
+    
+        /* Premium Floating Toast */
+        #custom-toast {
+            display: none;
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #ffffff;
+            border: 1px solid #fee2e2;
+            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.15), 0 8px 10px -6px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 12px 18px;
+            z-index: 99999;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #custom-toast.show {
+            display: flex;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast-error-pill {
+            background: #fef2f2;
+            color: #ef4444;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #fecaca;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .toast-msg-text {
+            font-size: 0.84rem;
+            color: #18181b;
+            font-weight: 500;
+        }
+    
     </style>
 </head>
 <body>
@@ -397,9 +438,9 @@
                 <div class="header-brand-title">AKHIL DEV PLATFORM</div>
             </div>
 
-            <a href="/login" class="user-badge" id="header-user-btn">
-                <div class="user-avatar-circle" id="user-initial" style="display:none;"></div>
-                <span id="user-name-tag">Sign In</span>
+            <a href="/login" class="user-badge" id="header-user-btn" style="text-decoration:none;">
+                <div class="user-avatar-circle" id="user-initial" style="display:none; width:26px; height:26px; border-radius:50%; background:#18181b; color:#fff; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700;"></div>
+                <span id="user-name-tag" style="font-size:0.82rem; font-weight:600; color:#18181b;">SIGN IN</span>
             </a>
         </header>
 
@@ -559,6 +600,24 @@
             <p style="font-size:0.85rem; color:#71717a;" id="success-user-name">Authenticated successfully</p>
         </div>
     </div>
+    
+
+    <script>
+        window.showToast = function(msg, isError = true) {
+            const toast = document.getElementById("custom-toast");
+            const text = document.getElementById("custom-toast-msg");
+            if (!toast || !text) return;
+            text.innerText = msg;
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3200);
+        };
+        // Hijack native browser alert
+        window.alert = function(msg) {
+            window.showToast(msg);
+        };
+    </script>
     
 </body>
 </html>
