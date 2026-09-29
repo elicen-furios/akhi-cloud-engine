@@ -303,6 +303,56 @@
             word-break: normal;
         }
 
+    
+        /* Success Done Animation */
+        .auth-success-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            animation: fadeIn 0.25s ease forwards;
+        }
+        .success-circle-card {
+            background: #ffffff;
+            border: 1px solid #e4e4e7;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 36px 44px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            transform: scale(0.9);
+            animation: popUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .success-tick-svg {
+            width: 58px;
+            height: 58px;
+            stroke: #10b981;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: strokeDraw 0.6s ease forwards 0.2s;
+        }
+        @keyframes strokeDraw {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes popUp {
+            to { transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    
     </style>
 </head>
 <body>
@@ -310,8 +360,8 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="brand-box">
-            <div class="brand-avatar">
-                <img src="/image.png" onerror="this.onerror=null; this.src='/static/image.png';" alt="A" style="width:100%; height:100%; object-fit:cover; display:block;">
+            <div class="brand-avatar" style="background:#18181b; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; overflow:hidden;">
+                <img src="/image.png?t=1" onerror="this.style.display='none'; this.parentElement.innerText='AK';" alt="" style="width:100%; height:100%; object-fit:cover; display:block;">
             </div>
             <div class="brand-text">
                 <h2>AKHIL DEV</h2>
@@ -347,9 +397,9 @@
                 <div class="header-brand-title">AKHIL DEV PLATFORM</div>
             </div>
 
-            <a href="/login" class="user-badge">
-                <div class="user-avatar-circle" id="user-initial">A</div>
-                <span id="user-name-tag">SIGN IN</span>
+            <a href="/login" class="user-badge" id="header-user-btn">
+                <div class="user-avatar-circle" id="user-initial" style="display:none;"></div>
+                <span id="user-name-tag">Sign In</span>
             </a>
         </header>
 
@@ -359,6 +409,7 @@
     </div>
 
     <!-- MODULAR FIREBASE AUTH -->
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -390,14 +441,36 @@
         window.auth = auth;
         window.currentFirebaseUser = null;
 
-        // Catch Google redirect back
+        function triggerDoneAnimation(name) {
+            const screen = document.getElementById("auth-success-screen");
+            const lbl = document.getElementById("success-user-name");
+            if (screen) {
+                if (lbl) lbl.innerText = "Welcome, " + name;
+                screen.style.display = "flex";
+                setTimeout(() => {
+                    screen.style.display = "none";
+                    if (window.location.pathname === "/login") {
+                        window.location.href = "/api-keys";
+                    }
+                }, 1600);
+            }
+        }
+
+        // Catch Google Redirect
         getRedirectResult(auth).then(result => {
             if (result && result.user) {
-                window.location.href = "/api-keys";
+                const u = result.user;
+                const displayName = u.displayName || u.email?.split("@")[0] || "User";
+                triggerDoneAnimation(displayName);
             }
         }).catch(err => {
-            console.error("Redirect Auth Error:", err);
-            showLoginError("Google Sign-In failed: " + err.message);
+            console.error("Redirect Error:", err);
+            const errBox = document.getElementById("login-error-container");
+            const errMsg = document.getElementById("login-error-msg");
+            if (errBox && errMsg) {
+                errMsg.innerText = "Google Login Failed: " + (err.message || "Unknown");
+                errBox.style.display = "flex";
+            }
         });
 
         onAuthStateChanged(auth, user => {
@@ -408,43 +481,58 @@
             const loggedCard = document.getElementById("logged-in-profile-card");
             const profileDisplay = document.getElementById("profile-display-info");
 
-            if (user && (user.email || user.phoneNumber)) {
-                const displayName = user.email || user.phoneNumber || user.displayName;
-                if (tag) tag.innerText = (user.displayName || user.email?.split("@")[0] || "USER").toUpperCase();
-                if (init) init.innerText = (user.displayName || user.email || "U").charAt(0).toUpperCase();
+            if (user) {
+                // Asli user ka naam ya email nikalo
+                let name = user.displayName || "";
+                if (!name && user.email) {
+                    name = user.email.split("@")[0];
+                } else if (!name && user.phoneNumber) {
+                    name = user.phoneNumber;
+                }
+                if (!name) name = "User";
+
+                // Pehla letter nikalo
+                const firstChar = name.trim().charAt(0).toUpperCase();
+
+                if (tag) tag.innerText = name.toUpperCase();
+                if (init) {
+                    init.innerText = firstChar;
+                    init.style.display = "flex";
+                }
                 if (loginForm) loginForm.style.display = "none";
                 if (loggedCard) {
                     loggedCard.style.display = "block";
-                    if (profileDisplay) profileDisplay.innerText = displayName;
+                    if (profileDisplay) profileDisplay.innerText = user.email || user.phoneNumber || name;
                 }
             } else {
-                if (tag) tag.innerText = "SIGN IN";
-                if (init) init.innerText = "A";
+                // Unauthenticated state: No "A" letter, only clean Sign In
+                if (tag) tag.innerText = "Sign In";
+                if (init) {
+                    init.innerText = "";
+                    init.style.display = "none";
+                }
                 if (loginForm) loginForm.style.display = "block";
                 if (loggedCard) loggedCard.style.display = "none";
             }
         });
 
         window.loginGoogle = async () => {
-            hideLoginError();
             try {
                 const prov = new GoogleAuthProvider();
                 prov.setCustomParameters({ prompt: "select_account" });
                 await signInWithRedirect(auth, prov);
             } catch(e) {
                 console.error(e);
-                showLoginError("Unable to open Google login. Try again.");
+                alert("Sign-in error: " + e.message);
             }
         };
 
         window.loginGithub = async () => {
-            hideLoginError();
             try {
                 const prov = new GithubAuthProvider();
                 await signInWithRedirect(auth, prov);
             } catch(e) {
-                console.error(e);
-                showLoginError("GitHub sign-in redirection failed.");
+                alert("GitHub error: " + e.message);
             }
         };
 
@@ -452,28 +540,8 @@
             await signOut(auth);
             window.location.reload();
         };
-
-        function showLoginError(msg) {
-            const errBox = document.getElementById("login-error-container");
-            const errMsg = document.getElementById("login-error-msg");
-            if (errBox && errMsg) {
-                errMsg.innerText = msg;
-                errBox.style.display = "flex";
-            }
-        }
-
-        window.resetLoginAttempt = () => {
-            const errBox = document.getElementById("login-error-container");
-            if (errBox) errBox.style.display = "none";
-            document.getElementById("phone-step-1").style.display = "block";
-            document.getElementById("phone-step-2").style.display = "none";
-        };
-
-        function hideLoginError() {
-            const errBox = document.getElementById("login-error-container");
-            if (errBox) errBox.style.display = "none";
-        }
     </script>
+    
 
     <script>
         function toggleSidebar() {
@@ -481,5 +549,16 @@
             document.getElementById("overlay").classList.toggle("active");
         }
     </script>
+
+    <div id="auth-success-screen" class="auth-success-modal">
+        <div class="success-circle-card">
+            <svg class="success-tick-svg" viewBox="0 0 24 24">
+                <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            <h2 style="font-size:1.35rem; font-weight:800; color:#09090b; letter-spacing:-0.5px;">Done</h2>
+            <p style="font-size:0.85rem; color:#71717a;" id="success-user-name">Authenticated successfully</p>
+        </div>
+    </div>
+    
 </body>
 </html>
