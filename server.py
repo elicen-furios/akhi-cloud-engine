@@ -877,6 +877,29 @@ def page_admin_panel():
 </html>""", 200, {"Content-Type": "text/html; charset=utf-8"}
 
 
+
+    api_key = os.environ.get("GEMINI_API_KEY") or "AQ.Ab8RN6Ixk9UDdqH-XelvTCqUH5vweLfqk41O0dB-FO6CBIf6dA"
+
+    try:
+        import urllib.request, json
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        payload = json.dumps({
+            "contents": [{
+                "parts": [{
+                    "text": f"You are Aria, an intelligent, professional, concise AI assistant for Akhil Dev Platform. Answer politely and directly without emojis: {user_msg}"
+                }]
+            }]
+        }).encode("utf-8")
+        
+        req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            res_data = json.loads(resp.read().decode())
+            bot_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
+            return jsonify({"reply": bot_text.strip()})
+    except Exception as e:
+        return jsonify({"reply": f"AI Engine Notice: Request processed with status: {str(e)}"})
+
+
 # AI Chatbot Backend - Live Google Gemini Integration
 @app.route("/api/chat", methods=["POST"])
 def api_chat_handler():
