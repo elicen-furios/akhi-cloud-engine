@@ -145,29 +145,47 @@ def page_login():
             <!-- Login Form Tab -->
             <div id="pane-login" style="display: block;">
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">USERNAME / EMAIL</label>
-                <input type="text" id="login-identifier" class="input-text" placeholder="name@domain.com">
+                <input type="text" id="login-identifier" class="input-text" placeholder="Enter username or email">
                 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">PASSWORD</label>
-                <input type="password" id="login-password" class="input-text" placeholder="••••••••••••">
+                <div style="position: relative; margin-bottom: 14px;">
+                    <input type="password" id="login-password" class="input-text" style="margin-bottom: 0; padding-right: 42px;" placeholder="Enter password">
+                    <button type="button" onclick="togglePassVisibility('login-password', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #71717a; padding: 4px; display: flex; align-items: center;">
+                        <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                    </button>
+                </div>
                 
-                <button type="button" class="btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 4px; border-radius: 10px;" onclick="window.showSaasError('Please use Google or GitHub sign-in below to verify identity.', 'Authentication Required')">Login to Account</button>
+                <button type="button" class="btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 6px; border-radius: 10px;" onclick="window.showSaasError('Please use Google or GitHub sign-in below to verify identity.', 'Authentication Required')">Login to Account</button>
             </div>
 
             <!-- Sign Up Form Tab -->
             <div id="pane-signup" style="display: none;">
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">USERNAME</label>
-                <input type="text" id="reg-username" class="input-text" placeholder="alex_dev">
+                <input type="text" id="reg-username" class="input-text" placeholder="Enter username">
 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">EMAIL</label>
-                <input type="email" id="reg-email" class="input-text" placeholder="alex@domain.com">
+                <input type="email" id="reg-email" class="input-text" placeholder="Enter email address">
                 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">PASSWORD</label>
-                <input type="password" id="reg-pass" class="input-text" placeholder="••••••••••••">
+                <div style="position: relative; margin-bottom: 14px;">
+                    <input type="password" id="reg-pass" class="input-text" style="margin-bottom: 0; padding-right: 42px;" placeholder="Create password">
+                    <button type="button" onclick="togglePassVisibility('reg-pass', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #71717a; padding: 4px; display: flex; align-items: center;">
+                        <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                    </button>
+                </div>
 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">CONFIRM PASSWORD</label>
-                <input type="password" id="reg-confirm" class="input-text" placeholder="••••••••••••">
+                <div style="position: relative; margin-bottom: 14px;">
+                    <input type="password" id="reg-confirm" class="input-text" style="margin-bottom: 0; padding-right: 42px;" placeholder="Confirm password">
+                    <button type="button" onclick="togglePassVisibility('reg-confirm', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #71717a; padding: 4px; display: flex; align-items: center;">
+                        <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                    </button>
+                </div>
                 
-                <button type="button" class="btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 4px; border-radius: 10px;" onclick="window.showSaasError('Direct user creation is locked. Authenticate via Google or GitHub.', 'System Policy')">Create Developer Account</button>
+                <button type="button" class="btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 6px; border-radius: 10px;" onclick="window.showSaasError('Direct user creation is locked. Authenticate via Google or GitHub.', 'System Policy')">Create Developer Account</button>
             </div>
 
             <div style="display: flex; align-items: center; margin: 22px 0 16px; gap: 10px;">
@@ -189,7 +207,7 @@ def page_login():
             </div>
         </div>
 
-        <!-- Returning User Active Card -->
+        <!-- Returning User / Active Session State Card -->
         <div class="card" id="logged-in-profile-card" style="display:none; text-align:center; padding:38px 28px; border-radius:20px;">
             <div style="width:58px; height:58px; border-radius:50%; background:#10b981; color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-weight:700; font-size:1.4rem;">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -220,6 +238,23 @@ def page_login():
                 btnLogin.classList.remove("active");
                 paneLogin.style.display = "none";
                 paneSignup.style.display = "block";
+            }
+        }
+
+        function togglePassVisibility(inputId, btn) {
+            const field = document.getElementById(inputId);
+            if (!field) return;
+            const eyeOpen = btn.querySelector('.eye-open');
+            const eyeClosed = btn.querySelector('.eye-closed');
+
+            if (field.type === 'password') {
+                field.type = 'text';
+                eyeOpen.style.display = 'none';
+                eyeClosed.style.display = 'block';
+            } else {
+                field.type = 'password';
+                eyeOpen.style.display = 'block';
+                eyeClosed.style.display = 'none';
             }
         }
     </script>
