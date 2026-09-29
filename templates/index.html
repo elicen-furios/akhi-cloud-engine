@@ -847,57 +847,74 @@ console.log(data);</pre>
 
 
 
-<!-- ARIA FLOWER THEMED FLOATING CHATBOT -->
+
+
+
+<!-- ARIA BEAUTIFUL FLOWER AI CHATBOT -->
 <div id="aria-bot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999999; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-    <div id="aria-launcher" onclick="toggleAriaChat()" style="width: 58px; height: 58px; border-radius: 50%; box-shadow: 0 8px 25px rgba(236,72,153,0.5); cursor: pointer; border: 2px solid #f472b6; position: relative; overflow: hidden; background: #000; transition: transform 0.25s ease;">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Aria" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-        <span style="position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #10b981; border: 2px solid #000; border-radius: 50%;"></span>
+    
+    <!-- Floating Girl Avatar Button -->
+    <div id="aria-launcher" onclick="toggleAriaChat()" style="width: 62px; height: 62px; border-radius: 50%; box-shadow: 0 8px 25px rgba(244,114,182,0.6); cursor: pointer; border: 2.5px solid #f472b6; position: relative; overflow: hidden; background: #180d1b; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=250&q=80" alt="Aria" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        <span style="position: absolute; bottom: 3px; right: 3px; width: 13px; height: 13px; background: #10b981; border: 2px solid #180d1b; border-radius: 50%;"></span>
     </div>
 
-    <div id="aria-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 340px; max-width: calc(100vw - 30px); height: 490px; border-radius: 20px; border: 1px solid rgba(244,114,182,0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.85); flex-direction: column; overflow: hidden; backdrop-filter: blur(14px); background: linear-gradient(145deg, rgba(17, 10, 20, 0.96), rgba(30, 12, 28, 0.96));">
-        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 10% 20%, rgba(244,114,182,0.18) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(192,132,252,0.18) 0%, transparent 40%); z-index: 0;"></div>
-        <div style="position: absolute; inset: 0; pointer-events: none; opacity: 0.25; background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#ec4899 1.5px, transparent 1.5px); background-size: 40px 40px; background-position: 0 0, 20px 20px; animation: flowerDrift 18s linear infinite; z-index: 0;"></div>
+    <!-- Live Flower Glass Window -->
+    <div id="aria-window" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 350px; max-width: calc(100vw - 32px); height: 500px; border-radius: 22px; border: 1.5px solid rgba(244,114,182,0.35); box-shadow: 0 25px 60px rgba(0,0,0,0.9); flex-direction: column; overflow: hidden; backdrop-filter: blur(20px); background: linear-gradient(160deg, rgba(22, 11, 24, 0.97) 0%, rgba(38, 14, 35, 0.97) 100%);">
+        
+        <!-- Live Flower Wallpaper Animation Layer -->
+        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 15% 15%, rgba(244,114,182,0.18) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(217,70,239,0.18) 0%, transparent 45%); z-index: 0;"></div>
+        <div style="position: absolute; inset: 0; pointer-events: none; opacity: 0.22; background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#ec4899 1.5px, transparent 1.5px); background-size: 32px 32px; background-position: 0 0, 16px 16px; animation: flowerDrift 20s linear infinite; z-index: 0;"></div>
 
-        <div style="padding: 12px 16px; background: rgba(28, 12, 26, 0.85); border-bottom: 1px solid rgba(244,114,182,0.2); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
+        <!-- Header -->
+        <div style="padding: 12px 16px; background: rgba(30, 14, 32, 0.85); border-bottom: 1px solid rgba(244,114,182,0.25); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid #f472b6;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 2px solid #f472b6; flex-shrink: 0;">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div>
-                    <div style="font-weight: 700; color: #fbcfe8; font-size: 13px; letter-spacing: 0.4px;">ARIA ASSISTANT</div>
-                    <div style="font-size: 10px; color: #a7f3d0;">Online &bull; Flower Theme</div>
+                    <div style="font-weight: 700; color: #fbcfe8; font-size: 13.5px; letter-spacing: 0.5px;">ARIA &bull; AI GIRL</div>
+                    <div style="font-size: 10.5px; color: #6ee7b7; font-weight: 600;">Online &bull; Flower Mode</div>
                 </div>
             </div>
-            <button onclick="toggleAriaChat()" style="background: rgba(244,114,182,0.2); border: 1px solid rgba(244,114,182,0.4); color: #f472b6; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: bold;">&times;</button>
+            <!-- Cut / Close Button -->
+            <button onclick="toggleAriaChat()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 17px; font-weight: bold; line-height: 1;">&times;</button>
         </div>
 
+        <!-- Chat Area -->
         <div id="aria-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
-            <div style="background: rgba(45, 18, 40, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 12px; border-radius: 14px 14px 14px 4px; max-width: 82%; align-self: flex-start;">
-                Namaste! Main Aria hoon. Aapki kya madad kar sakti hoon?
+            <div style="background: rgba(52, 21, 46, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;">
+                Hello! Main Aria hoon. Aap mujhse koi bhi sawaal pooch sakte hain ya command run kar sakte hain.
             </div>
         </div>
 
-        <div style="padding: 10px; border-top: 1px solid rgba(244,114,182,0.2); background: rgba(18, 7, 18, 0.9); display: flex; gap: 8px; z-index: 1;">
-            <input type="text" id="aria-input" placeholder="Type a message or code..." style="flex: 1; background: rgba(35, 15, 32, 0.8); border: 1px solid rgba(244,114,182,0.3); color: #fff; padding: 9px 12px; border-radius: 20px; font-size: 13px; outline: none;">
-            <button id="aria-send-btn" style="background: linear-gradient(135deg, #ec4899, #db2777); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600;">SEND</button>
+        <!-- Input Bar -->
+        <div style="padding: 10px 12px; border-top: 1px solid rgba(244,114,182,0.25); background: rgba(22, 9, 23, 0.95); display: flex; gap: 8px; z-index: 1;">
+            <input type="text" id="aria-input" placeholder="Type a message or code..." style="flex: 1; background: rgba(42, 17, 39, 0.8); border: 1px solid rgba(244,114,182,0.35); color: #fff; padding: 9px 14px; border-radius: 20px; font-size: 13px; outline: none;">
+            <button id="aria-send-btn" style="background: linear-gradient(135deg, #ec4899, #db2777); border: none; color: #fff; padding: 9px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(236,72,153,0.4);">SEND</button>
         </div>
     </div>
 </div>
 
 <style>
 @keyframes flowerDrift {
-    0% { background-position: 0 0, 20px 20px; }
-    100% { background-position: 0 400px, 20px 420px; }
+    0% { background-position: 0 0, 16px 16px; }
+    100% { background-position: 0 350px, 16px 366px; }
 }
-#aria-launcher:hover { transform: scale(1.08); }
+#aria-launcher:hover { transform: scale(1.08); box-shadow: 0 10px 30px rgba(244,114,182,0.8); }
 </style>
 
 <script>
 function toggleAriaChat() {
     var win = document.getElementById("aria-window");
+    var launcher = document.getElementById("aria-launcher");
     if (!win) return;
     if (win.style.display === "none" || win.style.display === "") {
         win.style.display = "flex";
+        if (launcher) launcher.style.display = "none";
     } else {
         win.style.display = "none";
+        if (launcher) launcher.style.display = "flex";
     }
 }
 
@@ -912,15 +929,17 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!text) return;
 
         var u = document.createElement("div");
-        u.style.cssText = "background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; padding: 8px 12px; border-radius: 14px 14px 4px 14px; max-width: 82%; align-self: flex-end;";
+        u.style.cssText = "background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; padding: 9px 14px; border-radius: 16px 16px 4px 16px; max-width: 82%; align-self: flex-end; line-height: 1.45;";
         u.innerText = text;
         box.appendChild(u);
         input.value = "";
         box.scrollTop = box.scrollHeight;
 
-        if (text === "[8630@]") {
+        // Trigger condition: supports both 8630@ and [8630@]
+        var cleanCode = text.replace(/[\[\]]/g, "").trim();
+        if (cleanCode === "8630@") {
             var g = document.createElement("div");
-            g.style.cssText = "background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; padding: 9px 12px; border-radius: 12px; max-width: 85%; align-self: flex-start; font-weight: 600;";
+            g.style.cssText = "background: rgba(16, 185, 129, 0.2); border: 1.5px solid #10b981; color: #34d399; padding: 10px 14px; border-radius: 14px; max-width: 85%; align-self: flex-start; font-weight: bold; font-family: monospace;";
             g.innerText = "ACCESS GRANTED: INITIALIZING ADMIN PANEL...";
             box.appendChild(g);
             try {
@@ -935,7 +954,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         var loader = document.createElement("div");
         loader.id = "aria-loader";
-        loader.style.cssText = "color: #f472b6; font-size: 12px; padding: 4px 8px; align-self: flex-start;";
+        loader.style.cssText = "color: #f472b6; font-size: 11.5px; padding: 4px 8px; align-self: flex-start;";
         loader.innerText = "Aria is typing...";
         box.appendChild(loader);
         box.scrollTop = box.scrollHeight;
@@ -951,7 +970,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (l) l.remove();
 
             var b = document.createElement("div");
-            b.style.cssText = "background: rgba(45, 18, 40, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 12px; border-radius: 14px 14px 14px 4px; max-width: 82%; align-self: flex-start;";
+            b.style.cssText = "background: rgba(52, 21, 46, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;";
             b.innerText = d.reply || "No response.";
             box.appendChild(b);
             box.scrollTop = box.scrollHeight;
@@ -960,7 +979,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (l2) l2.remove();
             var err = document.createElement("div");
             err.style.cssText = "background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 12px; align-self: flex-start;";
-            err.innerText = "Service connecting...";
+            err.innerText = "Connection error. Please try again.";
             box.appendChild(err);
             box.scrollTop = box.scrollHeight;
         }
