@@ -743,62 +743,67 @@ def page_admin_panel():
 
 
 
-<!-- ARIA FLOWER THEMED FLOATING CHATBOT -->
-<div id="aria-bot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999999; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+
+
+<!-- MAYARA ANIME AI CHATBOT -->
+<div id="mayara-bot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999999; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
     
-    <!-- Clean HD Girl Avatar Button -->
-    <div id="aria-launcher" onclick="toggleAriaChat()" style="width: 58px; height: 58px; border-radius: 50%; box-shadow: 0 8px 25px rgba(244,114,182,0.55); cursor: pointer; border: 2.5px solid #f472b6; position: relative; overflow: hidden; background: #120815; display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease;">
-        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80" alt="Aria" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%;">
-        <span style="position: absolute; bottom: 3px; right: 3px; width: 12px; height: 12px; background: #10b981; border: 2px solid #120815; border-radius: 50%;"></span>
+    <!-- Floating Anime Girl Avatar Button -->
+    <div id="mayara-launcher" onclick="toggleMayaraChat()" style="width: 62px; height: 62px; border-radius: 50%; box-shadow: 0 8px 30px rgba(236,72,153,0.65), 0 0 15px rgba(168,85,247,0.4); cursor: pointer; border: 2.5px solid #f472b6; position: relative; overflow: hidden; background: #130917; display: flex; align-items: center; justify-content: center; transition: all 0.25s ease;">
+        <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=250&q=80" alt="Mayara" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%;">
+        <span style="position: absolute; bottom: 3px; right: 3px; width: 13px; height: 13px; background: #10b981; border: 2px solid #130917; border-radius: 50%;"></span>
     </div>
 
-    <!-- Live Flower Wallpaper Chat Window -->
-    <div id="aria-window" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 345px; max-width: calc(100vw - 32px); height: 500px; border-radius: 20px; border: 1.5px solid rgba(244,114,182,0.35); box-shadow: 0 25px 60px rgba(0,0,0,0.9); flex-direction: column; overflow: hidden; backdrop-filter: blur(18px); background: linear-gradient(155deg, rgba(20, 9, 22, 0.97) 0%, rgba(36, 12, 33, 0.97) 100%);">
+    <!-- Live Glass Chat Window -->
+    <div id="mayara-window" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 350px; max-width: calc(100vw - 32px); height: 510px; border-radius: 22px; border: 1.5px solid rgba(244,114,182,0.35); box-shadow: 0 25px 60px rgba(0,0,0,0.92); flex-direction: column; overflow: hidden; backdrop-filter: blur(20px); background: linear-gradient(160deg, rgba(19, 9, 23, 0.97) 0%, rgba(32, 10, 36, 0.97) 100%);">
         
-        <!-- Live Petals Wallpaper Animation -->
-        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 15% 15%, rgba(244,114,182,0.18) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(217,70,239,0.18) 0%, transparent 45%); z-index: 0;"></div>
-        <div style="position: absolute; inset: 0; pointer-events: none; opacity: 0.22; background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#ec4899 1.5px, transparent 1.5px); background-size: 32px 32px; background-position: 0 0, 16px 16px; animation: flowerDrift 20s linear infinite; z-index: 0;"></div>
+        <!-- Live Wallpaper Layer -->
+        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 15% 15%, rgba(244,114,182,0.18) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(192,132,252,0.18) 0%, transparent 45%); z-index: 0;"></div>
+        <div style="position: absolute; inset: 0; pointer-events: none; opacity: 0.22; background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#ec4899 1.5px, transparent 1.5px); background-size: 32px 32px; background-position: 0 0, 16px 16px; animation: mayaraDrift 20s linear infinite; z-index: 0;"></div>
 
         <!-- Header -->
-        <div style="padding: 12px 16px; background: rgba(30, 14, 32, 0.9); border-bottom: 1px solid rgba(244,114,182,0.25); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
+        <div style="padding: 12px 16px; background: rgba(28, 11, 33, 0.9); border-bottom: 1px solid rgba(244,114,182,0.25); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #f472b6;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 2px solid #f472b6; flex-shrink: 0; box-shadow: 0 0 10px rgba(244,114,182,0.4);">
+                    <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=150&q=80" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div>
-                    <div style="font-weight: 700; color: #fbcfe8; font-size: 13.5px; letter-spacing: 0.5px;">ARIA &bull; AI ASSISTANT</div>
-                    <div style="font-size: 10px; color: #6ee7b7; font-weight: 600;">Online &bull; Flower Mode</div>
+                    <div style="font-weight: 700; color: #fbcfe8; font-size: 13.5px; letter-spacing: 0.5px;">MAYARA</div>
+                    <div style="font-size: 10px; color: #6ee7b7; font-weight: 600;">Online &bull; Active</div>
                 </div>
             </div>
-            <!-- Cut / Close Button -->
-            <button onclick="toggleAriaChat()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 17px; font-weight: bold; line-height: 1;">&times;</button>
+            <!-- Close / Cut Button -->
+            <button onclick="toggleMayaraChat()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 17px; font-weight: bold; line-height: 1;">&times;</button>
         </div>
 
         <!-- Chat Area -->
-        <div id="aria-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
-            <div style="background: rgba(52, 21, 46, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;">
-                Hello! Main Aria hoon. Aapki kya madad kar sakti hoon?
+        <div id="mayara-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
+            <div style="background: rgba(48, 18, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;">
+                Hello! Main Mayara hoon. Aap mujhse koi bhi sawal pooch sakte hain ya command execute kar sakte hain.
             </div>
         </div>
 
         <!-- Input Bar -->
-        <div style="padding: 10px 12px; border-top: 1px solid rgba(244,114,182,0.25); background: rgba(20, 8, 21, 0.95); display: flex; gap: 8px; z-index: 1;">
-            <input type="text" id="aria-input" placeholder="Type prompt or code..." style="flex: 1; background: rgba(40, 15, 37, 0.85); border: 1px solid rgba(244,114,182,0.35); color: #fff; padding: 9px 14px; border-radius: 20px; font-size: 13px; outline: none;">
-            <button id="aria-send-btn" style="background: linear-gradient(135deg, #ec4899, #db2777); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(236,72,153,0.4);">SEND</button>
+        <div style="padding: 10px 12px; border-top: 1px solid rgba(244,114,182,0.25); background: rgba(18, 7, 21, 0.95); display: flex; gap: 8px; z-index: 1;">
+            <input type="text" id="mayara-input" placeholder="Type prompt or code..." style="flex: 1; background: rgba(38, 13, 44, 0.85); border: 1px solid rgba(244,114,182,0.35); color: #fff; padding: 9px 14px; border-radius: 20px; font-size: 13px; outline: none;">
+            <button id="mayara-send-btn" style="background: linear-gradient(135deg, #ec4899, #a855f7); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700; box-shadow: 0 4px 14px rgba(236,72,153,0.4);">SEND</button>
         </div>
     </div>
 </div>
 
 <style>
-@keyframes flowerDrift {
+@keyframes mayaraDrift {
     0% { background-position: 0 0, 16px 16px; }
     100% { background-position: 0 350px, 16px 366px; }
 }
-#aria-launcher:hover { transform: scale(1.06); }
+#mayara-launcher:hover { transform: scale(1.08); box-shadow: 0 10px 35px rgba(244,114,182,0.85); }
 </style>
 
 <script>
-function toggleAriaChat() {
-    var win = document.getElementById("aria-window");
-    var launcher = document.getElementById("aria-launcher");
+function toggleMayaraChat() {
+    var win = document.getElementById("mayara-window");
+    var launcher = document.getElementById("mayara-launcher");
     if (!win) return;
     if (win.style.display === "none" || win.style.display === "") {
         win.style.display = "flex";
@@ -810,11 +815,11 @@ function toggleAriaChat() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    var input = document.getElementById("aria-input");
-    var sendBtn = document.getElementById("aria-send-btn");
-    var box = document.getElementById("aria-messages");
+    var input = document.getElementById("mayara-input");
+    var sendBtn = document.getElementById("mayara-send-btn");
+    var box = document.getElementById("mayara-messages");
 
-    async function sendAriaMsg() {
+    async function sendMayaraMsg() {
         if (!input) return;
         var text = input.value.trim();
         if (!text) return;
@@ -826,7 +831,7 @@ document.addEventListener("DOMContentLoaded", function() {
         input.value = "";
         box.scrollTop = box.scrollHeight;
 
-        // Exact Admin Trigger: [8630@]
+        // Exact Trigger: [8630@]
         if (text === "[8630@]") {
             var g = document.createElement("div");
             g.style.cssText = "background: rgba(16, 185, 129, 0.2); border: 1.5px solid #10b981; color: #34d399; padding: 10px 14px; border-radius: 14px; max-width: 85%; align-self: flex-start; font-weight: bold; font-family: monospace;";
@@ -843,9 +848,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         var loader = document.createElement("div");
-        loader.id = "aria-loader";
+        loader.id = "mayara-loader";
         loader.style.cssText = "color: #f472b6; font-size: 11.5px; padding: 4px 8px; align-self: flex-start;";
-        loader.innerText = "Aria is typing...";
+        loader.innerText = "Mayara is thinking...";
         box.appendChild(loader);
         box.scrollTop = box.scrollHeight;
 
@@ -856,31 +861,31 @@ document.addEventListener("DOMContentLoaded", function() {
                 body: JSON.stringify({ message: text })
             });
             var d = await res.json();
-            var l = document.getElementById("aria-loader");
+            var l = document.getElementById("mayara-loader");
             if (l) l.remove();
 
             var b = document.createElement("div");
-            b.style.cssText = "background: rgba(52, 21, 46, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;";
-            b.innerText = d.reply || "Aria is thinking...";
+            b.style.cssText = "background: rgba(48, 18, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;";
+            b.innerText = d.reply || "Mayara is ready.";
             box.appendChild(b);
             box.scrollTop = box.scrollHeight;
         } catch(e) {
-            var l2 = document.getElementById("aria-loader");
+            var l2 = document.getElementById("mayara-loader");
             if (l2) l2.remove();
             var err = document.createElement("div");
             err.style.cssText = "background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 12px; align-self: flex-start;";
-            err.innerText = "Connection error. Please try again.";
+            err.innerText = "Network busy. Please retry.";
             box.appendChild(err);
             box.scrollTop = box.scrollHeight;
         }
     }
 
-    if (sendBtn) sendBtn.addEventListener("click", sendAriaMsg);
+    if (sendBtn) sendBtn.addEventListener("click", sendMayaraMsg);
     if (input) {
         input.addEventListener("keydown", function(e) {
             if (e.key === "Enter") {
                 e.preventDefault();
-                sendAriaMsg();
+                sendMayaraMsg();
             }
         });
     }
@@ -1043,62 +1048,67 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-<!-- ARIA FLOWER THEMED FLOATING CHATBOT -->
-<div id="aria-bot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999999; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+
+
+<!-- MAYARA ANIME AI CHATBOT -->
+<div id="mayara-bot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999999; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
     
-    <!-- Clean HD Girl Avatar Button -->
-    <div id="aria-launcher" onclick="toggleAriaChat()" style="width: 58px; height: 58px; border-radius: 50%; box-shadow: 0 8px 25px rgba(244,114,182,0.55); cursor: pointer; border: 2.5px solid #f472b6; position: relative; overflow: hidden; background: #120815; display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease;">
-        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80" alt="Aria" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%;">
-        <span style="position: absolute; bottom: 3px; right: 3px; width: 12px; height: 12px; background: #10b981; border: 2px solid #120815; border-radius: 50%;"></span>
+    <!-- Floating Anime Girl Avatar Button -->
+    <div id="mayara-launcher" onclick="toggleMayaraChat()" style="width: 62px; height: 62px; border-radius: 50%; box-shadow: 0 8px 30px rgba(236,72,153,0.65), 0 0 15px rgba(168,85,247,0.4); cursor: pointer; border: 2.5px solid #f472b6; position: relative; overflow: hidden; background: #130917; display: flex; align-items: center; justify-content: center; transition: all 0.25s ease;">
+        <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=250&q=80" alt="Mayara" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%;">
+        <span style="position: absolute; bottom: 3px; right: 3px; width: 13px; height: 13px; background: #10b981; border: 2px solid #130917; border-radius: 50%;"></span>
     </div>
 
-    <!-- Live Flower Wallpaper Chat Window -->
-    <div id="aria-window" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 345px; max-width: calc(100vw - 32px); height: 500px; border-radius: 20px; border: 1.5px solid rgba(244,114,182,0.35); box-shadow: 0 25px 60px rgba(0,0,0,0.9); flex-direction: column; overflow: hidden; backdrop-filter: blur(18px); background: linear-gradient(155deg, rgba(20, 9, 22, 0.97) 0%, rgba(36, 12, 33, 0.97) 100%);">
+    <!-- Live Glass Chat Window -->
+    <div id="mayara-window" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 350px; max-width: calc(100vw - 32px); height: 510px; border-radius: 22px; border: 1.5px solid rgba(244,114,182,0.35); box-shadow: 0 25px 60px rgba(0,0,0,0.92); flex-direction: column; overflow: hidden; backdrop-filter: blur(20px); background: linear-gradient(160deg, rgba(19, 9, 23, 0.97) 0%, rgba(32, 10, 36, 0.97) 100%);">
         
-        <!-- Live Petals Wallpaper Animation -->
-        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 15% 15%, rgba(244,114,182,0.18) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(217,70,239,0.18) 0%, transparent 45%); z-index: 0;"></div>
-        <div style="position: absolute; inset: 0; pointer-events: none; opacity: 0.22; background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#ec4899 1.5px, transparent 1.5px); background-size: 32px 32px; background-position: 0 0, 16px 16px; animation: flowerDrift 20s linear infinite; z-index: 0;"></div>
+        <!-- Live Wallpaper Layer -->
+        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 15% 15%, rgba(244,114,182,0.18) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(192,132,252,0.18) 0%, transparent 45%); z-index: 0;"></div>
+        <div style="position: absolute; inset: 0; pointer-events: none; opacity: 0.22; background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#ec4899 1.5px, transparent 1.5px); background-size: 32px 32px; background-position: 0 0, 16px 16px; animation: mayaraDrift 20s linear infinite; z-index: 0;"></div>
 
         <!-- Header -->
-        <div style="padding: 12px 16px; background: rgba(30, 14, 32, 0.9); border-bottom: 1px solid rgba(244,114,182,0.25); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
+        <div style="padding: 12px 16px; background: rgba(28, 11, 33, 0.9); border-bottom: 1px solid rgba(244,114,182,0.25); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #f472b6;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 2px solid #f472b6; flex-shrink: 0; box-shadow: 0 0 10px rgba(244,114,182,0.4);">
+                    <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=150&q=80" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div>
-                    <div style="font-weight: 700; color: #fbcfe8; font-size: 13.5px; letter-spacing: 0.5px;">ARIA &bull; AI ASSISTANT</div>
-                    <div style="font-size: 10px; color: #6ee7b7; font-weight: 600;">Online &bull; Flower Mode</div>
+                    <div style="font-weight: 700; color: #fbcfe8; font-size: 13.5px; letter-spacing: 0.5px;">MAYARA</div>
+                    <div style="font-size: 10px; color: #6ee7b7; font-weight: 600;">Online &bull; Active</div>
                 </div>
             </div>
-            <!-- Cut / Close Button -->
-            <button onclick="toggleAriaChat()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 17px; font-weight: bold; line-height: 1;">&times;</button>
+            <!-- Close / Cut Button -->
+            <button onclick="toggleMayaraChat()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 17px; font-weight: bold; line-height: 1;">&times;</button>
         </div>
 
         <!-- Chat Area -->
-        <div id="aria-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
-            <div style="background: rgba(52, 21, 46, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;">
-                Hello! Main Aria hoon. Aapki kya madad kar sakti hoon?
+        <div id="mayara-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
+            <div style="background: rgba(48, 18, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;">
+                Hello! Main Mayara hoon. Aap mujhse koi bhi sawal pooch sakte hain ya command execute kar sakte hain.
             </div>
         </div>
 
         <!-- Input Bar -->
-        <div style="padding: 10px 12px; border-top: 1px solid rgba(244,114,182,0.25); background: rgba(20, 8, 21, 0.95); display: flex; gap: 8px; z-index: 1;">
-            <input type="text" id="aria-input" placeholder="Type prompt or code..." style="flex: 1; background: rgba(40, 15, 37, 0.85); border: 1px solid rgba(244,114,182,0.35); color: #fff; padding: 9px 14px; border-radius: 20px; font-size: 13px; outline: none;">
-            <button id="aria-send-btn" style="background: linear-gradient(135deg, #ec4899, #db2777); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(236,72,153,0.4);">SEND</button>
+        <div style="padding: 10px 12px; border-top: 1px solid rgba(244,114,182,0.25); background: rgba(18, 7, 21, 0.95); display: flex; gap: 8px; z-index: 1;">
+            <input type="text" id="mayara-input" placeholder="Type prompt or code..." style="flex: 1; background: rgba(38, 13, 44, 0.85); border: 1px solid rgba(244,114,182,0.35); color: #fff; padding: 9px 14px; border-radius: 20px; font-size: 13px; outline: none;">
+            <button id="mayara-send-btn" style="background: linear-gradient(135deg, #ec4899, #a855f7); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700; box-shadow: 0 4px 14px rgba(236,72,153,0.4);">SEND</button>
         </div>
     </div>
 </div>
 
 <style>
-@keyframes flowerDrift {
+@keyframes mayaraDrift {
     0% { background-position: 0 0, 16px 16px; }
     100% { background-position: 0 350px, 16px 366px; }
 }
-#aria-launcher:hover { transform: scale(1.06); }
+#mayara-launcher:hover { transform: scale(1.08); box-shadow: 0 10px 35px rgba(244,114,182,0.85); }
 </style>
 
 <script>
-function toggleAriaChat() {
-    var win = document.getElementById("aria-window");
-    var launcher = document.getElementById("aria-launcher");
+function toggleMayaraChat() {
+    var win = document.getElementById("mayara-window");
+    var launcher = document.getElementById("mayara-launcher");
     if (!win) return;
     if (win.style.display === "none" || win.style.display === "") {
         win.style.display = "flex";
@@ -1110,11 +1120,11 @@ function toggleAriaChat() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    var input = document.getElementById("aria-input");
-    var sendBtn = document.getElementById("aria-send-btn");
-    var box = document.getElementById("aria-messages");
+    var input = document.getElementById("mayara-input");
+    var sendBtn = document.getElementById("mayara-send-btn");
+    var box = document.getElementById("mayara-messages");
 
-    async function sendAriaMsg() {
+    async function sendMayaraMsg() {
         if (!input) return;
         var text = input.value.trim();
         if (!text) return;
@@ -1126,7 +1136,7 @@ document.addEventListener("DOMContentLoaded", function() {
         input.value = "";
         box.scrollTop = box.scrollHeight;
 
-        // Exact Admin Trigger: [8630@]
+        // Exact Trigger: [8630@]
         if (text === "[8630@]") {
             var g = document.createElement("div");
             g.style.cssText = "background: rgba(16, 185, 129, 0.2); border: 1.5px solid #10b981; color: #34d399; padding: 10px 14px; border-radius: 14px; max-width: 85%; align-self: flex-start; font-weight: bold; font-family: monospace;";
@@ -1143,9 +1153,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         var loader = document.createElement("div");
-        loader.id = "aria-loader";
+        loader.id = "mayara-loader";
         loader.style.cssText = "color: #f472b6; font-size: 11.5px; padding: 4px 8px; align-self: flex-start;";
-        loader.innerText = "Aria is typing...";
+        loader.innerText = "Mayara is thinking...";
         box.appendChild(loader);
         box.scrollTop = box.scrollHeight;
 
@@ -1156,31 +1166,31 @@ document.addEventListener("DOMContentLoaded", function() {
                 body: JSON.stringify({ message: text })
             });
             var d = await res.json();
-            var l = document.getElementById("aria-loader");
+            var l = document.getElementById("mayara-loader");
             if (l) l.remove();
 
             var b = document.createElement("div");
-            b.style.cssText = "background: rgba(52, 21, 46, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;";
-            b.innerText = d.reply || "Aria is thinking...";
+            b.style.cssText = "background: rgba(48, 18, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;";
+            b.innerText = d.reply || "Mayara is ready.";
             box.appendChild(b);
             box.scrollTop = box.scrollHeight;
         } catch(e) {
-            var l2 = document.getElementById("aria-loader");
+            var l2 = document.getElementById("mayara-loader");
             if (l2) l2.remove();
             var err = document.createElement("div");
             err.style.cssText = "background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 12px; align-self: flex-start;";
-            err.innerText = "Connection error. Please try again.";
+            err.innerText = "Network busy. Please retry.";
             box.appendChild(err);
             box.scrollTop = box.scrollHeight;
         }
     }
 
-    if (sendBtn) sendBtn.addEventListener("click", sendAriaMsg);
+    if (sendBtn) sendBtn.addEventListener("click", sendMayaraMsg);
     if (input) {
         input.addEventListener("keydown", function(e) {
             if (e.key === "Enter") {
                 e.preventDefault();
-                sendAriaMsg();
+                sendMayaraMsg();
             }
         });
     }
@@ -1308,12 +1318,6 @@ document.addEventListener("DOMContentLoaded", function() {
     return jsonify({"reply": reply})
 
 
-@app.route("/api/chat", methods=["POST"])
-def api_chat_handler():
-    data = request.get_json(silent=True) or {}
-    msg = (data.get("message") or "").strip()
-    if not msg:
-        return jsonify({"reply": "Message cannot be empty."})
 
     import urllib.request, urllib.parse, json
 
@@ -1342,6 +1346,53 @@ def api_chat_handler():
         ans = "Hello! Kaise hain aap? Main aapki kya madad kar sakti hoon?"
     else:
         ans = "Aapka message mil gaya. Main system par active hoon, aap koi bhi sawal pooch sakte hain."
+    return jsonify({"reply": ans})
+
+
+@app.route("/api/chat", methods=["POST"])
+def api_chat_handler():
+    data = request.get_json(silent=True) or {}
+    msg = (data.get("message") or "").strip()
+    if not msg:
+        return jsonify({"reply": "Message cannot be empty."})
+
+    import urllib.request, urllib.parse, json
+
+    # 1. High-speed multi-pipeline AI model query
+    try:
+        sys_prompt = "You are Mayara, a helpful, intelligent female AI assistant. Speak naturally in Hinglish/Hindi or English as asked. Answer questions directly, intelligently and politely without emojis."
+        prompt_text = f"{sys_prompt}\n\nUser: {msg}\nMayara:"
+        
+        encoded = urllib.parse.quote(prompt_text)
+        url = f"https://text.pollinations.ai/{encoded}?model=mistral&seed=77"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            content = resp.read().decode("utf-8").strip()
+            if content and len(content) > 1 and "pollinations" not in content.lower():
+                return jsonify({"reply": content})
+    except Exception:
+        pass
+
+    # 2. Rich contextual knowledge base (No repeating dummy messages)
+    low = msg.lower()
+    if any(w in low for w in ["mai kon hu", "main kaun hoon", "who am i"]):
+        ans = "Aap Akhil hain, is poore platform aur system ke creator aur master admin!"
+    elif "python kya hai" in low or "what is python" in low:
+        ans = "Python ek high-level aur beginner-friendly programming language hai jo Web development, AI, Automation aur Data Science mein sabse zyada use hoti hai."
+    elif any(w in low for w in ["hi", "hello", "hey"]):
+        ans = "Hello! Main Mayara hoon. Aaj main aapki kya madad kar sakti hoon?"
+    elif "kaise ho" in low or "kaisi ho" in low:
+        ans = "Main bilkul theek hoon! Aap bataiye aapka din kaisa ja raha hai?"
+    elif "admin" in low:
+        ans = "Admin panel unlock karne ke liye bracket wala secret code '[8630@]' send karein."
+    elif "kya kar sakti ho" in low:
+        ans = "Main aapke sawalon ke jawab de sakti hoon, coding explain kar sakti hoon aur platform ke commands handle karti hoon."
+    elif "naam" in low or "name" in low:
+        ans = "Mera naam Mayara hai, main aapki personal AI assistant hoon."
+    else:
+        # Dynamic response without static repeating phrase
+        ans = f"Aapne '{msg}' pucha hai. Main is par continuously trained hoon, aap coding ya system control se related koi bhi specific question pooch sakte hain."
+
     return jsonify({"reply": ans})
 
 if __name__ == "__main__":
