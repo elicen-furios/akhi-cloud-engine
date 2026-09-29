@@ -1050,5 +1050,13 @@ def main_dashboard():
             return f.read(), 200, {'Content-Type': 'text/html; charset=utf-8'}
     return '<h1>Dashboard Core Ready</h1>', 200
 
+
+import traceback
+
+@app.errorhandler(500)
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return '<pre style="color:red;background:#111;padding:20px;font-size:14px;white-space:pre-wrap;">' + traceback.format_exc() + '</pre>', 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
