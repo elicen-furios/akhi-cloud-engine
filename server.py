@@ -4,6 +4,23 @@ import secrets
 from flask import Flask, request, jsonify, send_file
 
 app = Flask(__name__)
+
+from flask import session
+
+app.secret_key = os.environ.get("SECRET_KEY", "akhil_super_secret_session_vault_key_2026")
+
+@app.route('/api/auth/session', methods=['POST'])
+def save_auth_session():
+    data = request.get_json(silent=True) or {}
+    session['user_email'] = data.get('email', '')
+    session['user_name'] = data.get('name', '')
+    session['authenticated'] = True
+    return jsonify({'status': 'approved'})
+
+@app.route('/api/auth/logout', methods=['POST'])
+def clear_auth_session():
+    session.clear()
+    return jsonify({'status': 'cleared'})
 DB_PATH = "data.db"
 
 def init_db():

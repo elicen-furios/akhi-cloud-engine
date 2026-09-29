@@ -399,6 +399,23 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         window.auth = auth;
+
+        async function syncSessionWithBackend(user) {
+            if (!user) return;
+            try {
+                const token = await user.getIdToken();
+                await fetch('/api/auth/session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: token,
+                        email: user.email || '',
+                        name: user.displayName || user.email?.split('@')[0] || 'User'
+                    })
+                });
+            } catch(e) { console.error('Session sync error:', e); }
+        }
+
         window.currentFirebaseUser = null;
 
         function showDoneAndRedirect(name) {
@@ -425,6 +442,7 @@
 
         onAuthStateChanged(auth, user => {
             window.currentFirebaseUser = user;
+            if (user) { syncSessionWithBackend(user); }
             const tag = document.getElementById("user-name-tag");
             const init = document.getElementById("user-initial");
             const loginForm = document.getElementById("login-box-card");
