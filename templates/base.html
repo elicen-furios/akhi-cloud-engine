@@ -3,247 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>{{ title }} // AKHIL DEV PLATFORM</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>{{ title }} // AKHIL DEV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #03060d;
-            --bg-sidebar: #060b14;
-            --bg-card: rgba(8, 14, 26, 0.95);
-            --border-line: rgba(0, 240, 255, 0.2);
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --cyan: #00f0ff;
-            --cyan-glow: rgba(0, 240, 255, 0.25);
-            --green: #00ff66;
-            --magenta: #ff0055;
-            --text-main: #f8fafc;
-            --text-sub: #8492a6;
-            --font-code: "JetBrains Mono", monospace;
-            --font-ui: "Space Grotesk", sans-serif;
+            --bg-body: #ffffff;
+            --bg-surface: #fafafa;
+            --bg-card: #ffffff;
+            --border-soft: #e4e4e7;
+            --border-focus: #18181b;
+            --text-title: #09090b;
+            --text-body: #52525b;
+            --text-muted: #a1a1aa;
+            --accent: #18181b;
+            --accent-hover: #27272a;
+            --accent-blue: #2563eb;
+            --danger: #ef4444;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --font-ui: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: "JetBrains Mono", monospace;
+            --shadow-subtle: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+            --shadow-float: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
+            background-color: var(--bg-body);
+            color: var(--text-title);
             font-family: var(--font-ui);
             min-height: 100vh;
             display: flex;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
         .drawer-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.75);
+            background: rgba(9, 9, 11, 0.25);
             backdrop-filter: blur(4px);
             z-index: 998;
         }
         .drawer-overlay.active { display: block; }
         .sidebar {
-            width: 270px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-line);
+            width: 260px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-soft);
             display: flex;
             flex-direction: column;
             position: fixed;
             top: 0; bottom: 0; left: 0;
             z-index: 999;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .brand-section {
-            padding: 20px;
+        .brand-box {
+            padding: 24px 20px;
             display: flex;
             align-items: center;
             gap: 12px;
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-soft);
         }
         .brand-avatar {
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 8px;
-            border: 1px solid var(--cyan);
+            background: #18181b;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
             overflow: hidden;
-            background: #000;
         }
         .brand-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .brand-title {
-            font-family: var(--font-code);
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--cyan);
-        }
-        .brand-subtitle { font-size: 0.68rem; color: var(--text-sub); font-family: var(--font-code); }
+        .brand-text h2 { font-size: 0.95rem; font-weight: 700; color: var(--text-title); letter-spacing: -0.3px; }
+        .brand-text p { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; }
         .nav-list {
             list-style: none;
-            padding: 14px 10px;
+            padding: 16px 12px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 4px;
             flex: 1;
             overflow-y: auto;
         }
         .nav-section-title {
-            font-family: var(--font-code);
             font-size: 0.65rem;
-            color: var(--text-sub);
-            letter-spacing: 1.5px;
-            padding: 10px 14px 4px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            padding: 12px 12px 6px;
         }
         .nav-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 11px 14px;
-            border-radius: 6px;
-            color: var(--text-sub);
-            font-size: 0.86rem;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: var(--text-body);
+            font-size: 0.88rem;
+            font-weight: 500;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
         }
-        .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
-        .nav-item:hover, .nav-item.active {
-            color: var(--cyan);
-            background: rgba(0, 240, 255, 0.08);
-            border: 1px solid var(--border-line);
+        .nav-item svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-item:hover { color: var(--text-title); background: #f4f4f5; }
+        .nav-item.active {
+            color: var(--text-title);
+            background: #ffffff;
+            font-weight: 600;
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid var(--border-soft);
         }
         .sidebar-footer {
-            padding: 16px;
-            border-top: 1px solid var(--border-subtle);
+            padding: 18px;
+            border-top: 1px solid var(--border-soft);
             font-size: 0.72rem;
-            color: var(--text-sub);
+            color: var(--text-muted);
             text-align: center;
-            font-family: var(--font-code);
         }
         .main-wrapper {
-            margin-left: 270px;
+            margin-left: 260px;
             flex: 1;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            background: var(--bg-body);
         }
         .header-bar {
-            padding: 16px 28px;
+            padding: 16px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-subtle);
-            background: rgba(3, 6, 13, 0.95);
-            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-soft);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 500;
         }
         .hamburger-btn {
             display: none;
-            background: transparent;
-            border: 1px solid var(--border-line);
-            border-radius: 6px;
-            color: var(--cyan);
-            padding: 6px 10px;
+            background: #fff;
+            border: 1px solid var(--border-soft);
+            border-radius: 8px;
+            color: var(--text-title);
+            padding: 8px 10px;
             cursor: pointer;
         }
-        .header-title-box { display: flex; align-items: center; gap: 12px; }
-        .header-title {
-            font-family: var(--font-code);
-            color: var(--cyan);
-            font-size: 0.95rem;
+        .header-brand-title {
             font-weight: 700;
-            letter-spacing: 0.5px;
+            font-size: 0.95rem;
+            letter-spacing: -0.3px;
+            color: var(--text-title);
         }
         .user-badge {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 14px 6px 8px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-line);
-            border-radius: 20px;
+            gap: 10px;
+            padding: 6px 14px 6px 6px;
+            background: #ffffff;
+            border: 1px solid var(--border-soft);
+            border-radius: 30px;
             text-decoration: none;
-            color: #fff;
+            color: var(--text-title);
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-subtle);
+            transition: 0.15s ease;
         }
+        .user-badge:hover { border-color: var(--border-focus); }
         .user-avatar-circle {
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: var(--cyan);
-            color: #000;
+            background: #18181b;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.72rem;
             font-weight: 700;
-            font-family: var(--font-code);
-            font-size: 0.75rem;
         }
-        .content-body { padding: 28px; flex: 1; }
-        .panel-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-line);
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        .hud-input {
+        .content-body {
+            padding: 40px 48px;
+            flex: 1;
+            max-width: 1100px;
             width: 100%;
-            padding: 12px 14px;
-            background: #000;
-            border: 1px solid var(--border-line);
-            border-radius: 6px;
-            color: #fff;
-            font-family: var(--font-code);
-            font-size: 0.88rem;
-            margin-bottom: 14px;
-            outline: none;
+            margin: 0 auto;
         }
-        .hud-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-glow); }
-        .btn-action {
-            background: rgba(0, 240, 255, 0.12);
-            border: 1px solid var(--cyan);
-            color: var(--cyan);
-            font-family: var(--font-code);
-            font-size: 0.85rem;
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: var(--shadow-subtle);
+            margin-bottom: 24px;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: #18181b;
+            color: #ffffff;
+            font-family: var(--font-ui);
+            font-size: 0.88rem;
+            font-weight: 600;
             padding: 10px 20px;
-            border-radius: 6px;
+            border-radius: 8px;
+            border: 1px solid transparent;
             cursor: pointer;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: 0.2s;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-        .btn-action:hover { background: var(--cyan); color: #000; }
-        .code-block {
-            background: #000;
-            border: 1px solid var(--border-subtle);
+        .btn-primary:hover { background: #27272a; transform: translateY(-1px); }
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--text-title);
+            font-family: var(--font-ui);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-soft);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s ease;
+        }
+        .btn-secondary:hover { background: #f4f4f5; border-color: #d4d4d8; }
+        .input-text {
+            width: 100%;
+            padding: 12px 14px;
+            background: #ffffff;
+            border: 1px solid var(--border-soft);
+            border-radius: 8px;
+            color: var(--text-title);
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+            margin-bottom: 14px;
+            outline: none;
+            transition: all 0.15s ease;
+        }
+        .input-text:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(24,24,27,0.06); }
+        .code-box {
+            background: #fafafa;
+            border: 1px solid var(--border-soft);
+            border-radius: 8px;
             padding: 16px;
-            border-radius: 6px;
-            font-family: var(--font-code);
+            font-family: var(--font-mono);
             font-size: 0.82rem;
-            color: var(--cyan);
+            color: #18181b;
             overflow-x: auto;
             margin: 14px 0;
-            line-height: 1.5;
+            line-height: 1.6;
         }
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-family: var(--font-code);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             margin: 14px 0;
         }
         .data-table th, .data-table td {
-            border: 1px solid var(--border-subtle);
-            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-soft);
+            padding: 12px 14px;
             text-align: left;
         }
-        .data-table th { background: rgba(0, 240, 255, 0.08); color: var(--cyan); }
+        .data-table th { background: #fafafa; color: var(--text-title); font-weight: 600; }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
             .main-wrapper { margin-left: 0; }
             .hamburger-btn { display: block; }
-            .header-bar { padding: 14px 16px; }
-            .content-body { padding: 16px; }
+            .header-bar { padding: 14px 20px; }
+            .content-body { padding: 24px 18px; }
         }
     </style>
 </head>
@@ -251,69 +291,67 @@
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
     <aside class="sidebar" id="sidebar">
-        <div class="brand-section">
+        <div class="brand-box">
             <div class="brand-avatar">
-                <img src="/public/image.png" onerror="this.onerror=null; this.src='/public/second-image.png';" alt="">
+                <img src="/public/image.png" onerror="this.onerror=null; this.src='/public/second-image.png';" alt="A">
             </div>
-            <div>
-                <div class="brand-title">AKHIL DEV</div>
-                <div class="brand-subtitle">PLATFORM CORE</div>
+            <div class="brand-text">
+                <h2>AKHIL DEV</h2>
+                <p>Cloud Developer Platform</p>
             </div>
         </div>
 
         <ul class="nav-list">
-            <li class="nav-section-title">NAVIGATION</li>
-            <li><a href="/" class="nav-item {{ 'active' if active_page == 'home' else '' }}"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a></li>
-            <li><a href="/api-keys" class="nav-item {{ 'active' if active_page == 'api-keys' else '' }}"><svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg><span>API Keys</span></a></li>
-            <li><a href="/sandbox" class="nav-item {{ 'active' if active_page == 'sandbox' else '' }}"><svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg><span>Transmission Sandbox</span></a></li>
-            <li><a href="/media" class="nav-item {{ 'active' if active_page == 'media' else '' }}"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><span>Media Core Vault</span></a></li>
-            <li><a href="/docs" class="nav-item {{ 'active' if active_page == 'docs' else '' }}"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>Protocol Docs</span></a></li>
+            <li class="nav-section-title">CORE PLATFORM</li>
+            <li><a href="/" class="nav-item {{ 'active' if active_page == 'home' else '' }}"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></a></li>
+            <li><a href="/api-keys" class="nav-item {{ 'active' if active_page == 'api-keys' else '' }}"><svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5L13 7l-1.5-1.5L10 7l-2-2-4 4 6 6 8-8z"/><circle cx="7.5" cy="16.5" r="1.5"/></svg><span>API Keys</span></a></li>
+            <li><a href="/sandbox" class="nav-item {{ 'active' if active_page == 'sandbox' else '' }}"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>Transmission Console</span></a></li>
+            <li><a href="/media" class="nav-item {{ 'active' if active_page == 'media' else '' }}"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Media Vault</span></a></li>
+            <li><a href="/docs" class="nav-item {{ 'active' if active_page == 'docs' else '' }}"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Protocol Docs</span></a></li>
 
-            <li class="nav-section-title">SYSTEM CONTROL</li>
-            <li><a href="/database" class="nav-item {{ 'active' if active_page == 'database' else '' }}"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 6c-3.87 0-7-1.12-7-2.5S8.13 3 12 3s7 1.12 7 2.5S15.87 8 12 8zm-7 5.5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5V11c-1.78 1.24-4.24 2-7 2s-5.22-.76-7-2v2.5zm0 5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5V16c-1.78 1.24-4.24 2-7 2s-5.22-.76-7-2v2.5z"/></svg><span>Database</span></a></li>
-            <li><a href="/system" class="nav-item {{ 'active' if active_page == 'system' else '' }}"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><span>System Status</span></a></li>
-            <li><a href="/login" class="nav-item {{ 'active' if active_page == 'login' else '' }}"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Identity Gate</span></a></li>
+            <li class="nav-section-title">SYSTEM INFRASTRUCTURE</li>
+            <li><a href="/database" class="nav-item {{ 'active' if active_page == 'database' else '' }}"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><span>Database Engine</span></a></li>
+            <li><a href="/system" class="nav-item {{ 'active' if active_page == 'system' else '' }}"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg><span>Telemetry Status</span></a></li>
+            <li><a href="/login" class="nav-item {{ 'active' if active_page == 'login' else '' }}"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Identity Gate</span></a></li>
         </ul>
 
         <div class="sidebar-footer">
-            DEVELOPER AKHIL<br>
-            <span style="opacity:0.6;">Built with vision.</span>
+            DEVELOPER AKHIL &middot; PROD V2.4
         </div>
     </aside>
 
     <div class="main-wrapper">
         <header class="header-bar">
-            <div class="header-title-box">
+            <div style="display:flex; align-items:center; gap:12px;">
                 <button class="hamburger-btn" onclick="toggleSidebar()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
-                <div class="header-title">AKHIL DEV PLATFORM</div>
+                <div class="header-brand-title">AKHIL DEV PLATFORM</div>
             </div>
 
             <a href="/login" class="user-badge">
                 <div class="user-avatar-circle" id="user-initial">A</div>
-                <span id="user-name-tag" style="font-family:var(--font-code); font-size:0.75rem;">AKHIL DEV</span>
+                <span id="user-name-tag">SIGN IN</span>
             </a>
         </header>
 
         <div class="content-body">
-            <!-- PAGE CONTENT BLOCK -->
             {{ content }}
         </div>
     </div>
 
-    <!-- FIREBASE SDK MODULAR -->
+    <!-- MODULAR FIREBASE AUTH -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
         import { 
             getAuth, 
             onAuthStateChanged, 
-            signInWithEmailAndPassword, 
-            createUserWithEmailAndPassword, 
             signInWithPopup, 
             GoogleAuthProvider, 
-            FacebookAuthProvider, 
+            GithubAuthProvider,
+            signInWithPhoneNumber,
+            RecaptchaVerifier,
             signOut 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -328,83 +366,134 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        try { getAnalytics(app); } catch(e){}
         const auth = getAuth(app);
-
+        window.auth = auth;
         window.currentFirebaseUser = null;
 
         onAuthStateChanged(auth, user => {
             window.currentFirebaseUser = user;
+            const tag = document.getElementById("user-name-tag");
+            const init = document.getElementById("user-initial");
+            const loginForm = document.getElementById("login-box-card");
+            const loggedCard = document.getElementById("logged-in-profile-card");
+
             if (user) {
-                const name = user.displayName || user.email.split("@")[0];
-                const tag = document.getElementById("user-name-tag");
-                const init = document.getElementById("user-initial");
+                const name = user.displayName || user.phoneNumber || user.email?.split("@")[0] || "DEVELOPER";
                 if (tag) tag.innerText = name.toUpperCase();
                 if (init) init.innerText = name.charAt(0).toUpperCase();
-
-                const authStateLbl = document.getElementById("auth-status-lbl");
-                if (authStateLbl) authStateLbl.innerText = "ONLINE";
-
-                const loginForm = document.getElementById("login-form-area");
-                const loggedUser = document.getElementById("logged-user-area");
-                const loggedEmail = document.getElementById("logged-email-text");
                 if (loginForm) loginForm.style.display = "none";
-                if (loggedUser) loggedUser.style.display = "block";
-                if (loggedEmail) loggedEmail.innerText = "AUTHENTICATED: " + (user.email || name);
+                if (loggedCard) {
+                    loggedCard.style.display = "block";
+                    document.getElementById("profile-display-info").innerText = user.phoneNumber || user.email || user.displayName || "Active Session";
+                }
             } else {
-                const tag = document.getElementById("user-name-tag");
-                const init = document.getElementById("user-initial");
-                if (tag) tag.innerText = "AKHIL DEV";
+                if (tag) tag.innerText = "SIGN IN";
                 if (init) init.innerText = "A";
-
-                const authStateLbl = document.getElementById("auth-status-lbl");
-                if (authStateLbl) authStateLbl.innerText = "UNAUTHENTICATED";
-
-                const loginForm = document.getElementById("login-form-area");
-                const loggedUser = document.getElementById("logged-user-area");
                 if (loginForm) loginForm.style.display = "block";
-                if (loggedUser) loggedUser.style.display = "none";
+                if (loggedCard) loggedCard.style.display = "none";
             }
         });
 
-        window.emailAuthCall = async () => {
-            const em = document.getElementById("user-email").value.trim();
-            const pw = document.getElementById("user-pass").value.trim();
-            if (!em || !pw) return alert("Please enter email and password");
-            try {
-                await signInWithEmailAndPassword(auth, em, pw);
-                window.location.href = "/api-keys";
-            } catch(e) {
-                try {
-                    await createUserWithEmailAndPassword(auth, em, pw);
-                    window.location.href = "/api-keys";
-                } catch(err) {
-                    alert("Authentication Error: " + err.message);
-                }
+        // Phone Authentication with Recaptcha
+        window.initRecaptcha = () => {
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-anchor", {
+                    size: "invisible"
+                });
             }
         };
 
-        window.googleAuthCall = async () => {
+        window.sendPhoneOtp = async () => {
+            const phone = document.getElementById("phone-input").value.trim();
+            const btn = document.getElementById("btn-send-otp");
+            const errBox = document.getElementById("login-error-container");
+            if (!phone || phone.length < 10) {
+                showLoginError("Enter valid phone number with country code (e.g. +91...)");
+                return;
+            }
+            btn.innerText = "Sending Code...";
+            btn.disabled = true;
+            try {
+                window.initRecaptcha();
+                window.confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+                document.getElementById("phone-step-1").style.display = "none";
+                document.getElementById("phone-step-2").style.display = "block";
+                hideLoginError();
+            } catch(e) {
+                console.error("Phone Auth Error:", e);
+                showLoginError("SMS delivery failed. Check phone format or use Google sign-in.");
+            } finally {
+                btn.innerText = "Send Verification Code";
+                btn.disabled = false;
+            }
+        };
+
+        window.verifyPhoneOtp = async () => {
+            const otp = document.getElementById("otp-input").value.trim();
+            const btn = document.getElementById("btn-verify-otp");
+            if (!otp) return showLoginError("Enter 6-digit verification code");
+            btn.innerText = "Verifying...";
+            btn.disabled = true;
+            try {
+                await window.confirmationResult.confirm(otp);
+                hideLoginError();
+                window.location.href = "/api-keys";
+            } catch(e) {
+                console.error(e);
+                showLoginError("Verification failed: Invalid code entered.");
+            } finally {
+                btn.innerText = "Confirm & Authenticate";
+                btn.disabled = false;
+            }
+        };
+
+        window.loginGoogle = async () => {
+            hideLoginError();
             try {
                 const prov = new GoogleAuthProvider();
                 await signInWithPopup(auth, prov);
                 window.location.href = "/api-keys";
             } catch(e) {
-                alert("Google Login: " + e.message);
+                console.error(e);
+                showLoginError("Google Sign-In failed. Please try again.");
             }
         };
 
-        window.facebookAuthCall = async () => {
+        window.loginGithub = async () => {
+            hideLoginError();
             try {
-                const prov = new FacebookAuthProvider();
+                const prov = new GithubAuthProvider();
                 await signInWithPopup(auth, prov);
                 window.location.href = "/api-keys";
             } catch(e) {
-                alert("Facebook Login: " + e.message);
+                console.error(e);
+                showLoginError("GitHub Sign-In failed. Please try again.");
             }
         };
 
-        window.signOutCall = () => signOut(auth);
+        window.signOutAccount = () => signOut(auth);
+
+        function showLoginError(msg) {
+            const errBox = document.getElementById("login-error-container");
+            const errMsg = document.getElementById("login-error-msg");
+            if (errBox && errMsg) {
+                errMsg.innerText = msg;
+                errBox.style.display = "flex";
+            }
+        }
+
+        window.resetLoginAttempt = () => {
+            const errBox = document.getElementById("login-error-container");
+            if (errBox) errBox.style.display = "none";
+            document.getElementById("phone-step-1").style.display = "block";
+            document.getElementById("phone-step-2").style.display = "none";
+        };
+
+        function hideLoginError() {
+            const errBox = document.getElementById("login-error-container");
+            if (errBox) errBox.style.display = "none";
+        }
     </script>
 
     <script>
