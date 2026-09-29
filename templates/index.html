@@ -237,13 +237,25 @@
             .header-bar { padding: 14px 16px; }
             .content-body { padding: 16px; }
         }
+    
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+        .drawer-overlay.active { display: block; }
+
     </style>
 </head>
 <body>
+    <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
     <aside class="sidebar" id="sidebar">
         <div class="brand-section">
             <div class="brand-avatar">
-                <img src="/public/image.png" onerror="this.src='/public/second-image.png'; this.onerror=null;" alt="Logo">
+                <img src="/public/image.png" onerror="this.onerror=null; this.src='/static/image.png';" alt="">
             </div>
             <div>
                 <div class="brand-title">AKHIL DEV</div>
@@ -308,10 +320,7 @@
             </div>
 
             <div class="header-actions">
-                <button class="btn-issue-key" onclick="navigateTab('api-vault')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-                    Issue API Key
-                </button>
+                <button class="btn-issue-key" onclick="navigateTab('api-vault')"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg> Issue Key</button>
                 <div class="user-badge" onclick="navigateTab('identity')">
                     <div class="user-avatar-circle" id="user-initial">A</div>
                     <span id="user-name-tag" style="font-family:var(--font-code); font-size:0.78rem;">AKHIL DEV</span>
