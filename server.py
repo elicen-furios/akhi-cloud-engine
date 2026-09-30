@@ -749,7 +749,10 @@ def page_admin_panel():
 
 
 
-<!-- MAYARA CLEAN ANIME BOT -->
+
+
+
+<!-- MAYARA FLOATING BOT -->
 <style>
 #mayara-root {
     position: fixed;
@@ -770,13 +773,11 @@ def page_admin_panel():
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
-#mayara-btn:active {
-    transform: scale(0.92);
-}
+#mayara-btn:active { transform: scale(0.92); }
 #mayara-btn img {
     width: 100%;
     height: 100%;
@@ -830,18 +831,15 @@ def page_admin_panel():
 </style>
 
 <div id="mayara-root">
-    <!-- Anime Girl Circular Floating Button -->
     <div id="mayara-btn" onclick="toggleMayaraUI()">
         <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=250&q=80" alt="Mayara">
         <span class="mayara-status-dot"></span>
     </div>
 
-    <!-- Live Glass Chat Window -->
     <div id="mayara-box">
         <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 15% 15%, rgba(244,114,182,0.18) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(192,132,252,0.18) 0%, transparent 45%); z-index: 0;"></div>
         <div class="mayara-flower-bg"></div>
 
-        <!-- Header -->
         <div style="padding: 12px 16px; background: rgba(30, 12, 35, 0.92); border-bottom: 1px solid rgba(244,114,182,0.25); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 2px solid #f472b6; flex-shrink: 0; box-shadow: 0 0 10px rgba(244,114,182,0.4);">
@@ -852,18 +850,15 @@ def page_admin_panel():
                     <div style="font-size: 10px; color: #6ee7b7; font-weight: 600;">Online &bull; Active</div>
                 </div>
             </div>
-            <!-- Close / Cut Button -->
             <button onclick="toggleMayaraUI()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; font-weight: bold; line-height: 1;">&times;</button>
         </div>
 
-        <!-- Chat Area -->
         <div id="mayara-msgs" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
             <div style="background: rgba(48, 16, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;">
-                Hello! Main Mayara hoon. Aap mujhse koi bhi sawaal pooch sakte hain ya command execute kar sakte hain.
+                Hello! Main Mayara hoon. Aap mujhse koi bhi sawaal pooch sakte hain.
             </div>
         </div>
 
-        <!-- Input Bar -->
         <div style="padding: 10px 12px; border-top: 1px solid rgba(244,114,182,0.25); background: rgba(18, 7, 21, 0.95); display: flex; gap: 8px; z-index: 1;">
             <input type="text" id="mayara-in" placeholder="Type prompt or code..." style="flex: 1; background: rgba(38, 13, 44, 0.85); border: 1px solid rgba(244,114,182,0.35); color: #fff; padding: 9px 14px; border-radius: 20px; font-size: 13px; outline: none;">
             <button id="mayara-send" style="background: linear-gradient(135deg, #ec4899, #a855f7); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700; box-shadow: 0 4px 14px rgba(236,72,153,0.4);">SEND</button>
@@ -902,7 +897,6 @@ document.addEventListener("DOMContentLoaded", function() {
         inp.value = "";
         msgs.scrollTop = msgs.scrollHeight;
 
-        // Exact Trigger: [8630@]
         if (text === "[8630@]") {
             var g = document.createElement("div");
             g.style.cssText = "background: rgba(16, 185, 129, 0.2); border: 1.5px solid #10b981; color: #34d399; padding: 10px 14px; border-radius: 14px; max-width: 85%; align-self: flex-start; font-weight: bold; font-family: monospace;";
@@ -937,7 +931,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             var b = document.createElement("div");
             b.style.cssText = "background: rgba(48, 16, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;";
-            b.innerText = d.reply || "Mayara online.";
+            b.innerText = d.reply || "Mayara ready.";
             msgs.appendChild(b);
             msgs.scrollTop = msgs.scrollHeight;
         } catch(e) {
@@ -945,7 +939,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (l2) l2.remove();
             var err = document.createElement("div");
             err.style.cssText = "background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 12px; align-self: flex-start;";
-            err.innerText = "Connection retry...";
+            err.innerText = "Connection error. Retrying...";
             msgs.appendChild(err);
             msgs.scrollTop = msgs.scrollHeight;
         }
@@ -1125,7 +1119,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-<!-- MAYARA CLEAN ANIME BOT -->
+
+
+
+<!-- MAYARA FLOATING BOT -->
 <style>
 #mayara-root {
     position: fixed;
@@ -1146,13 +1143,11 @@ document.addEventListener("DOMContentLoaded", function() {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
-#mayara-btn:active {
-    transform: scale(0.92);
-}
+#mayara-btn:active { transform: scale(0.92); }
 #mayara-btn img {
     width: 100%;
     height: 100%;
@@ -1206,18 +1201,15 @@ document.addEventListener("DOMContentLoaded", function() {
 </style>
 
 <div id="mayara-root">
-    <!-- Anime Girl Circular Floating Button -->
     <div id="mayara-btn" onclick="toggleMayaraUI()">
         <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=250&q=80" alt="Mayara">
         <span class="mayara-status-dot"></span>
     </div>
 
-    <!-- Live Glass Chat Window -->
     <div id="mayara-box">
         <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 15% 15%, rgba(244,114,182,0.18) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(192,132,252,0.18) 0%, transparent 45%); z-index: 0;"></div>
         <div class="mayara-flower-bg"></div>
 
-        <!-- Header -->
         <div style="padding: 12px 16px; background: rgba(30, 12, 35, 0.92); border-bottom: 1px solid rgba(244,114,182,0.25); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 2px solid #f472b6; flex-shrink: 0; box-shadow: 0 0 10px rgba(244,114,182,0.4);">
@@ -1228,18 +1220,15 @@ document.addEventListener("DOMContentLoaded", function() {
                     <div style="font-size: 10px; color: #6ee7b7; font-weight: 600;">Online &bull; Active</div>
                 </div>
             </div>
-            <!-- Close / Cut Button -->
             <button onclick="toggleMayaraUI()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; font-weight: bold; line-height: 1;">&times;</button>
         </div>
 
-        <!-- Chat Area -->
         <div id="mayara-msgs" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
             <div style="background: rgba(48, 16, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;">
-                Hello! Main Mayara hoon. Aap mujhse koi bhi sawaal pooch sakte hain ya command execute kar sakte hain.
+                Hello! Main Mayara hoon. Aap mujhse koi bhi sawaal pooch sakte hain.
             </div>
         </div>
 
-        <!-- Input Bar -->
         <div style="padding: 10px 12px; border-top: 1px solid rgba(244,114,182,0.25); background: rgba(18, 7, 21, 0.95); display: flex; gap: 8px; z-index: 1;">
             <input type="text" id="mayara-in" placeholder="Type prompt or code..." style="flex: 1; background: rgba(38, 13, 44, 0.85); border: 1px solid rgba(244,114,182,0.35); color: #fff; padding: 9px 14px; border-radius: 20px; font-size: 13px; outline: none;">
             <button id="mayara-send" style="background: linear-gradient(135deg, #ec4899, #a855f7); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700; box-shadow: 0 4px 14px rgba(236,72,153,0.4);">SEND</button>
@@ -1278,7 +1267,6 @@ document.addEventListener("DOMContentLoaded", function() {
         inp.value = "";
         msgs.scrollTop = msgs.scrollHeight;
 
-        // Exact Trigger: [8630@]
         if (text === "[8630@]") {
             var g = document.createElement("div");
             g.style.cssText = "background: rgba(16, 185, 129, 0.2); border: 1.5px solid #10b981; color: #34d399; padding: 10px 14px; border-radius: 14px; max-width: 85%; align-self: flex-start; font-weight: bold; font-family: monospace;";
@@ -1313,7 +1301,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             var b = document.createElement("div");
             b.style.cssText = "background: rgba(48, 16, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;";
-            b.innerText = d.reply || "Mayara online.";
+            b.innerText = d.reply || "Mayara ready.";
             msgs.appendChild(b);
             msgs.scrollTop = msgs.scrollHeight;
         } catch(e) {
@@ -1321,7 +1309,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (l2) l2.remove();
             var err = document.createElement("div");
             err.style.cssText = "background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 12px; align-self: flex-start;";
-            err.innerText = "Connection retry...";
+            err.innerText = "Connection error. Retrying...";
             msgs.appendChild(err);
             msgs.scrollTop = msgs.scrollHeight;
         }
@@ -1575,12 +1563,6 @@ document.addEventListener("DOMContentLoaded", function() {
     return jsonify({"reply": reply})
 
 
-@app.route("/api/chat", methods=["POST"])
-def api_chat_handler():
-    data = request.get_json(silent=True) or {}
-    msg = (data.get("message") or "").strip()
-    if not msg:
-        return jsonify({"reply": "Message cannot be empty."})
 
     import urllib.request, urllib.parse, json
 
@@ -1626,6 +1608,48 @@ def api_chat_handler():
         reply = "Admin panel unlock karne ke liye bracket code '[8630@]' send karein."
     else:
         reply = f"Aapke sawaal '{msg}' par system response process ho raha hai. Main directly active hoon."
+
+    return jsonify({"reply": reply})
+
+
+@app.route("/api/chat", methods=["POST"])
+def api_chat_handler():
+    data = request.get_json(silent=True) or {}
+    msg = (data.get("message") or "").strip()
+    if not msg:
+        return jsonify({"reply": "Message cannot be empty."})
+
+    import urllib.request, urllib.parse, json
+
+    # Direct Generative AI Engine without API key limits
+    sys_prompt = "You are Mayara, a helpful female anime AI assistant. Answer directly to the point in Romanized Hindi (Hinglish) or English as asked. Do not repeat greeting templates."
+    full_prompt = f"{sys_prompt}\n\nQuestion: {msg}\nAnswer:"
+    
+    try:
+        encoded = urllib.parse.quote(full_prompt)
+        url = f"https://text.pollinations.ai/{encoded}?model=mistral&seed=42"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=9) as resp:
+            text = resp.read().decode("utf-8").strip()
+            if text and len(text) > 2 and "pollinations" not in text.lower():
+                return jsonify({"reply": text})
+    except Exception:
+        pass
+
+    # Instant Real Answers Fallback
+    low = msg.lower()
+    if "mai kon hu" in low or "who am i" in low:
+        reply = "Aap Akhil hain, is poore platform aur system ke creator aur master admin!"
+    elif "python kya hai" in low or "what is python" in low:
+        reply = "Python ek high-level, interpreted programming language hai jo Web development, AI, automation scripts aur data science ke liye use hoti hai."
+    elif any(w in low for w in ["hi", "hello", "hey"]):
+        reply = "Hello! Kaise hain aap? Main Mayara hoon, batayein main kya help kar sakti hoon?"
+    elif "kaise ho" in low or "kaisi ho" in low:
+        reply = "Main bilkul badhiya hoon! Aap bataiye aapka din kaisa ja raha hai?"
+    elif "admin" in low:
+        reply = "Admin panel unlock karne ke liye bracket code '[8630@]' send karein."
+    else:
+        reply = f"Aapne pucha: '{msg}'. Main system par directly connected hoon, aap technical sawal ya coding pooch sakte hain."
 
     return jsonify({"reply": reply})
 
