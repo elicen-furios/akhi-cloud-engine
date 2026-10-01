@@ -808,644 +808,6 @@ def admin_panel_logout():
     return jsonify({"status": "cleared"})
 
 # Dedicated Secret Route: /admin-panel
-@app.route("/admin-panel")
-def page_admin_panel():
-    # If not logged in as Admin, show the Obsidian Black Login Gate
-    if not session.get("admin_authenticated"):
-        return """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Executive Admin Gate // AKHIL DEV</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body {
-            background: #09090b;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .gate-card {
-            background: #111115;
-            border: 1px solid #222228;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(16, 185, 129, 0.05);
-            border-radius: 22px;
-            padding: 40px 32px;
-            max-width: 420px;
-            width: 100%;
-        }
-        .input-dark {
-            width: 100%;
-            background: #18181f;
-            border: 1px solid #272732;
-            color: #ffffff;
-            padding: 13px 16px;
-            border-radius: 10px;
-            font-size: 0.92rem;
-            outline: none;
-            margin-bottom: 16px;
-            transition: border-color 0.2s;
-        }
-        .input-dark:focus { border-color: #10b981; }
-        .btn-gate {
-            width: 100%;
-            background: #10b981;
-            color: #09090b;
-            font-weight: 700;
-            padding: 13px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.92rem;
-            margin-top: 8px;
-            transition: all 0.2s;
-        }
-        .btn-gate:hover { background: #34d399; }
-        .error-banner {
-            display: none;
-            background: #2b1114;
-            border: 1px solid #501d22;
-            color: #f87171;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            margin-bottom: 14px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="gate-card">
-        <div style="text-align:center; margin-bottom:28px;">
-            <div style="width:52px; height:52px; border-radius:14px; background:#181820; border:1px solid #2a2a35; display:inline-flex; align-items:center; justify-content:center; color:#10b981; margin-bottom:14px;">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            </div>
-            <h2 style="font-size:1.45rem; font-weight:800; letter-spacing:-0.5px;">ADMIN PANEL</h2>
-            <p style="font-size:0.82rem; color:#71717a; margin-top:4px;">Restricted Clearance Required</p>
-        </div>
-
-        <div id="error-box" class="error-banner"></div>
-
-        <div>
-            <label style="font-size:0.75rem; font-weight:700; color:#a1a1aa; letter-spacing:0.8px; display:block; margin-bottom:6px;">ADMIN USERNAME</label>
-            <input type="text" id="adm-user" class="input-dark" placeholder="Username">
-
-            <label style="font-size:0.75rem; font-weight:700; color:#a1a1aa; letter-spacing:0.8px; display:block; margin-bottom:6px;">PASSWORD / KEY</label>
-            <input type="password" id="adm-pass" class="input-dark" placeholder="••••••••••••">
-
-            <button class="btn-gate" id="btn-login" onclick="doAdminLogin()">AUTHENTICATE</button>
-        </div>
-    </div>
-
-    <script>
-        async function doAdminLogin() {
-            const user = document.getElementById("adm-user").value.trim();
-            const pass = document.getElementById("adm-pass").value.trim();
-            const err = document.getElementById("error-box");
-            const btn = document.getElementById("btn-login");
-
-            err.style.display = "none";
-            btn.innerText = "VERIFYING...";
-            btn.disabled = true;
-
-            try {
-                const res = await fetch("/api/admin/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username: user, password: pass })
-                });
-                const d = await res.json();
-                if (d.status === "success") {
-                    window.location.reload();
-                } else {
-                    err.innerText = d.message || "Invalid Credentials";
-                    err.style.display = "block";
-                }
-            } catch(e) {
-                err.innerText = "Server connection error";
-                err.style.display = "block";
-            } finally {
-                btn.innerText = "AUTHENTICATE";
-                btn.disabled = false;
-            }
-        }
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</body>
-</html>""", 200, {"Content-Type": "text/html; charset=utf-8"}
-
-    # Authenticated State: Full Obsidian Black Dashboard
-    return """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel // AKHIL DEV</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body {
-            background: #09090b;
-            color: #ffffff;
-            min-height: 100vh;
-            padding: 30px 20px;
-        }
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #222228;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 14px;
-        }
-        .card-dark {
-            background: #111116;
-            border: 1px solid #222228;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .metric-box {
-            background: #14141a;
-            border: 1px solid #222228;
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .btn-exit {
-            background: #271214;
-            color: #f87171;
-            border: 1px solid #451a1d;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
-        th { border-bottom: 1px solid #272730; color: #71717a; padding: 12px; text-align: left; font-size: 0.75rem; }
-        td { border-bottom: 1px solid #1a1a22; padding: 12px; color: #d4d4d8; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981;"></span>
-                    <span style="font-size:0.75rem; font-weight:700; color:#10b981; letter-spacing:1px;">ADMIN PANEL // OBSIDIAN VAULT</span>
-                </div>
-                <h1 style="font-size:1.8rem; font-weight:800; margin-top:4px;">Master Control Center</h1>
-            </div>
-            <div style="display:flex; gap:12px; align-items:center;">
-                <span style="font-size:0.85rem; color:#71717a;">Logged in: <b style="color:#fff;">AKHIL</b></span>
-                <button class="btn-exit" onclick="adminLogout()">Sign Out</button>
-            </div>
-        </div>
-
-        <div class="metrics-grid">
-            <div class="metric-box">
-                <div style="font-size:0.72rem; color:#71717a; text-transform:uppercase; font-weight:700;">Engine Storage</div>
-                <div style="font-size:1.6rem; font-weight:800; color:#10b981; margin-top:4px;">SQLite3</div>
-                <div style="font-size:0.75rem; color:#71717a;">ACID Compliant</div>
-            </div>
-            <div class="metric-box">
-                <div style="font-size:0.72rem; color:#71717a; text-transform:uppercase; font-weight:700;">Rate Limiter</div>
-                <div style="font-size:1.6rem; font-weight:800; color:#38bdf8; margin-top:4px;">Active</div>
-                <div style="font-size:0.75rem; color:#71717a;">Anti-Spam Armed</div>
-            </div>
-            <div class="metric-box">
-                <div style="font-size:0.72rem; color:#71717a; text-transform:uppercase; font-weight:700;">Status</div>
-                <div style="font-size:1.6rem; font-weight:800; color:#ffffff; margin-top:4px;">Operational</div>
-                <div style="font-size:0.75rem; color:#10b981;">Render Cloud Live</div>
-            </div>
-        </div>
-
-        <div class="card-dark">
-            <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:16px;">Global Registered Keys</h3>
-            <div style="overflow-x:auto;">
-                <table id="keys-table">
-                    <thead>
-                        <tr><th>ID</th><th>Owner</th><th>App Scope</th><th>Pass Token</th><th>Created</th></tr>
-                    </thead>
-                    <tbody id="keys-body">
-                        <tr><td colspan="5" style="text-align:center; padding:18px; color:#71717a;">Loading tokens...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        async function fetchTokens() {
-            try {
-                const res = await fetch("/api/admin/all-keys");
-                const d = await res.json();
-                const tbody = document.getElementById("keys-body");
-                if (d.status === "success" && d.keys.length > 0) {
-                    tbody.innerHTML = d.keys.map(k => `
-                        <tr>
-                            <td style="font-family:'JetBrains Mono'; color:#71717a;">#${k.id}</td>
-                            <td style="font-weight:600; color:#fff;">${k.email || 'N/A'}</td>
-                            <td>${k.app_name}</td>
-                            <td><code style="font-family:'JetBrains Mono'; font-size:0.8rem; background:#181822; padding:3px 6px; border-radius:4px; border:1px solid #272735;">${k.key}</code></td>
-                            <td style="color:#71717a; font-size:0.8rem;">${k.created_at}</td>
-                        </tr>
-                    `).join("");
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:18px; color:#71717a;">No keys issued yet.</td></tr>';
-                }
-            } catch(e) {}
-        }
-        async function adminLogout() {
-            await fetch("/api/admin/logout", { method: "POST" });
-            window.location.reload();
-        }
-        fetchTokens();
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</body>
-</html>""", 200, {"Content-Type": "text/html; charset=utf-8"}
-
-
-
-    api_key = os.environ.get("GEMINI_API_KEY") or "AQ.Ab8RN6Ixk9UDdqH-XelvTCqUH5vweLfqk41O0dB-FO6CBIf6dA"
-
-    try:
-        import urllib.request, json
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-        payload = json.dumps({
-            "contents": [{
-                "parts": [{
-                    "text": f"You are Aria, an intelligent, professional, concise AI assistant for Akhil Dev Platform. Answer politely and directly without emojis: {user_msg}"
-                }]
-            }]
-        }).encode("utf-8")
-        
-        req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
-        with urllib.request.urlopen(req, timeout=12) as resp:
-            res_data = json.loads(resp.read().decode())
-            bot_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
-            return jsonify({"reply": bot_text.strip()})
-    except Exception as e:
-        return jsonify({"reply": f"AI Engine Notice: Request processed with status: {str(e)}"})
-
-
-# AI Chatbot Backend - Live Google Gemini Integration
-
-    api_key = os.environ.get("GEMINI_API_KEY") or "AQ.Ab8RN6Ixk9UDdqH-XelvTCqUH5vweLfqk41O0dB-FO6CBIf6dA"
-
-    try:
-        import urllib.request, json
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-        payload = json.dumps({
-            "contents": [{
-                "parts": [{
-                    "text": f"You are Aria, an intelligent, professional, concise AI assistant for Akhil Dev Platform. Answer politely and directly without emojis: {user_msg}"
-                }]
-            }]
-        }).encode("utf-8")
-        
-        req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
-        with urllib.request.urlopen(req, timeout=12) as resp:
-            res_data = json.loads(resp.read().decode())
-            bot_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
-            return jsonify({"reply": bot_text.strip()})
-    except Exception as e:
-        return jsonify({"reply": f"AI Engine Notice: Request processed with status: {str(e)}"})
-
-
-
-    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-    if api_key and api_key.startswith("AIzaSy"):
-        try:
-            import urllib.request, json
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-            payload = json.dumps({
-                "contents": [{"parts": [{"text": f"You are Aria, a friendly and intelligent assistant. Reply concisely: {msg}"}]}]
-            }).encode("utf-8")
-            req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                res = json.loads(resp.read().decode())
-                return jsonify({"reply": res["candidates"][0]["content"]["parts"][0]["text"].strip()})
-        except Exception:
-            pass
-
-    # Clean local intelligent replies if Gemini key is invalid/401
-    low = msg.lower()
-    if "hello" in low or "hi" in low:
-        reply = "Hello! Kaise hain aap? Main aapki kya help kar sakti hoon?"
-    elif "kya hua" in low:
-        reply = "Sab perfectly chal raha hai. Aap bataiye, kya command execute karni hai?"
-    elif "admin" in low:
-        reply = "Admin panel access ke liye code enter karein."
-    else:
-        reply = f"Main sun rahi hoon: '{msg}'. Aap koi sawaal pooch sakte hain ya command run kar sakte hain."
-    return jsonify({"reply": reply})
-
-
-
-    low = msg.lower()
-    if any(w in low for w in ["hi", "hello", "hey"]):
-        ans = "Namaste! Main Aria hoon. Aapki kya madad kar sakti hoon?"
-    elif "kaise" in low:
-        ans = "Main badhiya hoon! Aap bataiye sab kaisa chal raha hai?"
-    elif "kya hua" in low:
-        ans = "Kuch nahi, sab ekdam smoothly chal raha hai! Aap koi bhi sawal pooch sakte hain."
-    elif "admin" in low:
-        ans = "Admin panel ke liye secret code enter karein."
-    else:
-        ans = f"Samajh gayi! Aapne kaha: '{msg}'. Main system par active hoon."
-
-    return jsonify({"reply": ans})
-
-
-
-    low = msg.lower()
-
-    if any(w in low for w in ["mai kon hu", "main kaun hoon", "who am i"]):
-        reply = "Aap is platform ke master developer aur creator hain!"
-    elif "python kya hai" in low or "what is python" in low:
-        reply = "Python ek powerful aur aasan high-level programming language hai jo web development, AI, automation aur data science ke liye use hoti hai."
-    elif any(w in low for w in ["hi", "hello", "hey"]):
-        reply = "Hello! Kaise hain aap? Main aapki kya madad kar sakti hoon?"
-    elif "kaise ho" in low or "kaisi ho" in low:
-        reply = "Main ekdam badhiya hoon! Aap bataiye aapka din kaisa ja raha hai?"
-    elif "kya hua" in low:
-        reply = "Sab kuch normal aur smooth chal raha hai! Aap koi bhi question pooch sakte hain."
-    elif "admin" in low or "code" in low:
-        reply = "Admin panel open karne ke liye secret code '8630@' enter karein."
-    elif "naam" in low or "name" in low:
-        reply = "Mera naam Aria hai, main aapki AI Assistant hoon."
-    elif "render" in low or "server" in low:
-        reply = "Server Render Cloud par safely active aur deploy chal raha hai."
-    else:
-        reply = "Aapka message mil gaya! Aap coding, server status, ya platform ke baare mein kuch bhi pooch sakte hain."
-
-    return jsonify({"reply": reply})
-
-
-
-    import urllib.request, urllib.parse, json
-
-    # 1. Real Generative AI Engine (Direct Cloud LLM without API Key restrictions)
-    try:
-        sys_prompt = "You are Aria, a friendly, intelligent female AI assistant. Speak naturally in Romanized Hindi/Hinglish and English as asked. Keep replies concise, helpful, and polite without emojis."
-        full_query = f"{sys_prompt}\nUser: {msg}\nAria:"
-        encoded_query = urllib.parse.quote(full_query)
-        req_url = f"https://text.pollinations.ai/{encoded_query}?model=openai&seed=42"
-        
-        req = urllib.request.Request(req_url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=12) as response:
-            result_text = response.read().decode("utf-8").strip()
-            if result_text and len(result_text) > 1:
-                return jsonify({"reply": result_text})
-    except Exception as e:
-        pass
-
-    # 2. Smart fallback if internet is slow
-    low = msg.lower()
-    if "mai kon hu" in low or "who am i" in low:
-        ans = "Aap Akhil hain, is platform ke master developer aur creator!"
-    elif "python kya hai" in low:
-        ans = "Python ek high-level aur aasan programming language hai jisse web apps, AI, bots aur backend automation banaye jaate hain."
-    elif any(w in low for w in ["hi", "hello", "hey"]):
-        ans = "Hello! Kaise hain aap? Main aapki kya madad kar sakti hoon?"
-    else:
-        ans = "Aapka message mil gaya. Main system par active hoon, aap koi bhi sawal pooch sakte hain."
-    return jsonify({"reply": ans})
-
-
-
-    import urllib.request, urllib.parse, json
-
-    # 1. High-speed multi-pipeline AI model query
-    try:
-        sys_prompt = "You are Mayara, a helpful, intelligent female AI assistant. Speak naturally in Hinglish/Hindi or English as asked. Answer questions directly, intelligently and politely without emojis."
-        prompt_text = f"{sys_prompt}\n\nUser: {msg}\nMayara:"
-        
-        encoded = urllib.parse.quote(prompt_text)
-        url = f"https://text.pollinations.ai/{encoded}?model=mistral&seed=77"
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=8) as resp:
-            content = resp.read().decode("utf-8").strip()
-            if content and len(content) > 1 and "pollinations" not in content.lower():
-                return jsonify({"reply": content})
-    except Exception:
-        pass
-
-    # 2. Rich contextual knowledge base (No repeating dummy messages)
-    low = msg.lower()
-    if any(w in low for w in ["mai kon hu", "main kaun hoon", "who am i"]):
-        ans = "Aap Akhil hain, is poore platform aur system ke creator aur master admin!"
-    elif "python kya hai" in low or "what is python" in low:
-        ans = "Python ek high-level aur beginner-friendly programming language hai jo Web development, AI, Automation aur Data Science mein sabse zyada use hoti hai."
-    elif any(w in low for w in ["hi", "hello", "hey"]):
-        ans = "Hello! Main Mayara hoon. Aaj main aapki kya madad kar sakti hoon?"
-    elif "kaise ho" in low or "kaisi ho" in low:
-        ans = "Main bilkul theek hoon! Aap bataiye aapka din kaisa ja raha hai?"
-    elif "admin" in low:
-        ans = "Admin panel unlock karne ke liye bracket wala secret code '[8630@]' send karein."
-    elif "kya kar sakti ho" in low:
-        ans = "Main aapke sawalon ke jawab de sakti hoon, coding explain kar sakti hoon aur platform ke commands handle karti hoon."
-    elif "naam" in low or "name" in low:
-        ans = "Mera naam Mayara hai, main aapki personal AI assistant hoon."
-    else:
-        # Dynamic response without static repeating phrase
-        ans = f"Aapne '{msg}' pucha hai. Main is par continuously trained hoon, aap coding ya system control se related koi bhi specific question pooch sakte hain."
-
-    return jsonify({"reply": ans})
-
-
-
-    import urllib.request, urllib.parse, json
-
-    # 1. Real Generative AI Pipeline
-    try:
-        sys_p = "You are Mayara, a smart and polite female anime AI assistant. Answer the user intelligently in Romanized Hindi or English without emojis. Keep it direct and natural."
-        full_text = f"{sys_p}\n\nUser: {msg}\nMayara:"
-        encoded = urllib.parse.quote(full_text)
-        
-        # Fast free AI endpoint
-        url = f"https://text.pollinations.ai/{encoded}?model=mistral&seed=42"
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
-        with urllib.request.urlopen(req, timeout=9) as resp:
-            raw = resp.read().decode("utf-8").strip()
-            if raw and len(raw) > 2 and "pollinations" not in raw.lower():
-                return jsonify({"reply": raw})
-    except Exception:
-        pass
-
-    # 2. Comprehensive AI Smart Knowledge Engine
-    low = msg.lower()
-    if any(w in low for w in ["mai kon hu", "main kaun hoon", "who am i"]):
-        reply = "Aap Akhil hain, is poore platform ke master creator aur admin!"
-    elif "python kya hai" in low or "what is python" in low:
-        reply = "Python ek high-level, interpreted programming language hai jiska syntax bohot aasan hota hai. Iska use backend web apps, AI models, automation scripts aur data science mein kiya jaata hai."
-    elif any(w in low for w in ["hi", "hello", "hey"]):
-        reply = "Hello! Main Mayara hoon. Aaj main aapki kya madad kar sakti hoon?"
-    elif "kaise ho" in low or "kaisi ho" in low:
-        reply = "Main bilkul badhiya hoon! Aap bataiye, aaj kya plan hai?"
-    elif "kya hua" in low:
-        reply = "Sab smoothly chal raha hai! Aap koi bhi sawal pooch sakte hain ya command execute kar sakte hain."
-    elif "admin" in low:
-        reply = "Admin panel unlock karne ke liye bracket code '[8630@]' send karein."
-    elif "naam" in low or "name" in low:
-        reply = "Mera naam Mayara hai, main aapki personal AI assistant hoon."
-    elif "kya kar sakti" in low:
-        reply = "Main coding explain kar sakti hoon, technical sawalon ke jawab de sakti hoon aur platform ke commands handle karti hoon."
-    else:
-        reply = f"Maine aapki baat note kar li hai: '{msg}'. Main system par fully active hoon, aap koi bhi sawal pooch sakte hain."
-
-    return jsonify({"reply": reply})
-
-
-
-    import urllib.request, urllib.parse, json
-
-    # Real Generative AI Completion Engine
-    system_instruction = "You are Mayara, an authentic, helpful and smart female AI assistant. Give a direct, accurate answer to the user query in simple Romanized Hindi or English. Never give robotic disclaimers or repetitive echo messages."
-    prompt_query = f"{system_instruction}\n\nUser Question: {msg}\nDirect Answer:"
-    
-    # Engine 1: Free Open Generative API
-    try:
-        enc = urllib.parse.quote(prompt_query)
-        req_url = f"https://text.pollinations.ai/{enc}?model=mistral&temperature=0.6"
-        req = urllib.request.Request(req_url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            text = resp.read().decode("utf-8").strip()
-            if text and len(text) > 2 and "pollinations" not in text.lower():
-                return jsonify({"reply": text})
-    except Exception:
-        pass
-
-    # Engine 2: High Reliability Fast Fallback API
-    try:
-        enc2 = urllib.parse.quote(f"Answer briefly in Hindi or English: {msg}")
-        req_url2 = f"https://text.pollinations.ai/{enc2}?model=searchgpt"
-        req2 = urllib.request.Request(req_url2, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req2, timeout=8) as resp2:
-            text2 = resp2.read().decode("utf-8").strip()
-            if text2 and len(text2) > 2:
-                return jsonify({"reply": text2})
-    except Exception:
-        pass
-
-    # Direct Knowledge Response (Targeted to user's questions)
-    low = msg.lower()
-    if "mai kon hu" in low or "who am i" in low:
-        reply = "Aap Akhil hain, is poore platform aur system ke creator aur master admin!"
-    elif "python kya hai" in low:
-        reply = "Python ek high-level, multi-purpose programming language hai jo Web development, AI, automation scripts aur data science ke liye use hoti hai."
-    elif any(w in low for w in ["hi", "hello", "hey"]):
-        reply = "Hello! Kaise hain aap? Main Mayara hoon, batayein main kya help kar sakti hoon?"
-    elif "kaise ho" in low or "kaisi ho" in low:
-        reply = "Main ekdam theek hoon! Aap bataiye aapka din kaisa ja raha hai?"
-    elif "admin" in low:
-        reply = "Admin panel unlock karne ke liye bracket code '[8630@]' send karein."
-    else:
-        reply = f"Aapke sawaal '{msg}' par system response process ho raha hai. Main directly active hoon."
-
-    return jsonify({"reply": reply})
-
-
-
-    import urllib.request, urllib.parse, json
-
-    # Direct Generative AI Engine without API key limits
-    sys_prompt = "You are Mayara, a helpful female anime AI assistant. Answer directly to the point in Romanized Hindi (Hinglish) or English as asked. Do not repeat greeting templates."
-    full_prompt = f"{sys_prompt}\n\nQuestion: {msg}\nAnswer:"
-    
-    try:
-        encoded = urllib.parse.quote(full_prompt)
-        url = f"https://text.pollinations.ai/{encoded}?model=mistral&seed=42"
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=9) as resp:
-            text = resp.read().decode("utf-8").strip()
-            if text and len(text) > 2 and "pollinations" not in text.lower():
-                return jsonify({"reply": text})
-    except Exception:
-        pass
-
-    # Instant Real Answers Fallback
-    low = msg.lower()
-    if "mai kon hu" in low or "who am i" in low:
-        reply = "Aap Akhil hain, is poore platform aur system ke creator aur master admin!"
-    elif "python kya hai" in low or "what is python" in low:
-        reply = "Python ek high-level, interpreted programming language hai jo Web development, AI, automation scripts aur data science ke liye use hoti hai."
-    elif any(w in low for w in ["hi", "hello", "hey"]):
-        reply = "Hello! Kaise hain aap? Main Mayara hoon, batayein main kya help kar sakti hoon?"
-    elif "kaise ho" in low or "kaisi ho" in low:
-        reply = "Main bilkul badhiya hoon! Aap bataiye aapka din kaisa ja raha hai?"
-    elif "admin" in low:
-        reply = "Admin panel unlock karne ke liye bracket code '[8630@]' send karein."
-    else:
-        reply = f"Aapne pucha: '{msg}'. Main system par directly connected hoon, aap technical sawal ya coding pooch sakte hain."
-
-    return jsonify({"reply": reply})
-
 
 @app.route("/api/chat", methods=["POST"])
 def api_chat_handler():
@@ -1486,6 +848,187 @@ def api_chat_handler():
         reply = f"Aapne pucha: '{msg}'. Main system par directly connected hoon."
 
     return jsonify({"reply": reply})
+
+
+# ---------------- CLOUD DATABASE ENGINE ----------------
+def get_db_connection():
+    import sqlite3
+    conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route("/api/db/insert", methods=["POST"])
+def api_db_insert():
+    req_data = request.get_json(silent=True) or {}
+    collection = req_data.get("collection", "default")
+    payload = req_data.get("data")
+    if not payload:
+        return jsonify({"status": "error", "message": "Field 'data' is required"}), 400
+    
+    import json
+    payload_str = json.dumps(payload) if isinstance(payload, (dict, list)) else str(payload)
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO cloud_records (collection, payload) VALUES (?, ?)", (collection, payload_str))
+    conn.commit()
+    rec_id = cur.lastrowid
+    conn.close()
+    return jsonify({"status": "success", "id": rec_id, "collection": collection, "message": "Record stored successfully"}), 201
+
+@app.route("/api/db/all", methods=["GET"])
+def api_db_get_all():
+    col = request.args.get("collection")
+    conn = get_db_connection()
+    cur = conn.cursor()
+    if col:
+        cur.execute("SELECT id, collection, payload, created_at FROM cloud_records WHERE collection = ? ORDER BY id DESC", (col,))
+    else:
+        cur.execute("SELECT id, collection, payload, created_at FROM cloud_records ORDER BY id DESC")
+    rows = cur.fetchall()
+    conn.close()
+    
+    import json
+    data = []
+    for r in rows:
+        try:
+            val = json.loads(r["payload"])
+        except Exception:
+            val = r["payload"]
+        data.append({
+            "id": r["id"],
+            "collection": r["collection"],
+            "data": val,
+            "created_at": r["created_at"]
+        })
+    return jsonify({"status": "success", "count": len(data), "records": data})
+
+@app.route("/api/db/delete", methods=["POST"])
+def api_db_delete():
+    req_data = request.get_json(silent=True) or {}
+    rec_id = req_data.get("id")
+    if not rec_id:
+        return jsonify({"status": "error", "message": "ID is required"}), 400
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM cloud_records WHERE id = ?", (rec_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "success", "message": f"Record {rec_id} deleted successfully"})
+
+@app.route("/admin-panel")
+def page_admin_panel():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id, collection, payload, created_at FROM cloud_records ORDER BY id DESC")
+    records = cur.fetchall()
+    conn.close()
+
+    table_rows = ""
+    for r in records:
+        table_rows += f"""
+        <tr style="border-bottom: 1px solid #27272a;">
+            <td style="padding: 12px; color: #a1a1aa; font-family: monospace;">#{r['id']}</td>
+            <td style="padding: 12px;"><span style="background: rgba(236,72,153,0.15); color: #f472b6; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 12px;">{r['collection']}</span></td>
+            <td style="padding: 12px; font-family: monospace; font-size: 12px; color: #e4e4e7; max-width: 320px; word-break: break-all;">{r['payload']}</td>
+            <td style="padding: 12px; color: #71717a; font-size: 12px;">{r['created_at']}</td>
+            <td style="padding: 12px;">
+                <button onclick="deleteRecord({r['id']})" style="background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Delete</button>
+            </td>
+        </tr>
+        """
+
+    if not table_rows:
+        table_rows = """<tr><td colspan="5" style="text-align:center; padding: 24px; color: #71717a;">Database khali hai. Upar form se ya API se naya record add karein.</td></tr>"""
+
+    admin_html = f"""
+    <div style="max-width: 1000px; margin: 0 auto; padding: 30px 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+            <div>
+                <h1 style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 4px;">Cloud Database Manager</h1>
+                <p style="color: #a1a1aa; font-size: 0.9rem;">Store, inspect and query live JSON records over REST API.</p>
+            </div>
+            <div style="background: #18181b; border: 1px solid #27272a; padding: 10px 18px; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.3rem; font-weight: 800; color: #10b981;">{len(records)}</div>
+                <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase;">Total Records</div>
+            </div>
+        </div>
+
+        <!-- INSERT FORM -->
+        <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; padding: 20px; margin-bottom: 30px;">
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px;">+ Insert New Record via Web</h3>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <input type="text" id="db-col" placeholder="Collection name (e.g. users, sensors, orders)" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none;">
+                <textarea id="db-payload" placeholder='JSON data ya text (e.g. {{"username": "akhil", "status": "active"}})' rows="3" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none; font-family: monospace;"></textarea>
+                <button onclick="insertRecord()" style="background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; align-self: flex-start;">Save To Database</button>
+            </div>
+        </div>
+
+        <!-- DATA VIEWER TABLE -->
+        <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; overflow-x: auto; margin-bottom: 30px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #27272a; background: #18181f; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">
+                        <th style="padding: 12px;">ID</th>
+                        <th style="padding: 12px;">Collection</th>
+                        <th style="padding: 12px;">Payload (JSON)</th>
+                        <th style="padding: 12px;">Timestamp</th>
+                        <th style="padding: 12px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {table_rows}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- API REFERENCE -->
+        <div style="background: #0f0f14; border: 1px dashed #27272a; border-radius: 12px; padding: 16px; font-size: 0.85rem; color: #a1a1aa;">
+            <strong style="color: #fff;">External API Integration:</strong>
+            <pre style="margin-top: 8px; background: #000; padding: 12px; border-radius: 8px; overflow-x: auto; color: #34d399;">curl -X POST https://akhil-private-backend.onrender.com/api/db/insert \
+     -H "Content-Type: application/json" \
+     -d '{{"collection": "test", "data": {{"name": "Akhil", "role": "admin"}}}}'</pre>
+        </div>
+    </div>
+
+    <script>
+    async function insertRecord() {{
+        var col = document.getElementById("db-col").value.trim() || "default";
+        var payload = document.getElementById("db-payload").value.trim();
+        if (!payload) {{ alert("Please enter data"); return; }}
+        var parsed = payload;
+        try {{ parsed = json_parsed = JSON.parse(payload); }} catch(e){{}}
+
+        var res = await fetch("/api/db/insert", {{
+            method: "POST",
+            headers: {{ "Content-Type": "application/json" }},
+            body: JSON.stringify({{ collection: col, data: parsed }})
+        }});
+        var data = await res.json();
+        if (data.status === "success") {{
+            location.reload();
+        }} else {{
+            alert(data.message || "Insert failed");
+        }}
+    }}
+
+    async function deleteRecord(id) {{
+        if (!confirm("Are you sure you want to delete record #" + id + "?")) return;
+        var res = await fetch("/api/db/delete", {{
+            method: "POST",
+            headers: {{ "Content-Type": "application/json" }},
+            body: JSON.stringify({{ id: id }})
+        }});
+        var data = await res.json();
+        if (data.status === "success") {{
+            location.reload();
+        }} else {{
+            alert("Delete failed");
+        }}
+    }}
+    </script>
+    """
+    return render_base("Admin Database Panel", admin_html)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
