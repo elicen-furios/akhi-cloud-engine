@@ -991,33 +991,95 @@ def api_db_delete():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+
 @app.route("/admin-panel")
 def page_admin_panel():
-    try:
-        c = get_db()
-        cur = c.cursor()
-        cur.execute("SELECT id, collection, payload, created_at FROM cloud_records ORDER BY id DESC")
-        records = cur.fetchall()
-        c.close()
+    import sqlite3, os, json
+    b_dir = os.path.dirname(os.path.abspath(__file__))
+    d_path = os.path.join(b_dir, "database.db")
+    c = sqlite3.connect(d_path)
+    c.row_factory = sqlite3.Row
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS cloud_records (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        collection TEXT NOT NULL,
+        payload TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+    c.commit()
+    cur = c.cursor()
+    cur.execute("SELECT id, collection, payload, created_at FROM cloud_records ORDER BY id DESC")
+    records = cur.fetchall()
+    c.close()
 
-        table_rows = ""
-        for r in records:
-            table_rows += f"""
-            <tr style="border-bottom: 1px solid #27272a;">
-                <td style="padding: 12px; color: #a1a1aa; font-family: monospace;">#{r['id']}</td>
-                <td style="padding: 12px;"><span style="background: rgba(236,72,153,0.15); color: #f472b6; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 12px;">{r['collection']}</span></td>
-                <td style="padding: 12px; font-family: monospace; font-size: 12px; color: #e4e4e7; max-width: 320px; word-break: break-all;">{r['payload']}</td>
-                <td style="padding: 12px; color: #71717a; font-size: 12px;">{r['created_at']}</td>
-                <td style="padding: 12px;">
-                    <button onclick="deleteRecord({r['id']})" style="background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Delete</button>
-                </td>
-            </tr>
-            """
+    table_rows = ""
+    for r in records:
+        table_rows += f"""
+        <tr style="border-bottom: 1px solid #27272a;">
+            <td style="padding: 12px; color: #a1a1aa; font-family: monospace;">#{r['id']}</td>
+            <td style="padding: 12px;"><span style="background: rgba(236,72,153,0.15); color: #f472b6; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 12px;">{r['collection']}</span></td>
+            <td style="padding: 12px; font-family: monospace; font-size: 12px; color: #e4e4e7; max-width: 320px; word-break: break-all;">{r['payload']}</td>
+            <td style="padding: 12px; color: #71717a; font-size: 12px;">{r['created_at']}</td>
+            <td style="padding: 12px;">
+                <button onclick="deleteRecord({r['id']})" style="background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Delete</button>
+            </td>
+        </tr>
+        """
 
-        if not table_rows:
-            table_rows = '<tr><td colspan="5" style="text-align:center; padding: 24px; color: #71717a;">Database abhi khali hai. Naya data add karein.</td></tr>'
+    if not table_rows:
+        table_rows = '<tr><td colspan="5" style="text-align:center; padding: 24px; color: #71717a;">Database abhi khali hai. Naya data add karein.</td></tr>'
 
-        admin_html = f"""
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Database Panel - AKHIL PLATFORM</title>
+    <style>
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            background-color: #09090b;
+            color: #f4f4f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+        }}
+        nav {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: rgba(15, 15, 20, 0.95);
+            border-bottom: 1px solid #27272a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }}
+        nav .brand {{
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }}
+        nav .links a {{
+            color: #a1a1aa;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 0.9rem;
+        }}
+        main {{ padding: 20px 14px 60px; }}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="brand">⚡ AKHIL PLATFORM</a>
+        <div class="links">
+            <a href="/">Home</a>
+            <a href="/admin-panel" style="color: #f472b6; font-weight: bold;">Cloud DB Panel</a>
+        </div>
+    </nav>
+    <main>
         <div style="max-width: 1000px; margin: 0 auto; padding: 20px 0;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
                 <div>
@@ -1057,42 +1119,49 @@ def page_admin_panel():
                     </tbody>
                 </table>
             </div>
+
+            <!-- API DOCS -->
+            <div style="background: #0f0f14; border: 1px dashed #27272a; border-radius: 12px; padding: 16px; font-size: 0.85rem; color: #a1a1aa;">
+                <strong style="color: #fff;">External API Integration:</strong>
+                <pre style="margin-top: 8px; background: #000; padding: 12px; border-radius: 8px; overflow-x: auto; color: #34d399;">curl -X POST https://akhil-private-backend.onrender.com/api/db/insert \
+     -H "Content-Type: application/json" \
+     -d '{{"collection": "test", "data": {{"key": "value"}}}}'</pre>
+            </div>
         </div>
+    </main>
 
-        <script>
-        async function insertRecord() {{
-            var col = document.getElementById("db-col").value.trim() || "default";
-            var payload = document.getElementById("db-payload").value.trim();
-            if (!payload) {{ alert("Data enter karein"); return; }}
-            var parsed = payload;
-            try {{ parsed = JSON.parse(payload); }} catch(e){{}}
+    <script>
+    async function insertRecord() {{
+        var col = document.getElementById("db-col").value.trim() || "default";
+        var payload = document.getElementById("db-payload").value.trim();
+        if (!payload) {{ alert("Data enter karein"); return; }}
+        var parsed = payload;
+        try {{ parsed = JSON.parse(payload); }} catch(e){{}}
 
-            var res = await fetch("/api/db/insert", {{
-                method: "POST",
-                headers: {{ "Content-Type": "application/json" }},
-                body: JSON.stringify({{ collection: col, data: parsed }})
-            }});
-            var data = await res.json();
-            if (data.status === "success") {{ location.reload(); }}
-            else {{ alert(data.message || "Insert failed"); }}
-        }}
+        var res = await fetch("/api/db/insert", {{
+            method: "POST",
+            headers: {{ "Content-Type": "application/json" }},
+            body: JSON.stringify({{ collection: col, data: parsed }})
+        }});
+        var data = await res.json();
+        if (data.status === "success") {{ location.reload(); }}
+        else {{ alert(data.message || "Insert failed"); }}
+    }}
 
-        async function deleteRecord(id) {{
-            if (!confirm("Delete record #" + id + "?")) return;
-            var res = await fetch("/api/db/delete", {{
-                method: "POST",
-                headers: {{ "Content-Type": "application/json" }},
-                body: JSON.stringify({{ id: id }})
-            }});
-            var data = await res.json();
-            if (data.status === "success") {{ location.reload(); }}
-            else {{ alert(data.message || "Delete failed"); }}
-        }}
-        </script>
-        """
-        return render_base("Cloud Database Panel", admin_html)
-    except Exception as e:
-        return f"<h3>Admin Error: {str(e)}</h3>", 500
+    async function deleteRecord(id) {{
+        if (!confirm("Delete record #" + id + "?")) return;
+        var res = await fetch("/api/db/delete", {{
+            method: "POST",
+            headers: {{ "Content-Type": "application/json" }},
+            body: JSON.stringify({{ id: id }})
+        }});
+        var data = await res.json();
+        if (data.status === "success") {{ location.reload(); }}
+        else {{ alert(data.message || "Delete failed"); }}
+    }}
+    </script>
+</body>
+</html>"""
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
