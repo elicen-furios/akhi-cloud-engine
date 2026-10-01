@@ -913,8 +913,14 @@ def api_chat_handler():
 
 
 
-# ---------------- CLOUD DATABASE ENGINE ----------------
-import json, sqlite3, os
+
+
+# ---------------- SECURE CLOUD DATABASE ENGINE ----------------
+import json, sqlite3, os, html
+from flask import session, redirect
+
+MASTER_ADMIN_KEY = "8630"
+API_AUTH_KEY = "akhil_8630_secure"
 
 def get_db():
     b_dir = os.path.dirname(os.path.abspath(__file__))
@@ -932,14 +938,41 @@ def get_db():
     c.commit()
     return c
 
+def verify_api_key(req):
+    # Header ya query param me key check karna
+    key = req.headers.get("x-api-key") or req.args.get("api_key")
+    if key == API_AUTH_KEY:
+        return True
+    if session.get("is_admin"):
+        return True
+    return False
+
+@app.route("/api/admin-auth", methods=["POST"])
+def api_admin_auth():
+    data = request.get_json(silent=True) or {}
+    passcode = (data.get("passcode") or "").strip()
+    if passcode == MASTER_ADMIN_KEY:
+        session["is_admin"] = True
+        return jsonify({"status": "success", "message": "Authenticated", "redirect": "/admin-panel"})
+    return jsonify({"status": "error", "message": "Invalid passcode"}), 403
+
+@app.route("/admin-logout")
+def admin_logout():
+    session.pop("is_admin", None)
+    return redirect("/admin-panel")
+
 @app.route("/api/db/insert", methods=["POST"])
 def api_db_insert():
+    if not verify_api_key(request):
+        return jsonify({"status": "error", "message": "Unauthorized. Invalid or missing x-api-key"}), 401
+    
     try:
         req_data = request.get_json(force=True, silent=True) or {}
         collection = req_data.get("collection", "default")
         payload = req_data.get("data")
         if not payload:
             return jsonify({"status": "error", "message": "Field 'data' is required"}), 400
+        
         payload_str = json.dumps(payload) if isinstance(payload, (dict, list)) else str(payload)
         
         c = get_db()
@@ -954,6 +987,9 @@ def api_db_insert():
 
 @app.route("/api/db/all", methods=["GET"])
 def api_db_get_all():
+    if not verify_api_key(request):
+        return jsonify({"status": "error", "message": "Unauthorized. Provide x-api-key header"}), 401
+        
     try:
         col = request.args.get("collection")
         c = get_db()
@@ -978,36 +1014,67 @@ def api_db_get_all():
 
 @app.route("/api/db/delete", methods=["POST"])
 def api_db_delete():
+    if not verify_api_key(request):
+        return jsonify({"status": "error", "message": "Unauthorized. Provide x-api-key header"}), 401
+
     try:
         req_data = request.get_json(force=True, silent=True) or {}
         rec_id = req_data.get("id")
         if not rec_id:
-            return jsonify({"status": "error", "message": "ID required"}), 400
+            return jsonify({"status": "error", "message": "ID is required"}), 400
+        
         c = get_db()
         c.execute("DELETE FROM cloud_records WHERE id = ?", (rec_id,))
         c.commit()
         c.close()
-        return jsonify({"status": "success", "message": f"Deleted {rec_id}"})
+        return jsonify({"status": "success", "message": f"Record {rec_id} deleted successfully"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
 @app.route("/admin-panel")
 def page_admin_panel():
-    import sqlite3, os, json
-    b_dir = os.path.dirname(os.path.abspath(__file__))
-    d_path = os.path.join(b_dir, "database.db")
-    c = sqlite3.connect(d_path)
-    c.row_factory = sqlite3.Row
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS cloud_records (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        collection TEXT NOT NULL,
-        payload TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    """)
-    c.commit()
+    if not session.get("is_admin"):
+        return """<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lock Gate - Admin</title>
+    <style>
+        body { background: #09090b; color: #fff; font-family: sans-serif; display: flex; height: 100vh; align-items: center; justify-content: center; margin: 0; }
+        .box { background: #121217; border: 1px solid #27272a; padding: 30px; border-radius: 14px; width: 320px; text-align: center; }
+        input { width: 100%; box-sizing: border-box; background: #1a1a22; border: 1px solid #27272a; color: #fff; padding: 12px; border-radius: 8px; margin: 15px 0; text-align: center; font-size: 16px; outline: none; }
+        button { width: 100%; background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2 style="margin-bottom: 6px;">Admin Access Gate</h2>
+        <p style="color: #71717a; font-size: 13px;">Passcode verify karke login karein.</p>
+        <input type="password" id="pass" placeholder="Enter Secret Code">
+        <button onclick="login()">Unlock Dashboard</button>
+        <div id="err" style="color: #ef4444; font-size: 13px; margin-top: 10px;"></div>
+    </div>
+    <script>
+    async function login() {
+        var p = document.getElementById("pass").value.trim();
+        var res = await fetch("/api/admin-auth", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ passcode: p })
+        });
+        var d = await res.json();
+        if (d.status === "success") {
+            location.reload();
+        } else {
+            document.getElementById("err").innerText = d.message || "Invalid Code";
+        }
+    }
+    </script>
+</body>
+</html>"""
+
+    # Admin is authenticated, render protected dashboard
+    c = get_db()
     cur = c.cursor()
     cur.execute("SELECT id, collection, payload, created_at FROM cloud_records ORDER BY id DESC")
     records = cur.fetchall()
@@ -1015,11 +1082,13 @@ def page_admin_panel():
 
     table_rows = ""
     for r in records:
+        safe_payload = html.escape(str(r['payload']))
+        safe_col = html.escape(str(r['collection']))
         table_rows += f"""
         <tr style="border-bottom: 1px solid #27272a;">
             <td style="padding: 12px; color: #a1a1aa; font-family: monospace;">#{r['id']}</td>
-            <td style="padding: 12px;"><span style="background: rgba(236,72,153,0.15); color: #f472b6; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 12px;">{r['collection']}</span></td>
-            <td style="padding: 12px; font-family: monospace; font-size: 12px; color: #e4e4e7; max-width: 320px; word-break: break-all;">{r['payload']}</td>
+            <td style="padding: 12px;"><span style="background: rgba(236,72,153,0.15); color: #f472b6; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 12px;">{safe_col}</span></td>
+            <td style="padding: 12px; font-family: monospace; font-size: 12px; color: #e4e4e7; max-width: 320px; word-break: break-all;">{safe_payload}</td>
             <td style="padding: 12px; color: #71717a; font-size: 12px;">{r['created_at']}</td>
             <td style="padding: 12px;">
                 <button onclick="deleteRecord({r['id']})" style="background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Delete</button>
@@ -1035,98 +1104,68 @@ def page_admin_panel():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Database Panel - AKHIL PLATFORM</title>
+    <title>Secure Cloud Database - AKHIL PLATFORM</title>
     <style>
         * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        body {{
-            background-color: #09090b;
-            color: #f4f4f5;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            min-height: 100vh;
-        }}
-        nav {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 24px;
-            background: rgba(15, 15, 20, 0.95);
-            border-bottom: 1px solid #27272a;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }}
-        nav .brand {{
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #fff;
-            text-decoration: none;
-            font-size: 1.1rem;
-        }}
-        nav .links a {{
-            color: #a1a1aa;
-            text-decoration: none;
-            margin-left: 18px;
-            font-size: 0.9rem;
-        }}
-        main {{ padding: 20px 14px 60px; }}
+        body {{ background-color: #09090b; color: #f4f4f5; font-family: sans-serif; min-height: 100vh; }}
+        nav {{ display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: rgba(15, 15, 20, 0.95); border-bottom: 1px solid #27272a; position: sticky; top: 0; z-index: 100; }}
+        nav .brand {{ font-weight: 800; color: #fff; text-decoration: none; }}
+        nav .links a {{ color: #a1a1aa; text-decoration: none; margin-left: 18px; font-size: 0.9rem; }}
+        main {{ padding: 20px 14px 60px; max-width: 1000px; margin: 0 auto; }}
     </style>
 </head>
 <body>
     <nav>
-        <a href="/" class="brand">⚡ AKHIL PLATFORM</a>
+        <a href="/" class="brand">🔒 SECURE CORE V2.4</a>
         <div class="links">
             <a href="/">Home</a>
-            <a href="/admin-panel" style="color: #f472b6; font-weight: bold;">Cloud DB Panel</a>
+            <a href="/admin-logout" style="color: #ef4444; font-weight: bold;">Logout</a>
         </div>
     </nav>
     <main>
-        <div style="max-width: 1000px; margin: 0 auto; padding: 20px 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
-                <div>
-                    <h1 style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 4px;">Cloud Database Manager</h1>
-                    <p style="color: #a1a1aa; font-size: 0.9rem;">Store, inspect and query live JSON records over REST API.</p>
-                </div>
-                <div style="background: #18181b; border: 1px solid #27272a; padding: 10px 18px; border-radius: 12px; text-align: center;">
-                    <div style="font-size: 1.3rem; font-weight: 800; color: #10b981;">{len(records)}</div>
-                    <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase;">Total Records</div>
-                </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+            <div>
+                <h1 style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 4px;">Cloud Database Manager</h1>
+                <p style="color: #a1a1aa; font-size: 0.9rem;">Authenticated REST Storage &bull; Master Active</p>
             </div>
-
-            <!-- INSERT FORM -->
-            <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; padding: 20px; margin-bottom: 30px;">
-                <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px;">+ Insert Record Directly</h3>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <input type="text" id="db-col" placeholder="Collection (e.g. users, sensors, config)" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none;">
-                    <textarea id="db-payload" placeholder='JSON data ya string' rows="3" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none; font-family: monospace;"></textarea>
-                    <button onclick="insertRecord()" style="background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; align-self: flex-start;">Save Record</button>
-                </div>
+            <div style="background: #18181b; border: 1px solid #27272a; padding: 10px 18px; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.3rem; font-weight: 800; color: #10b981;">{len(records)}</div>
+                <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase;">Total Records</div>
             </div>
+        </div>
 
-            <!-- DATA VIEWER TABLE -->
-            <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; overflow-x: auto; margin-bottom: 30px;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid #27272a; background: #18181f; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">
-                            <th style="padding: 12px;">ID</th>
-                            <th style="padding: 12px;">Collection</th>
-                            <th style="padding: 12px;">Payload</th>
-                            <th style="padding: 12px;">Timestamp</th>
-                            <th style="padding: 12px;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {table_rows}
-                    </tbody>
-                </table>
+        <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; padding: 20px; margin-bottom: 30px;">
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px;">+ Insert Record (Auto-Authorized)</h3>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <input type="text" id="db-col" placeholder="Collection (e.g. users, tokens, config)" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none;">
+                <textarea id="db-payload" placeholder='JSON data ya string' rows="3" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none; font-family: monospace;"></textarea>
+                <button onclick="insertRecord()" style="background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; align-self: flex-start;">Save Record</button>
             </div>
+        </div>
 
-            <!-- API DOCS -->
-            <div style="background: #0f0f14; border: 1px dashed #27272a; border-radius: 12px; padding: 16px; font-size: 0.85rem; color: #a1a1aa;">
-                <strong style="color: #fff;">External API Integration:</strong>
-                <pre style="margin-top: 8px; background: #000; padding: 12px; border-radius: 8px; overflow-x: auto; color: #34d399;">curl -X POST https://akhil-private-backend.onrender.com/api/db/insert \
+        <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; overflow-x: auto; margin-bottom: 30px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #27272a; background: #18181f; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">
+                        <th style="padding: 12px;">ID</th>
+                        <th style="padding: 12px;">Collection</th>
+                        <th style="padding: 12px;">Payload</th>
+                        <th style="padding: 12px;">Timestamp</th>
+                        <th style="padding: 12px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {table_rows}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="background: #0f0f14; border: 1px dashed #27272a; border-radius: 12px; padding: 16px; font-size: 0.85rem; color: #a1a1aa;">
+            <strong style="color: #fff;">Authorized External API Curl:</strong>
+            <pre style="margin-top: 8px; background: #000; padding: 12px; border-radius: 8px; overflow-x: auto; color: #34d399;">curl -X POST https://akhil-private-backend.onrender.com/api/db/insert \
      -H "Content-Type: application/json" \
-     -d '{{"collection": "test", "data": {{"key": "value"}}}}'</pre>
-            </div>
+     -H "x-api-key: {API_AUTH_KEY}" \
+     -d '{{"collection": "secure_logs", "data": {{"status": "ok"}}}}'</pre>
         </div>
     </main>
 
