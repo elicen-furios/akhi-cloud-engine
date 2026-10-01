@@ -4,6 +4,67 @@ import secrets
 from flask import Flask, request, jsonify, send_file, session
 
 app = Flask(__name__)
+
+
+def render_base(title, content):
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title} - AKHIL DEV PLATFORM</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #09090b;
+            color: #f4f4f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: rgba(15, 15, 20, 0.95);
+            border-bottom: 1px solid #27272a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        nav .brand {
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+        nav .links a {
+            color: #a1a1aa;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+        nav .links a:hover { color: #f472b6; }
+        main { padding: 20px 14px 60px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="brand">⚡ AKHIL PLATFORM</a>
+        <div class="links">
+            <a href="/">Home</a>
+            <a href="/admin-panel">Cloud DB Panel</a>
+        </div>
+    </nav>
+    <main>
+        {content}
+    </main>
+</body>
+</html>"""
+
 app.secret_key = os.environ.get("SECRET_KEY", "akhil_dev_platform_secret_vault_2026")
 
 import time
@@ -932,7 +993,6 @@ def api_db_delete():
 
 @app.route("/admin-panel")
 def page_admin_panel():
-    import traceback
     try:
         c = get_db()
         cur = c.cursor()
@@ -955,14 +1015,14 @@ def page_admin_panel():
             """
 
         if not table_rows:
-            table_rows = '<tr><td colspan="5" style="text-align:center; padding: 24px; color: #71717a;">Database abhi khali hai. Naya data enter karein.</td></tr>'
+            table_rows = '<tr><td colspan="5" style="text-align:center; padding: 24px; color: #71717a;">Database abhi khali hai. Naya data add karein.</td></tr>'
 
         admin_html = f"""
-        <div style="max-width: 1000px; margin: 0 auto; padding: 30px 14px;">
+        <div style="max-width: 1000px; margin: 0 auto; padding: 20px 0;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
                 <div>
                     <h1 style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 4px;">Cloud Database Manager</h1>
-                    <p style="color: #a1a1aa; font-size: 0.9rem;">Store, query and inspect live JSON API records.</p>
+                    <p style="color: #a1a1aa; font-size: 0.9rem;">Store, inspect and query live JSON records over REST API.</p>
                 </div>
                 <div style="background: #18181b; border: 1px solid #27272a; padding: 10px 18px; border-radius: 12px; text-align: center;">
                     <div style="font-size: 1.3rem; font-weight: 800; color: #10b981;">{len(records)}</div>
@@ -970,15 +1030,17 @@ def page_admin_panel():
                 </div>
             </div>
 
+            <!-- INSERT FORM -->
             <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; padding: 20px; margin-bottom: 30px;">
                 <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px;">+ Insert Record Directly</h3>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <input type="text" id="db-col" placeholder="Collection (e.g. users, tokens, config)" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none;">
+                    <input type="text" id="db-col" placeholder="Collection (e.g. users, sensors, config)" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none;">
                     <textarea id="db-payload" placeholder='JSON data ya string' rows="3" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none; font-family: monospace;"></textarea>
                     <button onclick="insertRecord()" style="background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; align-self: flex-start;">Save Record</button>
                 </div>
             </div>
 
+            <!-- DATA VIEWER TABLE -->
             <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; overflow-x: auto; margin-bottom: 30px;">
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
@@ -998,41 +1060,39 @@ def page_admin_panel():
         </div>
 
         <script>
-        async function insertRecord() {
+        async function insertRecord() {{
             var col = document.getElementById("db-col").value.trim() || "default";
             var payload = document.getElementById("db-payload").value.trim();
-            if (!payload) { alert("Data enter karein"); return; }
+            if (!payload) {{ alert("Data enter karein"); return; }}
             var parsed = payload;
-            try { parsed = JSON.parse(payload); } catch(e){}
+            try {{ parsed = JSON.parse(payload); }} catch(e){{}}
 
-            var res = await fetch("/api/db/insert", {
+            var res = await fetch("/api/db/insert", {{
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ collection: col, data: parsed })
-            });
+                headers: {{ "Content-Type": "application/json" }},
+                body: JSON.stringify({{ collection: col, data: parsed }})
+            }});
             var data = await res.json();
-            if (data.status === "success") { location.reload(); }
-            else { alert(data.message || "Insert failed"); }
-        }
+            if (data.status === "success") {{ location.reload(); }}
+            else {{ alert(data.message || "Insert failed"); }}
+        }}
 
-        async function deleteRecord(id) {
+        async function deleteRecord(id) {{
             if (!confirm("Delete record #" + id + "?")) return;
-            var res = await fetch("/api/db/delete", {
+            var res = await fetch("/api/db/delete", {{
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: id })
-            });
+                headers: {{ "Content-Type": "application/json" }},
+                body: JSON.stringify({{ id: id }})
+            }});
             var data = await res.json();
-            if (data.status === "success") { location.reload(); }
-            else { alert(data.message || "Delete failed"); }
-        }
+            if (data.status === "success") {{ location.reload(); }}
+            else {{ alert(data.message || "Delete failed"); }}
+        }}
         </script>
         """
-        return render_base("Admin Database Panel", admin_html)
+        return render_base("Cloud Database Panel", admin_html)
     except Exception as e:
-        err = traceback.format_exc()
-        return f"<pre style='background:#111;color:#f87171;padding:20px;white-space:pre-wrap;font-size:14px;'>Traceback:
-{err}</pre>", 200
+        return f"<h3>Admin Error: {str(e)}</h3>", 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
