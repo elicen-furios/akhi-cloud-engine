@@ -932,6 +932,7 @@ def api_db_delete():
 
 @app.route("/admin-panel")
 def page_admin_panel():
+    import traceback
     try:
         c = get_db()
         cur = c.cursor()
@@ -969,7 +970,6 @@ def page_admin_panel():
                 </div>
             </div>
 
-            <!-- INSERT FORM -->
             <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; padding: 20px; margin-bottom: 30px;">
                 <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px;">+ Insert Record Directly</h3>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -979,7 +979,6 @@ def page_admin_panel():
                 </div>
             </div>
 
-            <!-- TABLE -->
             <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; overflow-x: auto; margin-bottom: 30px;">
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
@@ -999,39 +998,41 @@ def page_admin_panel():
         </div>
 
         <script>
-        async function insertRecord() {{
+        async function insertRecord() {
             var col = document.getElementById("db-col").value.trim() || "default";
             var payload = document.getElementById("db-payload").value.trim();
-            if (!payload) {{ alert("Data enter karein"); return; }}
+            if (!payload) { alert("Data enter karein"); return; }
             var parsed = payload;
-            try {{ parsed = JSON.parse(payload); }} catch(e){{}}
+            try { parsed = JSON.parse(payload); } catch(e){}
 
-            var res = await fetch("/api/db/insert", {{
+            var res = await fetch("/api/db/insert", {
                 method: "POST",
-                headers: {{ "Content-Type": "application/json" }},
-                body: JSON.stringify({{ collection: col, data: parsed }})
-            }});
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ collection: col, data: parsed })
+            });
             var data = await res.json();
-            if (data.status === "success") {{ location.reload(); }}
-            else {{ alert(data.message || "Insert failed"); }}
-        }}
+            if (data.status === "success") { location.reload(); }
+            else { alert(data.message || "Insert failed"); }
+        }
 
-        async function deleteRecord(id) {{
+        async function deleteRecord(id) {
             if (!confirm("Delete record #" + id + "?")) return;
-            var res = await fetch("/api/db/delete", {{
+            var res = await fetch("/api/db/delete", {
                 method: "POST",
-                headers: {{ "Content-Type": "application/json" }},
-                body: JSON.stringify({{ id: id }})
-            }});
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: id })
+            });
             var data = await res.json();
-            if (data.status === "success") {{ location.reload(); }}
-            else {{ alert(data.message || "Delete failed"); }}
-        }}
+            if (data.status === "success") { location.reload(); }
+            else { alert(data.message || "Delete failed"); }
+        }
         </script>
         """
         return render_base("Admin Database Panel", admin_html)
     except Exception as e:
-        return f"<h3>Admin Panel Error: {str(e)}</h3>", 500
+        err = traceback.format_exc()
+        return f"<pre style='background:#111;color:#f87171;padding:20px;white-space:pre-wrap;font-size:14px;'>Traceback:
+{err}</pre>", 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
