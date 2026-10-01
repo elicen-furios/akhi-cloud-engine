@@ -850,185 +850,188 @@ def api_chat_handler():
     return jsonify({"reply": reply})
 
 
+
+
 # ---------------- CLOUD DATABASE ENGINE ----------------
-def get_db_connection():
-    import sqlite3
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    return conn
+import json, sqlite3, os
+
+def get_db():
+    b_dir = os.path.dirname(os.path.abspath(__file__))
+    d_path = os.path.join(b_dir, "database.db")
+    c = sqlite3.connect(d_path)
+    c.row_factory = sqlite3.Row
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS cloud_records (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        collection TEXT NOT NULL,
+        payload TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+    c.commit()
+    return c
 
 @app.route("/api/db/insert", methods=["POST"])
 def api_db_insert():
-    req_data = request.get_json(silent=True) or {}
-    collection = req_data.get("collection", "default")
-    payload = req_data.get("data")
-    if not payload:
-        return jsonify({"status": "error", "message": "Field 'data' is required"}), 400
-    
-    import json
-    payload_str = json.dumps(payload) if isinstance(payload, (dict, list)) else str(payload)
-    
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("INSERT INTO cloud_records (collection, payload) VALUES (?, ?)", (collection, payload_str))
-    conn.commit()
-    rec_id = cur.lastrowid
-    conn.close()
-    return jsonify({"status": "success", "id": rec_id, "collection": collection, "message": "Record stored successfully"}), 201
+    try:
+        req_data = request.get_json(force=True, silent=True) or {}
+        collection = req_data.get("collection", "default")
+        payload = req_data.get("data")
+        if not payload:
+            return jsonify({"status": "error", "message": "Field 'data' is required"}), 400
+        payload_str = json.dumps(payload) if isinstance(payload, (dict, list)) else str(payload)
+        
+        c = get_db()
+        cur = c.cursor()
+        cur.execute("INSERT INTO cloud_records (collection, payload) VALUES (?, ?)", (collection, payload_str))
+        c.commit()
+        rec_id = cur.lastrowid
+        c.close()
+        return jsonify({"status": "success", "id": rec_id, "collection": collection}), 201
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/api/db/all", methods=["GET"])
 def api_db_get_all():
-    col = request.args.get("collection")
-    conn = get_db_connection()
-    cur = conn.cursor()
-    if col:
-        cur.execute("SELECT id, collection, payload, created_at FROM cloud_records WHERE collection = ? ORDER BY id DESC", (col,))
-    else:
-        cur.execute("SELECT id, collection, payload, created_at FROM cloud_records ORDER BY id DESC")
-    rows = cur.fetchall()
-    conn.close()
-    
-    import json
-    data = []
-    for r in rows:
-        try:
-            val = json.loads(r["payload"])
-        except Exception:
-            val = r["payload"]
-        data.append({
-            "id": r["id"],
-            "collection": r["collection"],
-            "data": val,
-            "created_at": r["created_at"]
-        })
-    return jsonify({"status": "success", "count": len(data), "records": data})
+    try:
+        col = request.args.get("collection")
+        c = get_db()
+        cur = c.cursor()
+        if col:
+            cur.execute("SELECT id, collection, payload, created_at FROM cloud_records WHERE collection = ? ORDER BY id DESC", (col,))
+        else:
+            cur.execute("SELECT id, collection, payload, created_at FROM cloud_records ORDER BY id DESC")
+        rows = cur.fetchall()
+        c.close()
+        
+        data = []
+        for r in rows:
+            try:
+                val = json.loads(r["payload"])
+            except Exception:
+                val = r["payload"]
+            data.append({"id": r["id"], "collection": r["collection"], "data": val, "created_at": r["created_at"]})
+        return jsonify({"status": "success", "count": len(data), "records": data})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/api/db/delete", methods=["POST"])
 def api_db_delete():
-    req_data = request.get_json(silent=True) or {}
-    rec_id = req_data.get("id")
-    if not rec_id:
-        return jsonify({"status": "error", "message": "ID is required"}), 400
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM cloud_records WHERE id = ?", (rec_id,))
-    conn.commit()
-    conn.close()
-    return jsonify({"status": "success", "message": f"Record {rec_id} deleted successfully"})
+    try:
+        req_data = request.get_json(force=True, silent=True) or {}
+        rec_id = req_data.get("id")
+        if not rec_id:
+            return jsonify({"status": "error", "message": "ID required"}), 400
+        c = get_db()
+        c.execute("DELETE FROM cloud_records WHERE id = ?", (rec_id,))
+        c.commit()
+        c.close()
+        return jsonify({"status": "success", "message": f"Deleted {rec_id}"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/admin-panel")
 def page_admin_panel():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT id, collection, payload, created_at FROM cloud_records ORDER BY id DESC")
-    records = cur.fetchall()
-    conn.close()
+    try:
+        c = get_db()
+        cur = c.cursor()
+        cur.execute("SELECT id, collection, payload, created_at FROM cloud_records ORDER BY id DESC")
+        records = cur.fetchall()
+        c.close()
 
-    table_rows = ""
-    for r in records:
-        table_rows += f"""
-        <tr style="border-bottom: 1px solid #27272a;">
-            <td style="padding: 12px; color: #a1a1aa; font-family: monospace;">#{r['id']}</td>
-            <td style="padding: 12px;"><span style="background: rgba(236,72,153,0.15); color: #f472b6; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 12px;">{r['collection']}</span></td>
-            <td style="padding: 12px; font-family: monospace; font-size: 12px; color: #e4e4e7; max-width: 320px; word-break: break-all;">{r['payload']}</td>
-            <td style="padding: 12px; color: #71717a; font-size: 12px;">{r['created_at']}</td>
-            <td style="padding: 12px;">
-                <button onclick="deleteRecord({r['id']})" style="background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Delete</button>
-            </td>
-        </tr>
+        table_rows = ""
+        for r in records:
+            table_rows += f"""
+            <tr style="border-bottom: 1px solid #27272a;">
+                <td style="padding: 12px; color: #a1a1aa; font-family: monospace;">#{r['id']}</td>
+                <td style="padding: 12px;"><span style="background: rgba(236,72,153,0.15); color: #f472b6; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 12px;">{r['collection']}</span></td>
+                <td style="padding: 12px; font-family: monospace; font-size: 12px; color: #e4e4e7; max-width: 320px; word-break: break-all;">{r['payload']}</td>
+                <td style="padding: 12px; color: #71717a; font-size: 12px;">{r['created_at']}</td>
+                <td style="padding: 12px;">
+                    <button onclick="deleteRecord({r['id']})" style="background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Delete</button>
+                </td>
+            </tr>
+            """
+
+        if not table_rows:
+            table_rows = '<tr><td colspan="5" style="text-align:center; padding: 24px; color: #71717a;">Database abhi khali hai. Naya data enter karein.</td></tr>'
+
+        admin_html = f"""
+        <div style="max-width: 1000px; margin: 0 auto; padding: 30px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+                <div>
+                    <h1 style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 4px;">Cloud Database Manager</h1>
+                    <p style="color: #a1a1aa; font-size: 0.9rem;">Store, query and inspect live JSON API records.</p>
+                </div>
+                <div style="background: #18181b; border: 1px solid #27272a; padding: 10px 18px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 1.3rem; font-weight: 800; color: #10b981;">{len(records)}</div>
+                    <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase;">Total Records</div>
+                </div>
+            </div>
+
+            <!-- INSERT FORM -->
+            <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; padding: 20px; margin-bottom: 30px;">
+                <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px;">+ Insert Record Directly</h3>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <input type="text" id="db-col" placeholder="Collection (e.g. users, tokens, config)" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none;">
+                    <textarea id="db-payload" placeholder='JSON data ya string' rows="3" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none; font-family: monospace;"></textarea>
+                    <button onclick="insertRecord()" style="background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; align-self: flex-start;">Save Record</button>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; overflow-x: auto; margin-bottom: 30px;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid #27272a; background: #18181f; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">
+                            <th style="padding: 12px;">ID</th>
+                            <th style="padding: 12px;">Collection</th>
+                            <th style="padding: 12px;">Payload</th>
+                            <th style="padding: 12px;">Timestamp</th>
+                            <th style="padding: 12px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {table_rows}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+        async function insertRecord() {{
+            var col = document.getElementById("db-col").value.trim() || "default";
+            var payload = document.getElementById("db-payload").value.trim();
+            if (!payload) {{ alert("Data enter karein"); return; }}
+            var parsed = payload;
+            try {{ parsed = JSON.parse(payload); }} catch(e){{}}
+
+            var res = await fetch("/api/db/insert", {{
+                method: "POST",
+                headers: {{ "Content-Type": "application/json" }},
+                body: JSON.stringify({{ collection: col, data: parsed }})
+            }});
+            var data = await res.json();
+            if (data.status === "success") {{ location.reload(); }}
+            else {{ alert(data.message || "Insert failed"); }}
+        }}
+
+        async function deleteRecord(id) {{
+            if (!confirm("Delete record #" + id + "?")) return;
+            var res = await fetch("/api/db/delete", {{
+                method: "POST",
+                headers: {{ "Content-Type": "application/json" }},
+                body: JSON.stringify({{ id: id }})
+            }});
+            var data = await res.json();
+            if (data.status === "success") {{ location.reload(); }}
+            else {{ alert(data.message || "Delete failed"); }}
+        }}
+        </script>
         """
-
-    if not table_rows:
-        table_rows = """<tr><td colspan="5" style="text-align:center; padding: 24px; color: #71717a;">Database khali hai. Upar form se ya API se naya record add karein.</td></tr>"""
-
-    admin_html = f"""
-    <div style="max-width: 1000px; margin: 0 auto; padding: 30px 14px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
-            <div>
-                <h1 style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 4px;">Cloud Database Manager</h1>
-                <p style="color: #a1a1aa; font-size: 0.9rem;">Store, inspect and query live JSON records over REST API.</p>
-            </div>
-            <div style="background: #18181b; border: 1px solid #27272a; padding: 10px 18px; border-radius: 12px; text-align: center;">
-                <div style="font-size: 1.3rem; font-weight: 800; color: #10b981;">{len(records)}</div>
-                <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase;">Total Records</div>
-            </div>
-        </div>
-
-        <!-- INSERT FORM -->
-        <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; padding: 20px; margin-bottom: 30px;">
-            <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px;">+ Insert New Record via Web</h3>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <input type="text" id="db-col" placeholder="Collection name (e.g. users, sensors, orders)" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none;">
-                <textarea id="db-payload" placeholder='JSON data ya text (e.g. {{"username": "akhil", "status": "active"}})' rows="3" style="background: #1c1c22; border: 1px solid #27272a; color: #fff; padding: 10px 14px; border-radius: 8px; outline: none; font-family: monospace;"></textarea>
-                <button onclick="insertRecord()" style="background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; align-self: flex-start;">Save To Database</button>
-            </div>
-        </div>
-
-        <!-- DATA VIEWER TABLE -->
-        <div style="background: #121217; border: 1px solid #27272a; border-radius: 14px; overflow-x: auto; margin-bottom: 30px;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead>
-                    <tr style="border-bottom: 1px solid #27272a; background: #18181f; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">
-                        <th style="padding: 12px;">ID</th>
-                        <th style="padding: 12px;">Collection</th>
-                        <th style="padding: 12px;">Payload (JSON)</th>
-                        <th style="padding: 12px;">Timestamp</th>
-                        <th style="padding: 12px;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {table_rows}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- API REFERENCE -->
-        <div style="background: #0f0f14; border: 1px dashed #27272a; border-radius: 12px; padding: 16px; font-size: 0.85rem; color: #a1a1aa;">
-            <strong style="color: #fff;">External API Integration:</strong>
-            <pre style="margin-top: 8px; background: #000; padding: 12px; border-radius: 8px; overflow-x: auto; color: #34d399;">curl -X POST https://akhil-private-backend.onrender.com/api/db/insert \
-     -H "Content-Type: application/json" \
-     -d '{{"collection": "test", "data": {{"name": "Akhil", "role": "admin"}}}}'</pre>
-        </div>
-    </div>
-
-    <script>
-    async function insertRecord() {{
-        var col = document.getElementById("db-col").value.trim() || "default";
-        var payload = document.getElementById("db-payload").value.trim();
-        if (!payload) {{ alert("Please enter data"); return; }}
-        var parsed = payload;
-        try {{ parsed = json_parsed = JSON.parse(payload); }} catch(e){{}}
-
-        var res = await fetch("/api/db/insert", {{
-            method: "POST",
-            headers: {{ "Content-Type": "application/json" }},
-            body: JSON.stringify({{ collection: col, data: parsed }})
-        }});
-        var data = await res.json();
-        if (data.status === "success") {{
-            location.reload();
-        }} else {{
-            alert(data.message || "Insert failed");
-        }}
-    }}
-
-    async function deleteRecord(id) {{
-        if (!confirm("Are you sure you want to delete record #" + id + "?")) return;
-        var res = await fetch("/api/db/delete", {{
-            method: "POST",
-            headers: {{ "Content-Type": "application/json" }},
-            body: JSON.stringify({{ id: id }})
-        }});
-        var data = await res.json();
-        if (data.status === "success") {{
-            location.reload();
-        }} else {{
-            alert("Delete failed");
-        }}
-    }}
-    </script>
-    """
-    return render_base("Admin Database Panel", admin_html)
+        return render_base("Admin Database Panel", admin_html)
+    except Exception as e:
+        return f"<h3>Admin Panel Error: {str(e)}</h3>", 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
