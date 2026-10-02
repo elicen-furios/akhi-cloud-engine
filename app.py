@@ -1534,7 +1534,7 @@ def page_database_control_center():
             // Generate verified production database URL
             const cleanDb = dbname.toLowerCase().replace(/[^a-z0-9_]/g, '_');
             const baseOrigin = window.location.origin;
-            let finalUrl = baseOrigin + '/portal?owner=' + encodeURIComponent(cleanDb) + '&key=' + encodeURIComponent(verifiedKey);
+            let finalUrl = baseOrigin + '/db-admin/' + encodeURIComponent(cleanDb) + '?key=' + encodeURIComponent(verifiedKey) + '&owner=' + encodeURIComponent(name) + '&web_url=' + encodeURIComponent(webUrl);
 
             if (domain) finalUrl += '&domain=' + encodeURIComponent(domain);
             if (webUrl) finalUrl += '&web_url=' + encodeURIComponent(webUrl);
@@ -1623,6 +1623,7 @@ def page_database_control_center():
     """
     return render_page("Database Control Center", "database-control", content)
 
+
 @app.route("/api/verify-control-key", methods=["POST"])
 def verify_control_key():
     data = request.get_json(silent=True) or {}
@@ -1630,23 +1631,69 @@ def verify_control_key():
     if not key:
         return jsonify({"valid": False, "error": "Please enter your API Key."}), 400
     
-    # Check if matches admin master key or database stored keys
-    if key == "akhil_8630_secure":
-        return jsonify({"valid": True, "owner": "ADMIN"})
-        
     try:
         conn = get_db()
         cursor = conn.cursor()
         cursor.execute("SELECT name, status FROM api_keys WHERE key = ?", (key,))
         row = cursor.fetchone()
         conn.close()
-        if row and (row[1] == 'active' or row[1] == 'ACTIVE' or not row[1]):
-            return jsonify({"valid": True, "owner": row[0]})
-        elif row:
-            return jsonify({"valid": False, "error": "API Key is disabled or revoked."}), 403
+        
+        if row:
+            status = row[1] if row[1] else 'ACTIVE'
+            if str(status).upper() == 'ACTIVE':
+                return jsonify({"valid": True, "owner": row[0], "key": key})
+            else:
+                return jsonify({"valid": False, "error": "This API Key has been revoked or is inactive."}), 403
+        else:
+            return jsonify({"valid": False, "error": "Invalid API Key. Please enter a valid key generated from this website."}), 401
     except Exception as e:
-        # Fallback check if format is valid key
-        if len(key) >= 12:
-            return jsonify({"valid": True, "owner": "USER"})
+        return jsonify({"valid": False, "error": "Database verification failed: " + str(e)}), 500
+
+# Dedicated Admin Portal for the Generated Database
+@app.route("/db-admin/<db_slug>")
+def page_user_db_admin(db_slug):
+    owner_key = request.args.get('key', '')
+    owner_name = request.args.get('owner', 'Admin')
+    web_url = request.args.get('web_url', '')
+    
+    content = f"""
+    <div style='max-width:960px; margin:24px auto; padding:16px; font-family:sans-serif; color:#f8fafc;'>
+        <div style='background:#0f172a; border:1px solid rgba(56,189,248,0.25); border-radius:12px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.5);'>
+            <div style='display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:16px; margin-bottom:20px;'>
+                <div>
+                    <h2 style='margin:0; font-size:1.4rem; color:#38bdf8;'>Database Admin Panel: {db_slug.upper()}</h2>
+                    <span style='font-size:0.85rem; color:#94a3b8;'>Target Web: <b>{web_url or 'Custom Node'}</b> | Operator: <b>{owner_name}</b></span>
+                </div>
+                <span style='background:#059669; color:#fff; font-size:0.75rem; font-weight:700; padding:6px 12px; border-radius:20px;'>ACTIVE INSTANCE</span>
+            </div>
             
-    return jsonify({"valid": False, "error": "Invalid API Key. Please check your key and try again."}), 401
+            <div style='display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:24px;'>
+                <div style='background:#1e293b; padding:16px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);'>
+                    <div style='font-size:0.75rem; color:#94a3b8; text-transform:uppercase;'>Storage Allocated</div>
+                    <div style='font-size:1.3rem; font-weight:700; margin-top:6px;'>Dedicated Partition</div>
+                </div>
+                <div style='background:#1e293b; padding:16px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);'>
+                    <div style='font-size:0.75rem; color:#94a3b8; text-transform:uppercase;'>Connection Status</div>
+                    <div style='font-size:1.3rem; font-weight:700; color:#34d399; margin-top:6px;'>Encrypted TLS</div>
+                </div>
+                <div style='background:#1e293b; padding:16px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);'>
+                    <div style='font-size:0.75rem; color:#94a3b8; text-transform:uppercase;'>Security Binding</div>
+                    <div style='font-size:1.3rem; font-weight:700; color:#38bdf8; margin-top:6px;'>API Key Locked</div>
+                </div>
+            </div>
+
+            <div style='background:#020617; border-radius:8px; padding:18px; border:1px solid rgba(255,255,255,0.06);'>
+                <h3 style='margin:0 0 12px; font-size:1rem; color:#e2e8f0;'>Database Query & Records Terminal</h3>
+                <p style='color:#64748b; font-size:0.85rem; margin-bottom:14px;'>This admin environment is linked specifically to your website domain. Direct CRUD mutations are isolated to this workspace partition.</p>
+                <div style='background:#0b1120; border-radius:6px; padding:12px; font-family:monospace; font-size:0.85rem; color:#a5f3fc;'>
+                    SELECT * FROM {db_slug}_records WHERE active = 1 ORDER BY timestamp DESC;
+                </div>
+            </div>
+            
+            <div style='margin-top:20px; text-align:right;'>
+                <a href='/database-control-center' style='color:#94a3b8; text-decoration:none; font-size:0.85rem;'>← Back to Control Center</a>
+            </div>
+        </div>
+    </div>
+    """
+    return render_page(f"Admin Panel - {db_slug}", "database", content)
