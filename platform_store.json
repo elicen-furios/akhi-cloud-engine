@@ -1,0 +1,22 @@
+{
+  "keys": {
+    "akhi_live_NrdZef1MGT-KPsa9YeL-wA": {
+      "app": "Akhil",
+      "created": "2026-09-28",
+      "hits": 1,
+      "last_used": "2026-09-28 12:51:28",
+      "active": true
+    }
+  },
+  "users": {},
+  "collections": {
+    "products": [
+      {
+        "_id": "b1e0a4a72bcc",
+        "created_by": "App:Akhil",
+        "created_at": "2026-09-28 12:51:28",
+        "body": {}
+      }
+    ]
+  }
+}
