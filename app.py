@@ -391,6 +391,9 @@ document.addEventListener("DOMContentLoaded", function() {
 @app.route("/")
 @app.route("/home")
 def page_home():
+    return render_template("index.html")
+@app.route("/home")
+def page_home():
     content = """
     <div style="text-align:center; padding: 36px 10px 48px;">
         <h1 style="font-size: clamp(2rem, 5vw, 3.2rem); font-weight:800; letter-spacing:-1px; line-height:1.2; margin-bottom:16px;">
@@ -1216,9 +1219,6 @@ def apply_cors_headers(response):
     return response
 
 # Route to serve the Workspace Engine Dashboard
-@app.route('/workspace')
-@app.route('/')
-def page_home():
     return render_template('index.html')
 
 # Route to serve the 3D Portal Page
