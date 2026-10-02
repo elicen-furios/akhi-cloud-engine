@@ -1214,3 +1214,13 @@ def apply_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, x-api-key, Authorization"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
     return response
+
+# Route to serve the Workspace Engine Dashboard
+@app.route('/')
+def home_index():
+    return render_template('index.html')
+
+# Route to serve the 3D Portal Page
+@app.route('/portal')
+def serve_portal():
+    return render_template('portal.html')

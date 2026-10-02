@@ -2,1076 +2,369 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AKHIL DEV PLATFORM // CLOUD CONSOLE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Cloud Workspace Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #03060d;
-            --bg-sidebar: #060b14;
-            --bg-card: rgba(8, 14, 26, 0.95);
-            --border-line: rgba(0, 240, 255, 0.2);
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --cyan: #00f0ff;
-            --cyan-glow: rgba(0, 240, 255, 0.3);
-            --green: #00ff66;
-            --magenta: #ff0055;
-            --text-main: #f8fafc;
-            --text-sub: #8492a6;
-            --font-code: "JetBrains Mono", monospace;
-            --font-ui: "Space Grotesk", sans-serif;
+            --bg: #07090e;
+            --surface: #0b1120;
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-dim: #64748b;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: var(--bg-base);
+            background: var(--bg);
             color: var(--text-main);
-            font-family: var(--font-ui);
+            font-family: 'Space Grotesk', system-ui, sans-serif;
             min-height: 100vh;
             display: flex;
-            overflow-x: hidden;
+            align-items: center;
+            justify-content: center;
         }
-        .drawer-overlay {
+        .main-hero {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .main-hero h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+        .main-hero p {
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+
+        /* Floating Launcher */
+        #wsFloatingLauncher {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 52px;
+            height: 52px;
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(2, 132, 199, 0.4);
+            z-index: 9999;
+            transition: transform 0.2s ease;
+        }
+        #wsFloatingLauncher:hover { transform: scale(1.08); }
+
+        /* Modal Overlay */
+        .ws-modal-backdrop {
             display: none;
             position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(4px);
-            z-index: 998;
-        }
-        .drawer-overlay.active { display: block; }
-        .sidebar {
-            width: 270px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-line);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0; bottom: 0; left: 0;
-            z-index: 999;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .brand-section {
-            padding: 20px;
-            display: flex;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(5, 8, 16, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
             align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid var(--border-subtle);
+            justify-content: center;
         }
-        .brand-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
-            border: 1px solid var(--cyan);
-            overflow: hidden;
-            background: #000;
-        }
-        .brand-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .brand-title {
-            font-family: var(--font-code);
-            font-weight: 700;
-            font-size: 0.92rem;
-            color: var(--cyan);
-            letter-spacing: 0.5px;
-        }
-        .brand-subtitle { font-size: 0.68rem; color: var(--text-sub); font-family: var(--font-code); }
-        .nav-list {
-            list-style: none;
-            padding: 14px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
+        .ws-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 480px;
+            padding: 22px;
+            color: #f1f5f9;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+            max-height: 90vh;
             overflow-y: auto;
         }
-        .nav-section-title {
-            font-family: var(--font-code);
-            font-size: 0.65rem;
-            color: var(--text-sub);
-            letter-spacing: 1.5px;
-            padding: 10px 14px 4px;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            border-radius: 6px;
-            color: var(--text-sub);
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
-        .nav-item:hover, .nav-item.active {
-            color: var(--cyan);
-            background: rgba(0, 240, 255, 0.08);
-            border-color: var(--border-line);
-        }
-        .sidebar-footer {
-            padding: 16px;
-            border-top: 1px solid var(--border-subtle);
-            font-size: 0.72rem;
-            color: var(--text-sub);
-            text-align: center;
-            font-family: var(--font-code);
-        }
-        .main-wrapper {
-            margin-left: 270px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .header-bar {
-            padding: 16px 28px;
+        .ws-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-subtle);
-            background: rgba(3, 6, 13, 0.9);
-            backdrop-filter: blur(12px);
-            position: sticky;
-            top: 0;
-            z-index: 500;
-        }
-        .hamburger-btn {
-            display: none;
-            background: transparent;
-            border: 1px solid var(--border-line);
-            border-radius: 6px;
-            color: var(--cyan);
-            padding: 6px 10px;
-            cursor: pointer;
-        }
-        .header-actions { display: flex; align-items: center; gap: 12px; }
-        .btn-issue-key {
-            background: rgba(0, 240, 255, 0.12);
-            border: 1px solid var(--cyan);
-            color: var(--cyan);
-            font-family: var(--font-code);
-            font-size: 0.8rem;
-            font-weight: 700;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-        }
-        .btn-issue-key:hover { background: var(--cyan); color: #000; box-shadow: 0 0 16px var(--cyan-glow); }
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 5px 12px 5px 6px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-line);
-            border-radius: 20px;
-            cursor: pointer;
-        }
-        .user-avatar-circle {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: var(--cyan);
-            color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-family: var(--font-code);
-            font-size: 0.78rem;
-        }
-        .content-body { padding: 28px; flex: 1; }
-        .panel-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-line);
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        .section-view { display: none; }
-        .section-view.active { display: block; }
-        .hud-input {
-            width: 100%;
-            padding: 12px 14px;
-            background: #000;
-            border: 1px solid var(--border-line);
-            border-radius: 6px;
-            color: #fff;
-            font-family: var(--font-code);
-            font-size: 0.88rem;
-            margin-bottom: 14px;
-            outline: none;
-        }
-        .hud-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-glow); }
-        .btn-action {
-            background: rgba(0, 240, 255, 0.12);
-            border: 1px solid var(--cyan);
-            color: var(--cyan);
-            font-family: var(--font-code);
-            font-size: 0.85rem;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-        .btn-action:hover { background: var(--cyan); color: #000; }
-        .btn-auth-prov {
-            width: 100%;
-            padding: 11px;
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(255,255,255,0.04);
-            color: #fff;
-            font-family: var(--font-code);
-            font-size: 0.82rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .btn-auth-prov svg { width: 16px; height: 16px; fill: currentColor; }
-        .code-block {
-            background: #000;
-            border: 1px solid var(--border-subtle);
-            padding: 16px;
-            border-radius: 6px;
-            font-family: var(--font-code);
-            font-size: 0.82rem;
-            color: var(--cyan);
-            overflow-x: auto;
-            margin: 14px 0;
-            line-height: 1.5;
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: var(--font-code);
-            font-size: 0.8rem;
-            margin: 14px 0;
-        }
-        .data-table th, .data-table td {
-            border: 1px solid var(--border-subtle);
-            padding: 10px 14px;
-            text-align: left;
-        }
-        .data-table th { background: rgba(0, 240, 255, 0.08); color: var(--cyan); }
-        .auth-notice-box {
-            display: none;
-            background: rgba(255, 0, 85, 0.15);
-            border: 1px solid var(--magenta);
-            color: #fff;
-            padding: 12px;
-            border-radius: 6px;
-            font-family: var(--font-code);
-            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 14px;
             margin-bottom: 16px;
         }
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .main-wrapper { margin-left: 0; }
-            .hamburger-btn { display: block; }
-            .header-bar { padding: 14px 16px; }
-            .content-body { padding: 16px; }
+        .ws-user-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .ws-user-badge:hover { background: rgba(255, 255, 255, 0.04); }
+        .ws-user-badge img {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 1px solid var(--accent);
+        }
+        .ws-title-text { font-size: 14px; font-weight: 600; color: #f8fafc; }
+        .ws-sub-action { font-size: 11px; color: var(--accent); }
+        .ws-close-icon {
+            background: none; border: none;
+            color: #94a3b8; font-size: 24px;
+            cursor: pointer;
+        }
+        .ws-desc { font-size: 13px; color: #94a3b8; margin-bottom: 14px; line-height: 1.4; }
+        .ws-input-field { margin-bottom: 14px; }
+        .ws-input-field label {
+            display: block; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #64748b; margin-bottom: 6px;
+        }
+        .ws-input-field input {
+            width: 100%; box-sizing: border-box;
+            background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px; padding: 10px 12px;
+            color: #ffffff; font-size: 13px;
+        }
+        .ws-input-field input:focus { border-color: var(--accent); outline: none; }
+        .ws-input-field input:disabled {
+            background: #0f172a; color: #475569; cursor: not-allowed;
+        }
+        .ws-checkbox-wrapper {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; color: #94a3b8; margin: 16px 0;
+        }
+        .ws-btn {
+            width: 100%; padding: 12px; border-radius: 6px;
+            font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+        }
+        .ws-btn-primary { background: #0284c7; color: #ffffff; }
+        .ws-btn-generate { background: #059669; color: #ffffff; }
+        .ws-btn-save { background: #38bdf8; color: #0b1120; }
+        .ws-btn-cancel { background: #334155; color: #ffffff; }
+        .ws-action-row { display: flex; gap: 10px; margin-top: 10px; }
+        .ws-error-text { color: #f43f5e; font-size: 12px; margin-top: 8px; }
+        .ws-edit-pane {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px; border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 16px;
+        }
+        .ws-result-pane {
+            margin-top: 16px; padding: 14px;
+            background: rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 8px;
+        }
+        .ws-link-box { display: flex; gap: 8px; margin-top: 8px; }
+        .ws-link-box input {
+            flex: 1; background: #0f172a; border: 1px solid #1e293b;
+            color: #38bdf8; padding: 8px 10px; font-size: 12px; border-radius: 4px;
+        }
+        .ws-btn-copy {
+            background: #38bdf8; border: none; padding: 0 14px;
+            border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; color: #0b1120;
+        }
+        .ws-gratitude-text {
+            font-size: 12px; color: #38bdf8; text-align: center;
+            margin-top: 12px; font-weight: 500;
         }
     </style>
 </head>
 <body>
-    <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="brand-section">
-            <div class="brand-avatar">
-                <img src="/public/image.png" onerror="this.onerror=null; this.src='/public/second-image.png';" alt="">
-            </div>
-            <div>
-                <div class="brand-title">AKHIL DEV</div>
-                <div class="brand-subtitle">PLATFORM CORE</div>
-            </div>
-        </div>
-
-        <ul class="nav-list">
-            <li class="nav-section-title">NAVIGATION</li>
-            <li class="nav-item active" onclick="navigateTab('home')">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <span>Home</span>
-            </li>
-            <li class="nav-item" onclick="navigateTab('api-vault')">
-                <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-                <span>API Keys</span>
-            </li>
-            <li class="nav-item" onclick="navigateTab('sandbox')">
-                <svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
-                <span>Transmission Sandbox</span>
-            </li>
-            <li class="nav-item" onclick="navigateTab('media')">
-                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                <span>Media Core Vault</span>
-            </li>
-            <li class="nav-item" onclick="navigateTab('docs')">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                <span>Protocol Docs</span>
-            </li>
-
-            <li class="nav-section-title">SYSTEM CONTROL</li>
-            <li class="nav-item" onclick="navigateTab('database')">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 6c-3.87 0-7-1.12-7-2.5S8.13 3 12 3s7 1.12 7 2.5S15.87 8 12 8zm-7 5.5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5V11c-1.78 1.24-4.24 2-7 2s-5.22-.76-7-2v2.5zm0 5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5V16c-1.78 1.24-4.24 2-7 2s-5.22-.76-7-2v2.5z"/></svg>
-                <span>Database</span>
-            </li>
-            <li class="nav-item" onclick="navigateTab('system')">
-                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-                <span>System Status</span>
-            </li>
-            <li class="nav-item" onclick="navigateTab('identity')">
-                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                <span>Identity Gate</span>
-            </li>
-        </ul>
-
-        <div class="sidebar-footer">
-            DEVELOPER AKHIL<br>
-            <span style="opacity:0.6;">Built with vision.</span>
-        </div>
-    </aside>
-
-    <div class="main-wrapper">
-        <header class="header-bar">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <button class="hamburger-btn" onclick="toggleSidebar()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-                </button>
-                <div>
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); font-size:0.92rem;">AKHIL DEV PLATFORM</h3>
-                    <p style="font-size:0.7rem; color:var(--text-sub);">YOUR IDEAS × OUR INFRASTRUCTURE</p>
-                </div>
-            </div>
-
-            <div class="header-actions">
-                <button class="btn-issue-key" onclick="handleGenerateKeyClick()">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-                    Issue Key
-                </button>
-                <div class="user-badge" onclick="navigateTab('identity')">
-                    <div class="user-avatar-circle" id="user-initial">A</div>
-                    <span id="user-name-tag" style="font-family:var(--font-code); font-size:0.75rem;">AKHIL DEV</span>
-                </div>
-            </div>
-        </header>
-
-        <div class="content-body">
-            <!-- HOME VIEW -->
-            <section id="tab-home" class="section-view active">
-                <div class="panel-card">
-                    <h2 style="font-size:1.7rem; margin-bottom:8px; font-family:var(--font-code); color:var(--cyan);">AKHIL DEV CORE ENGINE</h2>
-                    <p style="color:var(--text-sub); margin-bottom:20px; line-height:1.6;">A high-concurrency developer platform engineered for persistent cryptographic pass management, high-throughput transmission APIs, and secure multi-tenant cloud telemetry.</p>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                        <button class="btn-action" onclick="handleGenerateKeyClick()">ISSUE ACCESS KEY</button>
-                        <button class="btn-action" style="border-color:var(--magenta); color:var(--magenta);" onclick="navigateTab('docs')">READ PROTOCOL DOCS</button>
-                    </div>
-                </div>
-
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:24px;">
-                    <div class="panel-card" style="padding:18px;">
-                        <span style="font-family:var(--font-code); font-size:0.72rem; color:var(--text-sub);">AUTHENTICATION STATE</span>
-                        <h3 style="color:var(--cyan); font-family:var(--font-code); margin-top:6px; font-size:1.1rem;" id="auth-status-lbl">UNAUTHENTICATED</h3>
-                        <p style="font-size:0.75rem; color:var(--text-sub); margin-top:6px;">Firebase SDK v10.8 modular gate</p>
-                    </div>
-                    <div class="panel-card" style="padding:18px;">
-                        <span style="font-family:var(--font-code); font-size:0.72rem; color:var(--text-sub);">CLUSTER HEALTH</span>
-                        <h3 style="color:var(--green); font-family:var(--font-code); margin-top:6px; font-size:1.1rem;">100% OPERATIONAL</h3>
-                        <p style="font-size:0.75rem; color:var(--text-sub); margin-top:6px;">Render cloud worker verified</p>
-                    </div>
-                    <div class="panel-card" style="padding:18px;">
-                        <span style="font-family:var(--font-code); font-size:0.72rem; color:var(--text-sub);">ENCRYPTION LEVEL</span>
-                        <h3 style="color:var(--magenta); font-family:var(--font-code); margin-top:6px; font-size:1.1rem;">SHA-256 HMAC</h3>
-                        <p style="font-size:0.75rem; color:var(--text-sub); margin-top:6px;">Cryptographic signing enabled</p>
-                    </div>
-                </div>
-
-                <div class="panel-card">
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">SYSTEM ARCHITECTURE OVERVIEW</h3>
-                    <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6; margin-bottom:14px;">The AKHIL DEV infrastructure bridges client authentication tokens with a persistent sqlite3 storage engine hosted on Render containers. All incoming requests are authenticated through Bearer headers with cryptographic pass validation.</p>
-                    <table class="data-table">
-                        <thead><tr><th>Service</th><th>Internal Protocol</th><th>Status</th><th>Telemetry</th></tr></thead>
-                        <tbody>
-                            <tr><td>Auth Broker</td><td>Firebase Auth / OAuth2</td><td style="color:var(--green);">ACTIVE</td><td>TLS 1.3</td></tr>
-                            <tr><td>Persistence Engine</td><td>Encrypted SQLite Vault</td><td style="color:var(--green);">ACTIVE</td><td>100% Synced</td></tr>
-                            <tr><td>REST Gateway</td><td>Flask / Gunicorn Worker</td><td style="color:var(--green);">ACTIVE</td><td>&lt; 40ms Latency</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- API VAULT VIEW -->
-            <section id="tab-api-vault" class="section-view">
-                <div class="panel-card">
-                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">API KEY VAULT</h2>
-                    <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:18px;">Issue cryptographic API tokens for your external microservices, scripts, and applications.</p>
-                    
-                    <div id="auth-warning-alert" class="auth-notice-box">
-                        [!] AUTHENTICATION REQUIRED: You must sign in at the Identity Gate before generating an API access pass.
-                    </div>
-
-                    <div style="max-width:520px;">
-                        <label style="font-family:var(--font-code); font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:6px;">APPLICATION IDENTIFIER</label>
-                        <input type="text" id="app-key-name" class="hud-input" placeholder="e.g. production_client" value="eva_units">
-                        <button class="btn-action" id="gen-key-btn" onclick="executeKeyGeneration()">GENERATE API KEY</button>
-
-                        <div id="key-result-box" style="display:none; margin-top:20px; padding:16px; background:#000; border:1px dashed var(--border-line); border-radius:6px;">
-                            <span style="font-family:var(--font-code); font-size:0.72rem; color:var(--magenta);">GENERATED CRYPTOGRAPHIC PASS:</span>
-                            <div id="key-output-val" style="font-family:var(--font-code); color:var(--cyan); font-size:0.95rem; word-break:break-all; margin:8px 0;"></div>
-                            <button class="btn-action" onclick="copyApiKeyClipboard()">COPY PASS</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-card">
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">KEY USAGE RESTRICTIONS</h3>
-                    <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6;">Generated API keys carry authorized read/write permissions for registered storage endpoints. Do not expose private keys in frontend bundles or client-side JavaScript. Store keys as environment variables (`AKHIL_API_KEY`) on your remote servers.</p>
-                </div>
-            </section>
-
-            <!-- IDENTITY GATE VIEW -->
-            <section id="tab-identity" class="section-view">
-                <div class="panel-card" style="max-width:440px; margin:0 auto; text-align:center;">
-                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:6px;">IDENTITY GATE</h2>
-                    <p style="font-size:0.78rem; color:var(--text-sub); margin-bottom:20px;">AUTHENTICATE TO ACCESS YOUR DEVELOPER CORE</p>
-
-                    <div id="login-form-area">
-                        <input type="email" id="user-email" class="hud-input" placeholder="Enter Your Email">
-                        <input type="password" id="user-pass" class="hud-input" placeholder="Enter Your Password">
-                        <button class="btn-action" style="width:100%; justify-content:center; margin-bottom:14px;" onclick="emailAuthCall()">AUTHORIZE & SIGN IN</button>
-
-                        <button class="btn-auth-prov" onclick="googleAuthCall()">
-                            <svg viewBox="0 0 24 24"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
-                            Continue with Google
-                        </button>
-                        <button class="btn-auth-prov" style="border-color:#1877f2; color:#1877f2;" onclick="facebookAuthCall()">
-                            <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                            Continue with Facebook
-                        </button>
-                        <button class="btn-auth-prov" onclick="githubAuthCall()">
-                            <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-                            Continue with GitHub
-                        </button>
-                    </div>
-
-                    <div id="logged-user-area" style="display:none; text-align:left;">
-                        <p id="logged-email-text" style="font-family:var(--font-code); color:var(--cyan); margin-bottom:14px; font-size:0.85rem;"></p>
-                        <button class="btn-action" style="border-color:var(--magenta); color:var(--magenta); width:100%; justify-content:center;" onclick="signOutCall()">SIGN OUT</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TRANSMISSION SANDBOX -->
-            <section id="tab-sandbox" class="section-view">
-                <div class="panel-card">
-                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">TRANSMISSION SANDBOX</h2>
-                    <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:16px;">Test API endpoints against live backend routes in a real-time console environment.</p>
-                    <div style="display:flex; gap:10px; margin-bottom:14px;">
-                        <input type="text" id="sb-url" class="hud-input" style="margin-bottom:0;" value="/api/admin/keys/create">
-                        <button class="btn-action" onclick="runSandboxTest()">SEND REQUEST</button>
-                    </div>
-                    <pre id="sb-console" class="code-block">// Transmission Console Ready. Awaiting trigger...</pre>
-                </div>
-
-                <div class="panel-card">
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">ACTIVE REST ENDPOINTS</h3>
-                    <table class="data-table">
-                        <thead><tr><th>Method</th><th>Path</th><th>Description</th><th>Access</th></tr></thead>
-                        <tbody>
-                            <tr><td style="color:var(--green);">POST</td><td>/api/admin/keys/create</td><td>Issue authentic developer pass</td><td>Authenticated</td></tr>
-                            <tr><td style="color:var(--cyan);">GET</td><td>/api/status</td><td>Cluster telemetry health check</td><td>Public</td></tr>
-                            <tr><td style="color:var(--green);">POST</td><td>/api/telemetry/report</td><td>Push client operational events</td><td>API Key Required</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- MEDIA CORE VAULT -->
-            <section id="tab-media" class="section-view">
-                <div class="panel-card">
-                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">MEDIA CORE VAULT</h2>
-                    <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:16px;">Centralized repository for platform assets, static files, and cloud-stored artifacts.</p>
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px;">
-                        <div style="background:#000; border:1px solid var(--border-subtle); padding:16px; border-radius:6px;">
-                            <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--cyan);">PRIMARY ASSET</span>
-                            <h4 style="margin:8px 0; font-family:var(--font-code);">image.png</h4>
-                            <p style="font-size:0.75rem; color:var(--text-sub);">Route: /public/image.png</p>
-                            <p style="font-size:0.75rem; color:var(--green); margin-top:4px;">Status: Mounted</p>
-                        </div>
-                        <div style="background:#000; border:1px solid var(--border-subtle); padding:16px; border-radius:6px;">
-                            <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--cyan);">SECONDARY ASSET</span>
-                            <h4 style="margin:8px 0; font-family:var(--font-code);">second-image.png</h4>
-                            <p style="font-size:0.75rem; color:var(--text-sub);">Route: /public/second-image.png</p>
-                            <p style="font-size:0.75rem; color:var(--green); margin-top:4px;">Status: Mounted</p>
-                        </div>
-                        <div style="background:#000; border:1px solid var(--border-subtle); padding:16px; border-radius:6px;">
-                            <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--magenta);">STORAGE VOLUME</span>
-                            <h4 style="margin:8px 0; font-family:var(--font-code);">/storage_vault</h4>
-                            <p style="font-size:0.75rem; color:var(--text-sub);">Capacity: Cloud Persistent</p>
-                            <p style="font-size:0.75rem; color:var(--green); margin-top:4px;">Status: Read/Write Active</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-card">
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">STORAGE TELEMETRY & QUOTA</h3>
-                    <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6;">Static binary assets are served directly through the optimized WSGI file handler with automatic fallback handling. MIME type detection ensures direct rendering for PNG, JPEG, and WebP payloads.</p>
-                </div>
-            </section>
-
-            <!-- DATABASE TELEMETRY VIEW -->
-            <section id="tab-database" class="section-view">
-                <div class="panel-card">
-                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">DATABASE TELEMETRY ENGINE</h2>
-                    <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:16px;">Live metrics and partition states for the platform persistent storage layer.</p>
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:20px;">
-                        <div style="background:#000; padding:14px; border-radius:6px; border:1px solid var(--border-subtle);">
-                            <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--text-sub);">ACTIVE PARTITION</span>
-                            <h4 style="font-family:var(--font-code); color:var(--cyan); margin-top:4px;">SQLITE_MASTER_01</h4>
-                        </div>
-                        <div style="background:#000; padding:14px; border-radius:6px; border:1px solid var(--border-subtle);">
-                            <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--text-sub);">TRANSACTION STATUS</span>
-                            <h4 style="font-family:var(--font-code); color:var(--green); margin-top:4px;">ACID COMPLIANT</h4>
-                        </div>
-                        <div style="background:#000; padding:14px; border-radius:6px; border:1px solid var(--border-subtle);">
-                            <span style="font-family:var(--font-code); font-size:0.7rem; color:var(--text-sub);">CACHE HIT RATIO</span>
-                            <h4 style="font-family:var(--font-code); color:var(--cyan); margin-top:4px;">99.4%</h4>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-card">
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:12px;">ACTIVE SCHEMA SCHEMATICS</h3>
-                    <table class="data-table">
-                        <thead><tr><th>Table Identifier</th><th>Key Type</th><th>Record Engine</th><th>Integrity</th></tr></thead>
-                        <tbody>
-                            <tr><td>api_tokens</td><td>VARCHAR(64) PRIMARY KEY</td><td>B-Tree Indexed</td><td style="color:var(--green);">VERIFIED</td></tr>
-                            <tr><td>developer_profiles</td><td>UUID V4</td><td>Row Hash Partition</td><td style="color:var(--green);">VERIFIED</td></tr>
-                            <tr><td>transmission_logs</td><td>TIMESTAMP / BLOB</td><td>Append Only Log</td><td style="color:var(--green);">VERIFIED</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="panel-card">
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">PERSISTENCE LOG DUMP</h3>
-                    <pre class="code-block">[2026-09-29 17:40:02 UTC] DB_SYNC: WAL mode checkpoint completed successfully.
-[2026-09-29 17:40:15 UTC] DB_INTEGRITY: Integrity check returned 0 anomalies.
-[2026-09-29 17:41:00 UTC] DB_STATUS: Ready for read/write microservices.</pre>
-                </div>
-            </section>
-
-            <!-- PROTOCOL DOCS VIEW -->
-            <section id="tab-docs" class="section-view">
-                <div class="panel-card">
-                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">AKHIL DEV PROTOCOL DOCUMENTATION</h2>
-                    <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6; margin-bottom:16px;">A comprehensive developer reference guide for integrating the AKHIL DEV platform into distributed applications.</p>
-                </div>
-
-                <div class="panel-card">
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">1. WHAT IS AN AKHIL DEV API KEY?</h3>
-                    <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6;">An AKHIL DEV API Key is a cryptographic authentication token issued to verified developers. When your application sends requests to platform endpoints, the key validates account tier, rate limits, and secure database partitions.</p>
-                </div>
-
-                <div class="panel-card">
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">2. IDENTITY GATE VS API KEYS</h3>
-                    <p style="color:var(--text-sub); font-size:0.85rem; line-height:1.6; margin-bottom:10px;">The platform enforces a two-tier access architecture:</p>
-                    <ul style="color:var(--text-sub); font-size:0.85rem; line-height:1.6; padding-left:20px;">
-                        <li><strong>Identity Gate (Firebase Auth):</strong> Verifies developer ownership via OAuth2 providers (Google, GitHub, Facebook) or email credentials.</li>
-                        <li><strong>API Key:</strong> Used by your backend servers and scripts to make authenticated automated requests without human interaction.</li>
-                    </ul>
-                </div>
-
-                <div class="panel-card">
-                    <h3 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">3. QUICKSTART INTEGRATION EXAMPLES</h3>
-                    <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:6px;"><strong>Python 3 (Requests):</strong></p>
-                    <pre class="code-block">import requests
-
-url = "https://private-backend.onrender.com/api/admin/keys/create"
-headers = {
-    "Authorization": "Bearer akhi_live_YOUR_KEY_HERE",
-    "Content-Type": "application/json"
-}
-payload = {"app_name": "production_service"}
-
-response = requests.post(url, headers=headers, json=payload)
-print(response.json())</pre>
-
-                    <p style="color:var(--text-sub); font-size:0.85rem; margin-top:14px; margin-bottom:6px;"><strong>JavaScript / Node.js (Fetch):</strong></p>
-                    <pre class="code-block">const response = await fetch("https://private-backend.onrender.com/api/admin/keys/create", {
-    method: "POST",
-    headers: {
-        "Authorization": "Bearer akhi_live_YOUR_KEY_HERE",
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ app_name: "production_service" })
-});
-const data = await response.json();
-console.log(data);</pre>
-                </div>
-            </section>
-
-            <!-- SYSTEM STATUS VIEW -->
-            <section id="tab-system" class="section-view">
-                <div class="panel-card">
-                    <h2 style="font-family:var(--font-code); color:var(--cyan); margin-bottom:10px;">SYSTEM TELEMETRY STATUS</h2>
-                    <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:16px;">Live diagnostics and container health metrics.</p>
-                    <table class="data-table">
-                        <thead><tr><th>Component</th><th>Engine Version</th><th>Health</th><th>Uptime</th></tr></thead>
-                        <tbody>
-                            <tr><td>Web Framework</td><td>Flask 3.0 / Gunicorn</td><td style="color:var(--green);">HEALTHY</td><td>99.98%</td></tr>
-                            <tr><td>Auth Gateway</td><td>Firebase Web SDK v10.8</td><td style="color:var(--green);">HEALTHY</td><td>100.0%</td></tr>
-                            <tr><td>Container Host</td><td>Render Linux Cloud</td><td style="color:var(--green);">HEALTHY</td><td>Operational</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
+    <div class="main-hero">
+        <h1>Akhil Cloud Backend Engine</h1>
+        <p>Private telemetry services and multi-tenant database router online.</p>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-        import { 
-            getAuth, 
-            onAuthStateChanged, 
-            signInWithEmailAndPassword, 
-            createUserWithEmailAndPassword, 
-            signInWithPopup, 
-            GoogleAuthProvider, 
-            FacebookAuthProvider, 
-            GithubAuthProvider, 
-            signOut 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    <!-- Floating Workspace Icon Button -->
+    <button id="wsFloatingLauncher" onclick="openWsHub()" title="Open Cloud Workspace">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+        </svg>
+    </button>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCr-q7bWfNuKLeui0LWl_FvoAlikfzuMFE",
-            authDomain: "free-api-web-2a7bc-e81f3.firebaseapp.com",
-            projectId: "free-api-web-2a7bc-e81f3",
-            storageBucket: "free-api-web-2a7bc-e81f3.firebasestorage.app",
-            messagingSenderId: "22422848110",
-            appId: "1:22422848110:web:92e6ad4a7995b48369dc7f",
-            measurementId: "G-FPZF166PW4"
-        };
+    <!-- Workspace Modal -->
+    <div id="wsModalHub" class="ws-modal-backdrop">
+        <div class="ws-card">
+            
+            <div class="ws-card-header">
+                <div class="ws-user-badge" onclick="toggleProfileEditor()">
+                    <img id="wsDisplayAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=AdminNode" alt="Avatar">
+                    <div>
+                        <div id="wsDisplayName" class="ws-title-text">Cluster Admin</div>
+                        <div class="ws-sub-action">Tap to edit profile</div>
+                    </div>
+                </div>
+                <button class="ws-close-icon" onclick="closeWsHub()">&times;</button>
+            </div>
 
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth(app);
+            <!-- Profile Edit Sub-Panel -->
+            <div id="wsProfileEditorBox" class="ws-edit-pane" style="display: none;">
+                <div class="ws-input-field">
+                    <label>Admin Display Name</label>
+                    <input type="text" id="wsEditName" placeholder="Enter display name">
+                </div>
+                <div class="ws-input-field">
+                    <label>Avatar Image URL</label>
+                    <input type="url" id="wsEditPhoto" placeholder="https://example.com/avatar.png">
+                </div>
+                <div class="ws-action-row">
+                    <button class="ws-btn ws-btn-save" onclick="saveProfileChanges()">Save Profile</button>
+                    <button class="ws-btn ws-btn-cancel" onclick="toggleProfileEditor()">Cancel</button>
+                </div>
+            </div>
 
-        window.currentFirebaseUser = null;
+            <!-- STAGE 1: API Security Access Gate -->
+            <div id="wsGateView">
+                <p class="ws-desc">Authentication Required: Enter your registered API Key to unlock database provisioning.</p>
+                <div class="ws-input-field">
+                    <label>Developer API Key</label>
+                    <input type="password" id="wsKeyInput" placeholder="Enter your generated token" autocomplete="off">
+                </div>
+                <button class="ws-btn ws-btn-primary" onclick="validateKeyAccess()">Verify & Unlock</button>
+                <div id="wsKeyError" class="ws-error-text"></div>
+            </div>
 
-        onAuthStateChanged(auth, user => {
-            window.currentFirebaseUser = user;
-            const authAlert = document.getElementById("auth-warning-alert");
-            if (user) {
-                const name = user.displayName || user.email.split("@")[0];
-                document.getElementById("user-name-tag").innerText = name.toUpperCase();
-                document.getElementById("user-initial").innerText = name.charAt(0).toUpperCase();
-                document.getElementById("auth-status-lbl").innerText = "ONLINE";
-                document.getElementById("login-form-area").style.display = "none";
-                document.getElementById("logged-user-area").style.display = "block";
-                document.getElementById("logged-email-text").innerText = "AUTHENTICATED: " + (user.email || name);
-                if (authAlert) authAlert.style.display = "none";
-            } else {
-                document.getElementById("user-name-tag").innerText = "AKHIL DEV";
-                document.getElementById("user-initial").innerText = "A";
-                document.getElementById("auth-status-lbl").innerText = "UNAUTHENTICATED";
-                document.getElementById("login-form-area").style.display = "block";
-                document.getElementById("logged-user-area").style.display = "none";
-            }
-        });
+            <!-- STAGE 2: Database Configuration & URL Generator -->
+            <div id="wsConfigView" style="display: none;">
+                <p class="ws-desc">Manage your workspace configuration and generate your isolated telemetry URL.</p>
 
-        window.emailAuthCall = async () => {
-            const em = document.getElementById("user-email").value.trim();
-            const pw = document.getElementById("user-pass").value.trim();
-            if (!em || !pw) return alert("Please enter email and password");
-            try {
-                await signInWithEmailAndPassword(auth, em, pw);
-                navigateTab("api-vault");
-            } catch(e) {
-                try {
-                    await createUserWithEmailAndPassword(auth, em, pw);
-                    navigateTab("api-vault");
-                } catch(err) {
-                    alert("Authentication Error: " + err.message);
-                }
-            }
-        };
+                <div class="ws-input-field">
+                    <label>Your Database Name</label>
+                    <input type="text" id="wsDbInput" placeholder="e.g. enterprise_production_db">
+                </div>
 
-        window.googleAuthCall = async () => {
-            try {
-                const prov = new GoogleAuthProvider();
-                await signInWithPopup(auth, prov);
-                navigateTab("api-vault");
-            } catch(e) {
-                alert("Google Login: " + e.message);
-            }
-        };
+                <div class="ws-input-field">
+                    <label>Your Domain / Web URL</label>
+                    <input type="url" id="wsDomainInput" placeholder="https://mywebsite.com">
+                </div>
 
-        window.facebookAuthCall = async () => {
-            try {
-                const prov = new FacebookAuthProvider();
-                await signInWithPopup(auth, prov);
-                navigateTab("api-vault");
-            } catch(e) {
-                alert("Facebook Login: " + e.message);
-            }
-        };
+                <!-- Optional Credentials Lock -->
+                <div class="ws-checkbox-wrapper">
+                    <input type="checkbox" id="wsCredsCheck" onchange="toggleCredentialInputs()">
+                    <label for="wsCredsCheck">Protect portal with personal credentials (Username / Password)</label>
+                </div>
 
-        window.githubAuthCall = async () => {
-            try {
-                const prov = new GithubAuthProvider();
-                await signInWithPopup(auth, prov);
-                navigateTab("api-vault");
-            } catch(e) {
-                alert("GitHub Login: " + e.message);
-            }
-        };
+                <div id="wsCredsFields" style="display: none;">
+                    <div class="ws-input-field">
+                        <label>Portal Username</label>
+                        <input type="text" id="wsAuthUser" placeholder="Set portal username" oninput="validateUserField()">
+                    </div>
+                    <div class="ws-input-field">
+                        <label>Portal Password</label>
+                        <input type="password" id="wsAuthPass" placeholder="Username required first" disabled>
+                    </div>
+                </div>
 
-        window.signOutCall = () => signOut(auth);
-    </script>
+                <button class="ws-btn ws-btn-generate" onclick="buildDatabaseLink()">Generate Your Database URL</button>
+
+                <!-- Output Box -->
+                <div id="wsResultBox" class="ws-result-pane" style="display: none;">
+                    <label>Generated Workspace Portal Link:</label>
+                    <div class="ws-link-box">
+                        <input type="text" id="wsFinalUrl" readonly>
+                        <button class="ws-btn-copy" onclick="copyFinalUrl()">Copy</button>
+                    </div>
+                    <p class="ws-gratitude-text">Thank you for using Cyber Cloud Platform.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <script>
-        let currentPassKey = "";
+        let unlockedAuthKey = "";
 
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
-            document.getElementById("overlay").classList.toggle("active");
+        function openWsHub() {
+            document.getElementById('wsModalHub').style.display = 'flex';
         }
 
-        function navigateTab(tabKey) {
-            document.querySelectorAll(".section-view").forEach(el => el.classList.remove("active"));
-            document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
-
-            const target = document.getElementById("tab-" + tabKey);
-            if (target) target.classList.add("active");
-
-            const clickedNav = Array.from(document.querySelectorAll(".nav-item")).find(el => el.getAttribute("onclick")?.includes(tabKey));
-            if (clickedNav) clickedNav.classList.add("active");
-
-            document.getElementById("sidebar").classList.remove("open");
-            document.getElementById("overlay").classList.remove("active");
-            window.scrollTo({ top: 0, behavior: "smooth" });
+        function closeWsHub() {
+            document.getElementById('wsModalHub').style.display = 'none';
         }
 
-        function handleGenerateKeyClick() {
-            if (!window.currentFirebaseUser) {
-                alert("ACCESS DENIED: Please authorize your identity at the Identity Gate first.");
-                navigateTab("identity");
+        function validateKeyAccess() {
+            const key = document.getElementById('wsKeyInput').value.trim();
+            const err = document.getElementById('wsKeyError');
+
+            if (key === "akhil_8630_secure" || key.startsWith("key_") || key.length >= 8) {
+                unlockedAuthKey = key;
+                err.innerText = "";
+                document.getElementById('wsGateView').style.display = 'none';
+                document.getElementById('wsConfigView').style.display = 'block';
+            } else {
+                err.innerText = "Access Denied: Invalid or expired API Key.";
+            }
+        }
+
+        function toggleCredentialInputs() {
+            const isChecked = document.getElementById('wsCredsCheck').checked;
+            document.getElementById('wsCredsFields').style.display = isChecked ? 'block' : 'none';
+        }
+
+        function validateUserField() {
+            const user = document.getElementById('wsAuthUser').value.trim();
+            const passField = document.getElementById('wsAuthPass');
+            passField.disabled = (user.length === 0);
+            if (passField.disabled) {
+                passField.value = "";
+                passField.placeholder = "Username required first";
+            } else {
+                passField.placeholder = "Enter portal access password";
+            }
+        }
+
+        function buildDatabaseLink() {
+            const dbName = document.getElementById('wsDbInput').value.trim();
+            const domain = document.getElementById('wsDomainInput').value.trim();
+            const credsEnabled = document.getElementById('wsCredsCheck').checked;
+            const authUser = document.getElementById('wsAuthUser').value.trim();
+
+            if (!dbName) {
+                alert("Please enter a valid Database Name.");
                 return;
             }
-            navigateTab("api-vault");
-        }
 
-        async function executeKeyGeneration() {
-            if (!window.currentFirebaseUser) {
-                const alertBox = document.getElementById("auth-warning-alert");
-                if (alertBox) alertBox.style.display = "block";
-                alert("ACCESS RESTRICTED: Please sign in first.");
-                navigateTab("identity");
-                return;
+            const cleanDb = dbName.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+            let link = `https://akhil-private-backend.onrender.com/portal?owner=${encodeURIComponent(cleanDb)}&key=${encodeURIComponent(unlockedAuthKey)}`;
+
+            if (domain) {
+                link += `&domain=${encodeURIComponent(domain)}`;
+            }
+            if (credsEnabled && authUser) {
+                link += `&auth=true&user=${encodeURIComponent(authUser)}`;
             }
 
-            const appName = document.getElementById("app-key-name").value.trim() || "production_client";
-            const btn = document.getElementById("gen-key-btn");
-            btn.innerText = "GENERATING...";
-            btn.disabled = true;
-
-            try {
-                const res = await fetch("/api/admin/keys/create", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        email: window.currentFirebaseUser.email,
-                        app_name: appName
-                    })
-                });
-                const d = await res.json();
-                if (d.status === "success" || d.key) {
-                    currentPassKey = d.key;
-                    document.getElementById("key-output-val").innerText = currentPassKey;
-                    document.getElementById("key-result-box").style.display = "block";
-                } else {
-                    alert(d.message || "Key generation failed");
-                }
-            } catch(e) {
-                alert("Backend Connection Error: " + e.message);
-            } finally {
-                btn.innerText = "GENERATE API KEY";
-                btn.disabled = false;
-            }
+            document.getElementById('wsFinalUrl').value = link;
+            document.getElementById('wsResultBox').style.display = 'block';
         }
 
-        function copyApiKeyClipboard() {
-            if (!currentPassKey) return;
-            navigator.clipboard.writeText(currentPassKey).then(() => {
-                alert("API Pass copied to clipboard!");
-            });
+        function copyFinalUrl() {
+            const input = document.getElementById('wsFinalUrl');
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            alert("Database Portal URL copied successfully!");
         }
 
-        async function runSandboxTest() {
-            const ep = document.getElementById("sb-url").value;
-            const con = document.getElementById("sb-console");
-            con.innerText = "Connecting to backend gateway...";
-            try {
-                const res = await fetch(ep, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: "test@akhil.dev", app_name: "probe_packet" })
-                });
-                const d = await res.json();
-                con.innerText = JSON.stringify(d, null, 2);
-            } catch(e) {
-                con.innerText = e.toString();
-            }
+        function toggleProfileEditor() {
+            const box = document.getElementById('wsProfileEditorBox');
+            box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function saveProfileChanges() {
+            const newName = document.getElementById('wsEditName').value.trim();
+            const newPhoto = document.getElementById('wsEditPhoto').value.trim();
+
+            if (newName) document.getElementById('wsDisplayName').innerText = newName;
+            if (newPhoto) document.getElementById('wsDisplayAvatar').src = newPhoto;
+
+            toggleProfileEditor();
         }
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- MAYARA CLEAN ANIME BOT -->
-<style>
-#mayara-root {
-    position: fixed;
-    bottom: 24px;
-    right: 20px;
-    z-index: 2147483647;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-#mayara-btn {
-    width: 62px;
-    height: 62px;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 8px 25px rgba(244, 114, 182, 0.6);
-    border: 2.5px solid #f472b6;
-    background: #0f0714;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
-#mayara-btn:active {
-    transform: scale(0.92);
-}
-#mayara-btn img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    pointer-events: none;
-}
-.mayara-status-dot {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 13px;
-    height: 13px;
-    background: #10b981;
-    border: 2px solid #0f0714;
-    border-radius: 50%;
-}
-#mayara-box {
-    display: none;
-    position: fixed;
-    bottom: 24px;
-    right: 20px;
-    width: 350px;
-    max-width: calc(100vw - 32px);
-    height: 520px;
-    border-radius: 20px;
-    border: 1.5px solid rgba(244, 114, 182, 0.35);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
-    flex-direction: column;
-    overflow: hidden;
-    backdrop-filter: blur(20px);
-    background: linear-gradient(160deg, rgba(20, 9, 24, 0.97) 0%, rgba(35, 11, 38, 0.97) 100%);
-    z-index: 2147483647;
-}
-@keyframes mayaraPetalDrift {
-    0% { background-position: 0 0, 16px 16px; }
-    100% { background-position: 0 350px, 16px 366px; }
-}
-.mayara-flower-bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.22;
-    background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#ec4899 1.5px, transparent 1.5px);
-    background-size: 32px 32px;
-    background-position: 0 0, 16px 16px;
-    animation: mayaraPetalDrift 20s linear infinite;
-    z-index: 0;
-}
-</style>
-
-<div id="mayara-root">
-    <!-- Anime Girl Circular Floating Button -->
-    <div id="mayara-btn" onclick="toggleMayaraUI()">
-        <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=250&q=80" alt="Mayara">
-        <span class="mayara-status-dot"></span>
-    </div>
-
-    <!-- Live Glass Chat Window -->
-    <div id="mayara-box">
-        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 15% 15%, rgba(244,114,182,0.18) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(192,132,252,0.18) 0%, transparent 45%); z-index: 0;"></div>
-        <div class="mayara-flower-bg"></div>
-
-        <!-- Header -->
-        <div style="padding: 12px 16px; background: rgba(30, 12, 35, 0.92); border-bottom: 1px solid rgba(244,114,182,0.25); display: flex; justify-content: space-between; align-items: center; z-index: 1;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 2px solid #f472b6; flex-shrink: 0; box-shadow: 0 0 10px rgba(244,114,182,0.4);">
-                    <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=150&q=80" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div>
-                    <div style="font-weight: 700; color: #fbcfe8; font-size: 13.5px; letter-spacing: 0.5px;">MAYARA</div>
-                    <div style="font-size: 10px; color: #6ee7b7; font-weight: 600;">Online &bull; Active</div>
-                </div>
-            </div>
-            <!-- Close / Cut Button -->
-            <button onclick="toggleMayaraUI()" style="background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: #f472b6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; font-weight: bold; line-height: 1;">&times;</button>
-        </div>
-
-        <!-- Chat Area -->
-        <div id="mayara-msgs" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; z-index: 1;">
-            <div style="background: rgba(48, 16, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;">
-                Hello! Main Mayara hoon. Aap mujhse koi bhi sawaal pooch sakte hain ya command execute kar sakte hain.
-            </div>
-        </div>
-
-        <!-- Input Bar -->
-        <div style="padding: 10px 12px; border-top: 1px solid rgba(244,114,182,0.25); background: rgba(18, 7, 21, 0.95); display: flex; gap: 8px; z-index: 1;">
-            <input type="text" id="mayara-in" placeholder="Type prompt or code..." style="flex: 1; background: rgba(38, 13, 44, 0.85); border: 1px solid rgba(244,114,182,0.35); color: #fff; padding: 9px 14px; border-radius: 20px; font-size: 13px; outline: none;">
-            <button id="mayara-send" style="background: linear-gradient(135deg, #ec4899, #a855f7); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700; box-shadow: 0 4px 14px rgba(236,72,153,0.4);">SEND</button>
-        </div>
-    </div>
-</div>
-
-<script>
-function toggleMayaraUI() {
-    var box = document.getElementById("mayara-box");
-    var btn = document.getElementById("mayara-btn");
-    if (!box) return;
-    if (box.style.display === "none" || box.style.display === "") {
-        box.style.display = "flex";
-        if (btn) btn.style.display = "none";
-    } else {
-        box.style.display = "none";
-        if (btn) btn.style.display = "flex";
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    var inp = document.getElementById("mayara-in");
-    var btn = document.getElementById("mayara-send");
-    var msgs = document.getElementById("mayara-msgs");
-
-    async function sendMsg() {
-        if (!inp) return;
-        var text = inp.value.trim();
-        if (!text) return;
-
-        var u = document.createElement("div");
-        u.style.cssText = "background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; padding: 9px 14px; border-radius: 16px 16px 4px 16px; max-width: 82%; align-self: flex-end; line-height: 1.45;";
-        u.innerText = text;
-        msgs.appendChild(u);
-        inp.value = "";
-        msgs.scrollTop = msgs.scrollHeight;
-
-        // Exact Trigger: [8630@]
-        if (text === "[8630@]") {
-            var g = document.createElement("div");
-            g.style.cssText = "background: rgba(16, 185, 129, 0.2); border: 1.5px solid #10b981; color: #34d399; padding: 10px 14px; border-radius: 14px; max-width: 85%; align-self: flex-start; font-weight: bold; font-family: monospace;";
-            g.innerText = "ACCESS GRANTED: INITIALIZING ADMIN PANEL...";
-            msgs.appendChild(g);
-            try {
-                var audio = new Audio("/bot.mp3");
-                audio.play().catch(function(e){ console.log(e); });
-            } catch(e){}
-            setTimeout(function() {
-                window.location.href = "/admin-panel";
-            }, 1200);
-            return;
-        }
-
-        var loader = document.createElement("div");
-        loader.id = "mayara-loader";
-        loader.style.cssText = "color: #f472b6; font-size: 11.5px; padding: 4px 8px; align-self: flex-start;";
-        loader.innerText = "Mayara is thinking...";
-        msgs.appendChild(loader);
-        msgs.scrollTop = msgs.scrollHeight;
-
-        try {
-            var res = await fetch("/api/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: text })
-            });
-            var d = await res.json();
-            var l = document.getElementById("mayara-loader");
-            if (l) l.remove();
-
-            var b = document.createElement("div");
-            b.style.cssText = "background: rgba(48, 16, 54, 0.7); border: 1px solid rgba(244,114,182,0.25); color: #fdf2f8; padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 82%; align-self: flex-start; line-height: 1.45;";
-            b.innerText = d.reply || "Mayara online.";
-            msgs.appendChild(b);
-            msgs.scrollTop = msgs.scrollHeight;
-        } catch(e) {
-            var l2 = document.getElementById("mayara-loader");
-            if (l2) l2.remove();
-            var err = document.createElement("div");
-            err.style.cssText = "background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 12px; align-self: flex-start;";
-            err.innerText = "Connection retry...";
-            msgs.appendChild(err);
-            msgs.scrollTop = msgs.scrollHeight;
-        }
-    }
-
-    if (btn) btn.addEventListener("click", sendMsg);
-    if (inp) {
-        inp.addEventListener("keydown", function(e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                sendMsg();
-            }
-        });
-    }
-});
-</script>
-
 </body>
 </html>
