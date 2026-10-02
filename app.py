@@ -1222,3 +1222,374 @@ def apply_cors_headers(response):
 @app.route('/portal')
 def serve_portal():
     return render_template('portal.html')
+
+
+# --- DATABASE CONTROL CENTER SUITE ---
+@app.route("/database-control-center")
+def page_database_control_center():
+    content = """
+    <style>
+        .dcc-container { max-width: 860px; margin: 0 auto; padding: 24px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #f1f5f9; }
+        .dcc-card { background: #0b1120; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+        .dcc-input-group { margin-bottom: 18px; }
+        .dcc-label { display: block; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 8px; }
+        .dcc-input { width: 100%; box-sizing: border-box; background: #0f172a; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 14px; color: #f8fafc; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+        .dcc-input:focus { border-color: #38bdf8; box-shadow: 0 0 0 2px rgba(56,189,248,0.2); }
+        .dcc-input:disabled { background: #020617; color: #475569; cursor: not-allowed; border-color: rgba(255,255,255,0.04); }
+        .dcc-btn { padding: 12px 20px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .dcc-btn-primary { background: #0284c7; color: #fff; width: 100%; }
+        .dcc-btn-primary:hover { background: #0369a1; }
+        .dcc-btn-success { background: #059669; color: #fff; width: 100%; }
+        .dcc-btn-success:hover { background: #047857; }
+        .dcc-btn-secondary { background: #1e293b; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); }
+        .dcc-btn-secondary:hover { background: #334155; color: #fff; }
+        .dcc-error { color: #f43f5e; font-size: 0.85rem; margin-top: 8px; font-weight: 500; }
+        .dcc-success-msg { color: #10b981; font-size: 0.85rem; margin-top: 8px; font-weight: 500; }
+        .dcc-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 18px; margin-bottom: 22px; }
+        .dcc-profile-badge { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
+        .dcc-profile-badge:hover { background: rgba(255,255,255,0.06); }
+        .dcc-profile-badge img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #38bdf8; }
+        .dcc-auth-box { background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 18px; margin: 20px 0; }
+        .dcc-footer { text-align: center; margin-top: 26px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem; color: #64748b; letter-spacing: 0.03em; }
+    </style>
+
+    <div class="dcc-container">
+        <div id="dcc-gate" class="dcc-card" style="max-width: 480px; margin: 40px auto;">
+            <div style="text-align:center; margin-bottom: 22px;">
+                <div style="display:inline-block; padding:12px; border-radius:50%; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25); margin-bottom:12px;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <h2 style="font-size:1.4rem; font-weight:700; margin:0 0 6px;">Database Control Center</h2>
+                <p style="font-size:0.9rem; color:#94a3b8; margin:0;">Enter your API Key to continue</p>
+            </div>
+            
+            <div class="dcc-input-group">
+                <label class="dcc-label">Your API Key</label>
+                <input type="password" id="dcc-api-key-input" class="dcc-input" placeholder="Paste your developer key here...">
+                <div id="dcc-gate-error" class="dcc-error"></div>
+            </div>
+
+            <button type="button" onclick="verifyAccessKey()" class="dcc-btn dcc-btn-primary">Verify API Key</button>
+        </div>
+
+        <div id="dcc-dashboard" class="dcc-card" style="display:none;">
+            <div class="dcc-header">
+                <div>
+                    <h2 style="font-size:1.35rem; font-weight:700; margin:0 0 4px;">Database Control Center</h2>
+                    <span style="font-size:0.8rem; color:#10b981; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                        <span style="width:8px; height:8px; background:#10b981; border-radius:50%; display:inline-block;"></span> Authenticated Session Active
+                    </span>
+                </div>
+                
+                <div class="dcc-profile-badge" onclick="toggleProfileModal()" title="Click to manage profile">
+                    <img id="dcc-badge-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=DBMaster" alt="Profile">
+                    <div>
+                        <div id="dcc-badge-name" style="font-size:0.88rem; font-weight:600;">Database Admin</div>
+                        <div style="font-size:0.75rem; color:#38bdf8;">Edit Profile</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dcc-profile-panel" style="display:none; background:#020617; border:1px solid rgba(56,189,248,0.25); border-radius:10px; padding:18px; margin-bottom:24px;">
+                <h3 style="font-size:1rem; font-weight:600; margin:0 0 14px;">Profile Settings</h3>
+                <div style="display:flex; gap:16px; align-items:center; margin-bottom:14px;">
+                    <img id="dcc-profile-preview" src="https://api.dicebear.com/7.x/bottts/svg?seed=DBMaster" style="width:60px; height:60px; border-radius:50%; border:2px solid #38bdf8; object-fit:cover;">
+                    <div style="flex:1;">
+                        <label class="dcc-label">Profile Photo URL</label>
+                        <input type="url" id="dcc-profile-url-input" class="dcc-input" placeholder="https://example.com/avatar.jpg">
+                    </div>
+                </div>
+                <div class="dcc-input-group">
+                    <label class="dcc-label">Display Name</label>
+                    <input type="text" id="dcc-profile-name-input" class="dcc-input" placeholder="Your display name">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button type="button" onclick="saveProfileSettings()" class="dcc-btn dcc-btn-primary" style="flex:1;">Save Profile</button>
+                    <button type="button" onclick="toggleProfileModal()" class="dcc-btn dcc-btn-secondary">Cancel</button>
+                </div>
+            </div>
+
+            <form id="dcc-form" onsubmit="return false;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="dcc-input-group">
+                        <label class="dcc-label">Your Name</label>
+                        <input type="text" id="dcc-name" class="dcc-input" placeholder="e.g. Alex Carter">
+                    </div>
+                    <div class="dcc-input-group">
+                        <label class="dcc-label">Your Domain Name</label>
+                        <input type="text" id="dcc-domain" class="dcc-input" placeholder="e.g. cybercloud.internal">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="dcc-input-group">
+                        <label class="dcc-label">Web URL</label>
+                        <input type="url" id="dcc-web-url" class="dcc-input" placeholder="https://example.com">
+                        <div id="dcc-web-url-err" class="dcc-error"></div>
+                    </div>
+                    <div class="dcc-input-group">
+                        <label class="dcc-label">Air Web URL</label>
+                        <input type="url" id="dcc-air-url" class="dcc-input" placeholder="https://air.example.com">
+                        <div id="dcc-air-url-err" class="dcc-error"></div>
+                    </div>
+                </div>
+
+                <div class="dcc-input-group">
+                    <label class="dcc-label">Your Database Name</label>
+                    <input type="text" id="dcc-dbname" class="dcc-input" placeholder="e.g. production_shard_01">
+                    <div id="dcc-dbname-err" class="dcc-error"></div>
+                </div>
+
+                <div class="dcc-auth-box">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                        <div>
+                            <h4 style="font-size:0.95rem; font-weight:700; margin:0 0 4px;">Database Authentication</h4>
+                            <p style="font-size:0.8rem; color:#94a3b8; margin:0;">Authentication is optional. Enable it only if you want to protect your database with a username and password.</p>
+                        </div>
+                        <input type="checkbox" id="dcc-auth-toggle" onchange="handleAuthToggle()" style="width:18px; height:18px; cursor:pointer;">
+                    </div>
+
+                    <div id="dcc-auth-fields" style="display:none; margin-top:16px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                            <div class="dcc-input-group" style="margin-bottom:0;">
+                                <label class="dcc-label">Username</label>
+                                <input type="text" id="dcc-username" class="dcc-input" placeholder="Enter DB Username" oninput="handleUserFieldInput()">
+                            </div>
+                            <div class="dcc-input-group" style="margin-bottom:0;">
+                                <label class="dcc-label">Password</label>
+                                <input type="password" id="dcc-password" class="dcc-input" placeholder="Username required first" disabled>
+                            </div>
+                        </div>
+                        <div id="dcc-auth-err" class="dcc-error"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-bottom:20px;">
+                    <button type="button" id="dcc-save-btn" onclick="saveFormState()" class="dcc-btn dcc-btn-secondary" style="flex:1;">Save Changes</button>
+                    <button type="button" id="dcc-edit-btn" onclick="enableFormEdit()" class="dcc-btn dcc-btn-secondary" style="flex:1; display:none;">Edit Details</button>
+                </div>
+                <div id="dcc-save-status" class="dcc-success-msg" style="text-align:center;"></div>
+
+                <div style="margin-top:22px;">
+                    <button type="button" onclick="generateDatabaseUrl()" class="dcc-btn dcc-btn-success">Generate Your Database URL</button>
+                </div>
+
+                <div id="dcc-result-panel" style="display:none; margin-top:20px; background:#020617; border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:18px;">
+                    <label class="dcc-label" style="color:#34d399;">Your Database URL</label>
+                    <div style="display:flex; gap:10px; margin-bottom:8px;">
+                        <input type="text" id="dcc-generated-url" class="dcc-input" readonly style="background:#0b1120; color:#38bdf8; font-family:monospace;">
+                        <button type="button" onclick="copyDatabaseUrl()" class="dcc-btn dcc-btn-secondary" style="white-space:nowrap;">Copy Database URL</button>
+                    </div>
+                    <div id="dcc-gen-success-msg" style="font-size:0.85rem; color:#10b981; font-weight:500;"></div>
+                </div>
+            </form>
+
+            <div class="dcc-footer">
+                Thank you for using our database service.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let verifiedKey = "";
+        const validProtocolRegex = /^(https?:\/\/)[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})(:[0-9]{1,5})?(\/.*)?$/i;
+
+        function verifyAccessKey() {
+            const input = document.getElementById('dcc-api-key-input');
+            const err = document.getElementById('dcc-gate-error');
+            const key = input.value.trim();
+
+            if (key.length >= 8 || key === 'akhil_8630_secure' || key.startsWith('key_')) {
+                verifiedKey = key;
+                err.innerText = '';
+                document.getElementById('dcc-gate').style.display = 'none';
+                document.getElementById('dcc-dashboard').style.display = 'block';
+                loadStoredState();
+            } else {
+                err.innerText = 'Invalid API Key. Please check your key and try again.';
+            }
+        }
+
+        function validateUrlString(url) {
+            return validProtocolRegex.test(url.trim());
+        }
+
+        function handleAuthToggle() {
+            const isChecked = document.getElementById('dcc-auth-toggle').checked;
+            const fields = document.getElementById('dcc-auth-fields');
+            fields.style.display = isChecked ? 'block' : 'none';
+                document.getElementById('dcc-username').value = '';
+                document.getElementById('dcc-password').value = '';
+                handleUserFieldInput();
+            }
+        }
+
+        function handleUserFieldInput() {
+            const u = document.getElementById('dcc-username').value.trim();
+            const p = document.getElementById('dcc-password');
+            if (u.length > 0) {
+                p.disabled = false;
+                p.placeholder = 'Enter DB Password';
+            } else {
+                p.disabled = true;
+                p.value = '';
+                p.placeholder = 'Username required first';
+            }
+        }
+
+        function toggleProfileModal() {
+            const p = document.getElementById('dcc-profile-panel');
+            p.style.display = (p.style.display === 'block') ? 'none' : 'block';
+            if (p.style.display === 'block') {
+                document.getElementById('dcc-profile-name-input').value = document.getElementById('dcc-badge-name').innerText;
+                document.getElementById('dcc-profile-url-input').value = document.getElementById('dcc-badge-avatar').src;
+            }
+        }
+
+        function saveProfileSettings() {
+            const newName = document.getElementById('dcc-profile-name-input').value.trim();
+            const newPhoto = document.getElementById('dcc-profile-url-input').value.trim();
+
+            if (newName) {
+                document.getElementById('dcc-badge-name').innerText = newName;
+                localStorage.setItem('dcc_profile_name', newName);
+            }
+            if (newPhoto) {
+                document.getElementById('dcc-badge-avatar').src = newPhoto;
+                document.getElementById('dcc-profile-preview').src = newPhoto;
+                localStorage.setItem('dcc_profile_photo', newPhoto);
+            }
+            toggleProfileModal();
+        }
+
+        function generateDatabaseUrl() {
+            const name = document.getElementById('dcc-name').value.trim();
+            const domain = document.getElementById('dcc-domain').value.trim();
+            const webUrl = document.getElementById('dcc-web-url').value.trim();
+            const airUrl = document.getElementById('dcc-air-url').value.trim();
+            const dbname = document.getElementById('dcc-dbname').value.trim();
+
+            const webErr = document.getElementById('dcc-web-url-err');
+            const airErr = document.getElementById('dcc-air-url-err');
+            const dbErr = document.getElementById('dcc-dbname-err');
+
+            webErr.innerText = '';
+            airErr.innerText = '';
+            dbErr.innerText = '';
+
+            let hasError = false;
+
+                dbErr.innerText = 'Database Name is required.';
+                hasError = true;
+            }
+
+                webErr.innerText = 'Please enter a valid website URL.';
+                hasError = true;
+            }
+
+                airErr.innerText = 'Please enter a valid website URL.';
+                hasError = true;
+            }
+
+            const authEnabled = document.getElementById('dcc-auth-toggle').checked;
+            const username = document.getElementById('dcc-username').value.trim();
+            const authErr = document.getElementById('dcc-auth-err');
+            authErr.innerText = '';
+
+                authErr.innerText = 'Username is required when authentication is enabled.';
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Generate verified production database URL
+            const cleanDb = dbname.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+            const baseOrigin = window.location.origin;
+            let finalUrl = baseOrigin + '/portal?owner=' + encodeURIComponent(cleanDb) + '&key=' + encodeURIComponent(verifiedKey);
+
+            if (domain) finalUrl += '&domain=' + encodeURIComponent(domain);
+            if (webUrl) finalUrl += '&web_url=' + encodeURIComponent(webUrl);
+            if (airUrl) finalUrl += '&air_url=' + encodeURIComponent(airUrl);
+            if (authEnabled && username) finalUrl += '&auth=true&user=' + encodeURIComponent(username);
+
+            document.getElementById('dcc-generated-url').value = finalUrl;
+            document.getElementById('dcc-gen-success-msg').innerText = 'Your database URL has been generated successfully.';
+            document.getElementById('dcc-result-panel').style.display = 'block';
+        }
+
+        function copyDatabaseUrl() {
+            const input = document.getElementById('dcc-generated-url');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(input.value).then(() => {
+                alert('Database URL copied to clipboard!');
+            });
+        }
+
+        function saveFormState() {
+            const data = {
+                name: document.getElementById('dcc-name').value,
+                domain: document.getElementById('dcc-domain').value,
+                web_url: document.getElementById('dcc-web-url').value,
+                air_url: document.getElementById('dcc-air-url').value,
+                dbname: document.getElementById('dcc-dbname').value,
+                auth_enabled: document.getElementById('dcc-auth-toggle').checked,
+                username: document.getElementById('dcc-username').value
+            };
+            localStorage.setItem('dcc_saved_form', JSON.stringify(data));
+
+            // Lock inputs to view mode
+            setInputsReadOnly(true);
+            document.getElementById('dcc-save-btn').style.display = 'none';
+            document.getElementById('dcc-edit-btn').style.display = 'block';
+
+            const status = document.getElementById('dcc-save-status');
+            status.innerText = 'Changes saved successfully.';
+            setTimeout(() => { status.innerText = ''; }, 3500);
+        }
+
+        function enableFormEdit() {
+            setInputsReadOnly(false);
+            document.getElementById('dcc-save-btn').style.display = 'block';
+            document.getElementById('dcc-edit-btn').style.display = 'none';
+        }
+
+        function setInputsReadOnly(locked) {
+            document.getElementById('dcc-name').disabled = locked;
+            document.getElementById('dcc-domain').disabled = locked;
+            document.getElementById('dcc-web-url').disabled = locked;
+            document.getElementById('dcc-air-url').disabled = locked;
+            document.getElementById('dcc-dbname').disabled = locked;
+            document.getElementById('dcc-auth-toggle').disabled = locked;
+            document.getElementById('dcc-username').disabled = locked;
+            else document.getElementById('dcc-password').disabled = true;
+        }
+
+        function loadStoredState() {
+            const pName = localStorage.getItem('dcc_profile_name');
+            const pPhoto = localStorage.getItem('dcc_profile_photo');
+            if (pName) document.getElementById('dcc-badge-name').innerText = pName;
+            if (pPhoto) {
+                document.getElementById('dcc-badge-avatar').src = pPhoto;
+                document.getElementById('dcc-profile-preview').src = pPhoto;
+            }
+
+            const raw = localStorage.getItem('dcc_saved_form');
+            if (raw) {
+                try {
+                    const data = JSON.parse(raw);
+                    document.getElementById('dcc-name').value = data.name || '';
+                    document.getElementById('dcc-domain').value = data.domain || '';
+                    document.getElementById('dcc-web-url').value = data.web_url || '';
+                    document.getElementById('dcc-air-url').value = data.air_url || '';
+                    document.getElementById('dcc-dbname').value = data.dbname || '';
+                    document.getElementById('dcc-auth-toggle').checked = cd ~/akhi-cloud-enginedata.auth_enabled;
+                    handleAuthToggle();
+                    document.getElementById('dcc-username').value = data.username || '';
+                    handleUserFieldInput();
+                } catch(e) {}
+            }
+        }
+    </script>
+    """
+    return render_page("Database Control Center", "database-control", content)
