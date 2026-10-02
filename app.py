@@ -1,3 +1,33 @@
+
+@app.route("/api/verify-control-key", methods=["POST"])
+def verify_control_key():
+    data = request.get_json(silent=True) or {}
+    key = data.get("api_key", "").strip()
+    if not key:
+        return jsonify({"valid": False, "error": "Please enter your API Key."}), 400
+    
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, app_name, email FROM api_keys WHERE key = ?", (key,))
+        row = cursor.fetchone()
+        conn.close()
+        
+        if row:
+            return jsonify({
+                "valid": True,
+                "app_name": row[1] or 'User App',
+                "email": row[2] or '',
+                "key": key
+            })
+        else:
+            return jsonify({
+                "valid": False,
+                "error": "Invalid API Key. No matching key found in website database."
+            }), 401
+    except Exception as e:
+        return jsonify({"valid": False, "error": "Database error: " + str(e)}), 500
+
 import os
 import sqlite3
 import secrets
@@ -1650,28 +1680,6 @@ def page_database_control_center():
     return render_page("Database Control Center", "database-control", content)
 
 
-@app.route("/api/verify-control-key", methods=["POST"])
-def verify_control_key():
-    data = request.get_json(silent=True) or {}
-    key = data.get("api_key", "").strip()
-    if not key:
-        return jsonify({"valid": False, "error": "Please enter your API Key."}), 400
-    
-    try:
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute("SELECT name, status FROM api_keys WHERE key = ?", (key,))
-        row = cursor.fetchone()
-        conn.close()
-        
-        if row:
-            status = row[1] if row[1] else 'ACTIVE'
-            if str(status).upper() == 'ACTIVE':
-                return jsonify({"valid": True, "owner": row[0], "key": key})
-            else:
-                return jsonify({"valid": False, "error": "This API Key has been revoked or is inactive."}), 403
-        else:
-            return jsonify({"valid": False, "error": "Invalid API Key. Please enter a valid key generated from this website."}), 401
     except Exception as e:
         return jsonify({"valid": False, "error": "Database verification failed: " + str(e)}), 500
 
