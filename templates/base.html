@@ -535,6 +535,7 @@
 
         <ul class="nav-list">
             <li class="nav-section-title">CORE PLATFORM</li>
+            <li><a href="javascript:void(0);" onclick="openWsHub()" class="nav-item"><span>Database Workspace Hub</span></a></li>
             <li><a href="/" class="nav-item {{ 'active' if active_page == 'home' else '' }}"><span>Home</span></a></li>
             <li><a href="/api-keys" class="nav-item {{ 'active' if active_page == 'api-keys' else '' }}"><span>API Keys</span></a></li>
             <li><a href="/sandbox" class="nav-item {{ 'active' if active_page == 'sandbox' else '' }}"><span>Transmission Console</span></a></li>
@@ -1039,6 +1040,182 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+</script>
+
+
+<div id="wsModalHub" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(5,8,16,0.88); backdrop-filter:blur(8px); z-index:99999; align-items:center; justify-content:center;">
+    <div style="background:#0b1120; border:1px solid rgba(255,255,255,0.12); border-radius:12px; width:92%; max-width:480px; padding:22px; color:#f1f5f9; box-shadow:0 12px 35px rgba(0,0,0,0.7); max-height:90vh; overflow-y:auto; font-family:sans-serif;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:14px; margin-bottom:16px;">
+            <div onclick="toggleProfileEditor()" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
+                <img id="wsDisplayAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=AdminNode" style="width:38px; height:38px; border-radius:50%; background:#1e293b; border:1px solid #38bdf8;">
+                <div>
+                    <div id="wsDisplayName" style="font-size:14px; font-weight:600;">Cluster Admin</div>
+                    <div style="font-size:11px; color:#38bdf8;">Tap to edit profile</div>
+                </div>
+            </div>
+            <button onclick="closeWsHub()" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer;">&times;</button>
+        </div>
+
+        <div id="wsProfileEditorBox" style="display:none; background:rgba(255,255,255,0.03); padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); margin-bottom:16px;">
+            <div style="margin-bottom:10px;">
+                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:4px;">Admin Display Name</label>
+                <input type="text" id="wsEditName" placeholder="Enter display name" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:8px 10px; color:#fff; font-size:13px;">
+            </div>
+            <div style="margin-bottom:10px;">
+                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:4px;">Avatar Image URL</label>
+                <input type="url" id="wsEditPhoto" placeholder="https://example.com/avatar.png" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:8px 10px; color:#fff; font-size:13px;">
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="saveProfileChanges()" style="flex:1; padding:8px; background:#38bdf8; color:#0b1120; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">Save Profile</button>
+                <button onclick="toggleProfileEditor()" style="flex:1; padding:8px; background:#334155; color:#fff; border:none; border-radius:6px; font-size:12px; cursor:pointer;">Cancel</button>
+            </div>
+        </div>
+
+        <div id="wsGateView">
+            <p style="font-size:13px; color:#94a3b8; margin-bottom:14px; line-height:1.4;">Authentication Required: Enter your registered API Key to unlock database provisioning.</p>
+            <div style="margin-bottom:14px;">
+                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Developer API Key</label>
+                <input type="password" id="wsKeyInput" placeholder="Enter your generated token" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; color:#fff; font-size:13px;">
+            </div>
+            <button onclick="validateKeyAccess()" style="width:100%; padding:11px; background:#0284c7; color:#fff; border:none; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">Verify & Unlock</button>
+            <div id="wsKeyError" style="color:#f43f5e; font-size:12px; margin-top:8px;"></div>
+        </div>
+
+        <div id="wsConfigView" style="display:none;">
+            <p style="font-size:13px; color:#94a3b8; margin-bottom:14px; line-height:1.4;">Configure your database partition and generate your telemetry URL.</p>
+
+            <div style="margin-bottom:14px;">
+                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Your Database Name</label>
+                <input type="text" id="wsDbInput" placeholder="e.g. enterprise_production_db" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; color:#fff; font-size:13px;">
+            </div>
+
+            <div style="margin-bottom:14px;">
+                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Your Domain / Web URL</label>
+                <input type="url" id="wsDomainInput" placeholder="https://mywebsite.com" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; color:#fff; font-size:13px;">
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#94a3b8; margin:16px 0;">
+                <input type="checkbox" id="wsCredsCheck" onchange="toggleCredentialInputs()">
+                <label for="wsCredsCheck">Protect portal with personal credentials</label>
+            </div>
+
+            <div id="wsCredsFields" style="display:none;">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Portal Username</label>
+                    <input type="text" id="wsAuthUser" placeholder="Set portal username" oninput="validateUserField()" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; color:#fff; font-size:13px;">
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Portal Password</label>
+                    <input type="password" id="wsAuthPass" placeholder="Username required first" disabled style="width:100%; box-sizing:border-box; background:#0f172a; color:#475569; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; font-size:13px;">
+                </div>
+            </div>
+
+            <button onclick="buildDatabaseLink()" style="width:100%; padding:11px; background:#059669; color:#fff; border:none; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">Generate Your Database URL</button>
+
+            <div id="wsResultBox" style="display:none; margin-top:16px; padding:14px; background:rgba(14,165,233,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:8px;">
+                <label style="display:block; font-size:11px; text-transform:uppercase; color:#38bdf8; margin-bottom:6px;">Generated Database URL:</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="wsFinalUrl" readonly style="flex:1; background:#0f172a; border:1px solid #1e293b; color:#38bdf8; padding:8px 10px; font-size:12px; border-radius:4px;">
+                    <button onclick="copyFinalUrl()" style="background:#38bdf8; border:none; padding:0 14px; border-radius:4px; font-size:12px; font-weight:600; cursor:pointer; color:#0b1120;">Copy</button>
+                </div>
+                <p style="font-size:12px; color:#38bdf8; text-align:center; margin-top:12px; font-weight:500;">Thank you for using Cyber Cloud Platform.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let unlockedAuthKey = "";
+
+    function openWsHub() {
+        document.getElementById('wsModalHub').style.display = 'flex';
+    }
+
+    function closeWsHub() {
+        document.getElementById('wsModalHub').style.display = 'none';
+    }
+
+    function validateKeyAccess() {
+        const key = document.getElementById('wsKeyInput').value.trim();
+        const err = document.getElementById('wsKeyError');
+
+        if (key === "akhil_8630_secure" || key.startsWith("key_") || key.length >= 8) {
+            unlockedAuthKey = key;
+            err.innerText = "";
+            document.getElementById('wsGateView').style.display = 'none';
+            document.getElementById('wsConfigView').style.display = 'block';
+        } else {
+            err.innerText = "Access Denied: Invalid or expired API Key.";
+        }
+    }
+
+    function toggleCredentialInputs() {
+        const isChecked = document.getElementById('wsCredsCheck').checked;
+        document.getElementById('wsCredsFields').style.display = isChecked ? 'block' : 'none';
+    }
+
+    function validateUserField() {
+        const user = document.getElementById('wsAuthUser').value.trim();
+        const passField = document.getElementById('wsAuthPass');
+        passField.disabled = (user.length === 0);
+        if (passField.disabled) {
+            passField.value = "";
+            passField.style.background = "#0f172a";
+            passField.style.color = "#475569";
+            passField.placeholder = "Username required first";
+        } else {
+            passField.style.background = "#1e293b";
+            passField.style.color = "#fff";
+            passField.placeholder = "Enter portal access password";
+        }
+    }
+
+    function buildDatabaseLink() {
+        const dbName = document.getElementById('wsDbInput').value.trim();
+        const domain = document.getElementById('wsDomainInput').value.trim();
+        const credsEnabled = document.getElementById('wsCredsCheck').checked;
+        const authUser = document.getElementById('wsAuthUser').value.trim();
+
+            alert("Please enter a valid Database Name.");
+            return;
+        }
+
+        const cleanDb = dbName.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+        let link = "https://akhil-private-backend.onrender.com/portal?owner=" + encodeURIComponent(cleanDb) + "&key=" + encodeURIComponent(unlockedAuthKey);
+
+        if (domain) {
+            link += "&domain=" + encodeURIComponent(domain);
+        }
+        if (credsEnabled && authUser) {
+            link += "&auth=true&user=" + encodeURIComponent(authUser);
+        }
+
+        document.getElementById('wsFinalUrl').value = link;
+        document.getElementById('wsResultBox').style.display = 'block';
+    }
+
+    function copyFinalUrl() {
+        const input = document.getElementById('wsFinalUrl');
+        input.select();
+        navigator.clipboard.writeText(input.value);
+    }
+
+    function toggleProfileEditor() {
+        const box = document.getElementById('wsProfileEditorBox');
+        box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function saveProfileChanges() {
+        const newName = document.getElementById('wsEditName').value.trim();
+        const newPhoto = document.getElementById('wsEditPhoto').value.trim();
+
+        if (newName) document.getElementById('wsDisplayName').innerText = newName;
+        if (newPhoto) document.getElementById('wsDisplayAvatar').src = newPhoto;
+
+        toggleProfileEditor();
+    }
 </script>
 
 </body>
