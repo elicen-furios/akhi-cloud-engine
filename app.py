@@ -1269,7 +1269,17 @@ def page_database_control_center():
                 <div id="dcc-gate-error" class="dcc-error"></div>
             </div>
 
-            <button type="button" onclick="verifyAccessKey()" class="dcc-btn dcc-btn-primary">Verify API Key</button>
+            <button type="button" id="dcc-verify-btn" onclick="verifyAccessKey()" class="dcc-btn dcc-btn-primary" style="position:relative; overflow:hidden;">
+                <span id="dcc-btn-text">Verify API Key</span>
+                <span id="dcc-btn-loader" style="display:none; align-items:center; justify-content:center; gap:8px;">
+                    <span style="width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation: dccSpin 0.7s linear infinite; display:inline-block;"></span>
+                    <span>Scanning Database Registry...</span>
+                </span>
+            </button>
+            <style>
+                @keyframes dccSpin { to { transform: rotate(360deg); } }
+                @keyframes pulseGlow { 0% { box-shadow: 0 0 0 rgba(56,189,248,0.2); } 50% { box-shadow: 0 0 16px rgba(56,189,248,0.6); } 100% { box-shadow: 0 0 0 rgba(56,189,248,0.2); } }
+            </style>
         </div>
 
         <div id="dcc-dashboard" class="dcc-card" style="display:none;">
@@ -1397,14 +1407,26 @@ def page_database_control_center():
         async function verifyAccessKey() {
             const input = document.getElementById('dcc-api-key-input');
             const err = document.getElementById('dcc-gate-error');
+            const btnText = document.getElementById('dcc-btn-text');
+            const btnLoader = document.getElementById('dcc-btn-loader');
+            const verifyBtn = document.getElementById('dcc-verify-btn');
             const key = input.value.trim();
 
+                err.style.color = '#f43f5e';
                 err.innerText = 'Please enter your API Key.';
                 return;
             }
 
-            err.innerText = 'Verifying key...';
+            // Radar Scanning Animation Trigger
             err.style.color = '#38bdf8';
+            err.innerHTML = '⚡ <b>Scanning Cryptographic Registry...</b> Validating with backend cluster';
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline-flex';
+            verifyBtn.disabled = true;
+            input.classList.add('dcc-verifying-border');
+
+            // Realistic 1.5s verification delay for animation feel
+            await new Promise(r => setTimeout(r, 1500));
 
             try {
                 const res = await fetch('/api/verify-control-key', {
@@ -1413,29 +1435,33 @@ def page_database_control_center():
                     body: JSON.stringify({ api_key: key })
                 });
                 const data = await res.json();
+
                 if (data.valid) {
+                    input.classList.remove('dcc-verifying-border');
+                    err.style.color = '#10b981';
+                    err.innerHTML = '✔ <b>SUCCESS: Key Verified!</b> Initializing Database Control Center...';
                     verifiedKey = key;
-                    err.innerText = '';
-                    err.style.color = '#f43f5e';
-                    document.getElementById('dcc-gate').style.display = 'none';
-                    document.getElementById('dcc-dashboard').style.display = 'block';
-                    loadStoredState();
+
+                    setTimeout(() => {
+                        document.getElementById('dcc-gate').style.display = 'none';
+                        document.getElementById('dcc-dashboard').style.display = 'block';
+                        loadStoredState();
+                    }, 800);
                 } else {
-                    err.style.color = '#f43f5e';
-                    err.innerText = data.error || 'Invalid API Key. Please check your key and try again.';
+                    throw new Error(data.error || 'Invalid API Key.');
                 }
             } catch(e) {
-                // Network/offline bypass for master key
-                if (key === 'akhil_8630_secure' || key.length >= 10) {
-                    verifiedKey = key;
-                    err.innerText = '';
-                    document.getElementById('dcc-gate').style.display = 'none';
-                    document.getElementById('dcc-dashboard').style.display = 'block';
-                    loadStoredState();
-                } else {
-                    err.style.color = '#f43f5e';
-                    err.innerText = 'Invalid API Key. Please check your key and try again.';
-                }
+                input.classList.remove('dcc-verifying-border');
+                btnText.style.display = 'inline-block';
+                btnLoader.style.display = 'none';
+                verifyBtn.disabled = false;
+
+                err.style.color = '#f43f5e';
+                err.innerHTML = '✖ <b>Verification Failed:</b> Key not found in database.<br><span style="color:#cbd5e1; font-size:0.8rem;">Redirecting to generate a valid API Key in <b>2s</b>...</span>';
+                
+                setTimeout(() => {
+                    window.location.href = '/api-keys';
+                }, 2000);
             }
         }
 
