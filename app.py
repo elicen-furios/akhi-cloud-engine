@@ -1216,8 +1216,9 @@ def apply_cors_headers(response):
     return response
 
 # Route to serve the Workspace Engine Dashboard
+@app.route('/workspace')
 @app.route('/')
-def home_index():
+def page_home():
     return render_template('index.html')
 
 # Route to serve the 3D Portal Page
