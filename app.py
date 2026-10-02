@@ -28,6 +28,36 @@ def verify_control_key():
     except Exception as e:
         return jsonify({"valid": False, "error": "Database error: " + str(e)}), 500
 
+
+@app.route("/api/verify-control-key", methods=["POST"])
+def verify_control_key():
+    data = request.get_json(silent=True) or {}
+    key = data.get("api_key", "").strip()
+    if not key:
+        return jsonify({"valid": False, "error": "Please enter your API Key."}), 400
+    
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, app_name, email FROM api_keys WHERE key = ?", (key,))
+        row = cursor.fetchone()
+        conn.close()
+        
+        if row:
+            return jsonify({
+                "valid": True,
+                "app_name": row[1] or 'User App',
+                "email": row[2] or '',
+                "key": key
+            })
+        else:
+            return jsonify({
+                "valid": False,
+                "error": "Invalid API Key. No matching key found in website database."
+            }), 401
+    except Exception as e:
+        return jsonify({"valid": False, "error": "Database error: " + str(e)}), 500
+
 import os
 import sqlite3
 import secrets
