@@ -1,9 +1,11 @@
 import os
 import sqlite3
 import secrets
+from flask_cors import CORS
 from flask import Flask, request, jsonify, send_file, session
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 
 def render_base(title, content):
@@ -1204,3 +1206,11 @@ def page_admin_panel():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+
+
+@app.after_request
+def apply_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, x-api-key, Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
+    return response

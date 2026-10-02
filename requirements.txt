@@ -4,3 +4,4 @@ flask-sock==0.7.0
 gunicorn==21.2.0
 eventlet==0.35.2
 werkzeug==3.0.3
+flask-cors
