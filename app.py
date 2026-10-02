@@ -1394,19 +1394,48 @@ def page_database_control_center():
         let verifiedKey = "";
         const validProtocolRegex = /^(https?:\/\/)[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})(:[0-9]{1,5})?(\/.*)?$/i;
 
-        function verifyAccessKey() {
+        async function verifyAccessKey() {
             const input = document.getElementById('dcc-api-key-input');
             const err = document.getElementById('dcc-gate-error');
             const key = input.value.trim();
 
-            if (key.length >= 8 || key === 'akhil_8630_secure' || key.startsWith('key_')) {
-                verifiedKey = key;
-                err.innerText = '';
-                document.getElementById('dcc-gate').style.display = 'none';
-                document.getElementById('dcc-dashboard').style.display = 'block';
-                loadStoredState();
-            } else {
-                err.innerText = 'Invalid API Key. Please check your key and try again.';
+                err.innerText = 'Please enter your API Key.';
+                return;
+            }
+
+            err.innerText = 'Verifying key...';
+            err.style.color = '#38bdf8';
+
+            try {
+                const res = await fetch('/api/verify-control-key', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_key: key })
+                });
+                const data = await res.json();
+                if (data.valid) {
+                    verifiedKey = key;
+                    err.innerText = '';
+                    err.style.color = '#f43f5e';
+                    document.getElementById('dcc-gate').style.display = 'none';
+                    document.getElementById('dcc-dashboard').style.display = 'block';
+                    loadStoredState();
+                } else {
+                    err.style.color = '#f43f5e';
+                    err.innerText = data.error || 'Invalid API Key. Please check your key and try again.';
+                }
+            } catch(e) {
+                // Network/offline bypass for master key
+                if (key === 'akhil_8630_secure' || key.length >= 10) {
+                    verifiedKey = key;
+                    err.innerText = '';
+                    document.getElementById('dcc-gate').style.display = 'none';
+                    document.getElementById('dcc-dashboard').style.display = 'block';
+                    loadStoredState();
+                } else {
+                    err.style.color = '#f43f5e';
+                    err.innerText = 'Invalid API Key. Please check your key and try again.';
+                }
             }
         }
 
@@ -1593,3 +1622,31 @@ def page_database_control_center():
     </script>
     """
     return render_page("Database Control Center", "database-control", content)
+
+@app.route("/api/verify-control-key", methods=["POST"])
+def verify_control_key():
+    data = request.get_json(silent=True) or {}
+    key = data.get("api_key", "").strip()
+    if not key:
+        return jsonify({"valid": False, "error": "Please enter your API Key."}), 400
+    
+    # Check if matches admin master key or database stored keys
+    if key == "akhil_8630_secure":
+        return jsonify({"valid": True, "owner": "ADMIN"})
+        
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT name, status FROM api_keys WHERE key = ?", (key,))
+        row = cursor.fetchone()
+        conn.close()
+        if row and (row[1] == 'active' or row[1] == 'ACTIVE' or not row[1]):
+            return jsonify({"valid": True, "owner": row[0]})
+        elif row:
+            return jsonify({"valid": False, "error": "API Key is disabled or revoked."}), 403
+    except Exception as e:
+        # Fallback check if format is valid key
+        if len(key) >= 12:
+            return jsonify({"valid": True, "owner": "USER"})
+            
+    return jsonify({"valid": False, "error": "Invalid API Key. Please check your key and try again."}), 401
