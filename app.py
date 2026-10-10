@@ -2135,7 +2135,7 @@ def page_ai_studio():
 
                 <div style="padding: 14px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
                     <!-- Category: Hindi / Indian Real Voices -->
-                    <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin: 4px 6px;">Hindi & Indian Expressive Clones</div>
+                    <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin: 4px 6px;">REGIONAL STUDIO PROFILES</div>
                     
                     <div class="voice-card active" onclick="selectVoice('694f9389-aac1-45b6-b726-9d9369183238', 'Aanya (Hindi Warm Dialogue)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
                         <div>
