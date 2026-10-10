@@ -1728,3 +1728,338 @@ def verify_control_key():
             }), 401
     except Exception as e:
         return jsonify({"valid": False, "error": "Database error: " + str(e)}), 500
+
+
+# --- CARTESIA AI TEXT-TO-SPEECH (TTS) PROXY ---
+@app.route("/api/tts", methods=["POST"])
+def api_cartesia_tts():
+    import urllib.request
+    import json
+    
+    data = request.get_json(silent=True) or {}
+    text_content = data.get("text", "").strip()
+    voice_id = data.get("voice_id", "a0e99841-438c-4a64-b679-ae501e7d6091").strip()
+    
+    if not text_content:
+        return jsonify({"error": "Text content is required"}), 400
+        
+    payload = {
+        "model_id": "sonic-2",
+        "transcript": text_content,
+        "voice": {
+            "mode": "id",
+            "id": voice_id
+        },
+        "output_format": {
+            "container": "wav",
+            "encoding": "pcm_s16le",
+            "sample_rate": 44100
+        }
+    }
+    
+    headers = {
+        "X-API-Key": "sk_car_ohzRe16X4ToST5Yz2mT4hZ",
+        "Cartesia-Version": "2024-06-10",
+        "Content-Type": "application/json"
+    }
+    
+    try:
+        req = urllib.request.Request(
+            "https://api.cartesia.ai/tts/bytes",
+            data=json.dumps(payload).encode("utf-8"),
+            headers=headers,
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            audio_bytes = resp.read()
+            return Response(audio_bytes, mimetype="audio/wav")
+    except Exception as e:
+        return jsonify({"error": str(e), "fallback": True}), 502
+
+# --- TTS VOICE STUDIO PAGE ---
+@app.route("/voice-studio")
+def page_voice_studio():
+    content = """
+    <style>
+        .vs-container { max-width: 980px; margin: 0 auto; padding: 24px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #f8fafc; }
+        .vs-card { background: #0b1120; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+        .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width: 768px) { .vs-grid { grid-template-columns: 1fr; } }
+        .vs-label { display: block; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 8px; }
+        .vs-input, .vs-select, .vs-textarea { width: 100%; box-sizing: border-box; background: #0f172a; border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 12px 14px; color: #f8fafc; font-size: 0.95rem; outline: none; transition: all 0.2s; }
+        .vs-input:focus, .vs-select:focus, .vs-textarea:focus { border-color: #38bdf8; box-shadow: 0 0 0 2px rgba(56,189,248,0.25); }
+        .vs-btn { padding: 12px 22px; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .vs-btn-primary { background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; width: 100%; box-shadow: 0 4px 15px rgba(2,132,199,0.3); }
+        .vs-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(2,132,199,0.45); }
+        .vs-btn-success { background: #059669; color: #fff; }
+        .vs-btn-success:hover { background: #047857; }
+        .vs-fx-btn { background: #1e293b; border: 1px solid rgba(255,255,255,0.08); color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; font-weight: 600; }
+        .vs-fx-btn.active { background: #0284c7; color: #fff; border-color: #38bdf8; box-shadow: 0 0 12px rgba(56,189,248,0.4); }
+        .vs-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+        .vs-pill-online { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+        .vs-pill-offline { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+        @keyframes vsSpin { to { transform: rotate(360deg); } }
+        .vs-spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: vsSpin 0.7s linear infinite; display: inline-block; }
+    </style>
+
+    <div class="vs-container">
+        <div class="vs-card">
+            <!-- HEADER -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:18px; margin-bottom:24px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.3); padding:10px; border-radius:12px;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+                    </div>
+                    <div>
+                        <h2 style="margin:0; font-size:1.45rem; font-weight:800; letter-spacing:-0.02em;">Cartesia AI Voice Studio</h2>
+                        <span style="font-size:0.85rem; color:#94a3b8;">Ultra-Realistic Sonic-2 Neural Voice Generation</span>
+                    </div>
+                </div>
+                <div id="vs-engine-badge" class="vs-pill vs-pill-online">● Online (Cartesia API)</div>
+            </div>
+
+            <!-- TEXT INPUT -->
+            <div style="margin-bottom:20px;">
+                <label class="vs-label">Script / Text Input</label>
+                <textarea id="vs-text" class="vs-textarea" rows="4" placeholder="Enter any text you want to convert into hyper-realistic human voice..."></textarea>
+            </div>
+
+            <!-- CONTROLS GRID -->
+            <div class="vs-grid" style="margin-bottom:20px;">
+                <div>
+                    <label class="vs-label">Voice Model</label>
+                    <select id="vs-voice" class="vs-select">
+                        <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Barbershop Guy (Male - Default)</option>
+                        <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">Helpful Assistant (Male)</option>
+                        <option value="69267136-1bdc-4103-a11a-7a0676499b66">British Narrator (Male)</option>
+                        <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Calm & Friendly (Female)</option>
+                        <option value="21b81c14-f857-4359-aa54-26de70819eb4">Storyteller (Female)</option>
+                        <option value="b7d50908-b17c-442d-ad8d-810c63997ed9">News Anchor (Female)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="vs-label">Playback Speed</label>
+                    <select id="vs-speed" class="vs-select">
+                        <option value="0.8">0.8x (Slow)</option>
+                        <option value="1.0" selected>1.0x (Normal)</option>
+                        <option value="1.2">1.2x (Fast)</option>
+                        <option value="1.5">1.5x (Super Fast)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- GENERATE BUTTON -->
+            <div style="margin-bottom:24px;">
+                <button type="button" id="vs-generate-btn" class="vs-btn vs-btn-primary">
+                    <span id="vs-btn-text">Generate Neural Speech</span>
+                    <span id="vs-btn-loader" style="display:none; align-items:center; gap:8px;">
+                        <span class="vs-spinner"></span>
+                        <span>Rendering Cartesia Sonic-2 Stream...</span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- PLAYER & REAL-TIME 3D / FX EDITING SUITE -->
+            <div id="vs-audio-panel" style="display:none; background:#020617; border:1px solid rgba(56,189,248,0.25); border-radius:14px; padding:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h4 style="margin:0; font-size:1rem; font-weight:700; color:#38bdf8;">Audio Output & Real-Time FX Editor</h4>
+                        <span style="font-size:0.8rem; color:#94a3b8;">Apply 3D Spatial Audio & studio filters directly</span>
+                    </div>
+                    <a id="vs-download-link" href="#" download="cartesia-voice.wav" class="vs-btn vs-btn-success" style="padding:8px 16px; font-size:0.85rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Download .WAV
+                    </a>
+                </div>
+
+                <audio id="vs-audio-elem" controls style="width:100%; margin-bottom:18px; outline:none;"></audio>
+
+                <!-- 3D / FX EDITING OPTIONS -->
+                <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:16px;">
+                    <label class="vs-label">Studio Voice Filters & 3D Spatial Modes:</label>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+                        <button type="button" class="vs-fx-btn active" data-fx="normal">Studio Clean</button>
+                        <button type="button" class="vs-fx-btn" data-fx="3d">🎧 3D Spatial Surround</button>
+                        <button type="button" class="vs-fx-btn" data-fx="bass">Bass Boost</button>
+                        <button type="button" class="vs-fx-btn" data-fx="radio">Vintage Radio</button>
+                        <button type="button" class="vs-fx-btn" data-fx="reverb">Concert Hall Reverb</button>
+                        <button type="button" class="vs-fx-btn" data-fx="telephone">Telephone Voice</button>
+                    </div>
+
+                    <!-- 3D STEREO PAN SLIDER -->
+                    <div id="vs-pan-box" style="margin-top:12px;">
+                        <label class="vs-label" style="display:flex; justify-content:space-between;">
+                            <span>3D Pan (Left to Right Audio Orbit)</span>
+                            <span id="vs-pan-val" style="color:#38bdf8;">Center</span>
+                        </label>
+                        <input type="range" id="vs-pan-slider" min="-1" max="1" step="0.1" value="0" style="width:100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const genBtn = document.getElementById('vs-generate-btn');
+        const textInput = document.getElementById('vs-text');
+        const voiceSelect = document.getElementById('vs-voice');
+        const speedSelect = document.getElementById('vs-speed');
+        const btnText = document.getElementById('vs-btn-text');
+        const btnLoader = document.getElementById('vs-btn-loader');
+        const audioPanel = document.getElementById('vs-audio-panel');
+        const audioElem = document.getElementById('vs-audio-elem');
+        const downloadLink = document.getElementById('vs-download-link');
+        const badge = document.getElementById('vs-engine-badge');
+
+        // Web Audio API for 3D Sound & Multiple Filter Options
+        let audioCtx = null;
+        let sourceNode = null;
+        let pannerNode = null;
+        let filterNode = null;
+        let isWebAudioInit = false;
+
+        function initWebAudio() {
+            if (isWebAudioInit) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+            sourceNode = audioCtx.createMediaElementSource(audioElem);
+            
+            pannerNode = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            filterNode = audioCtx.createBiquadFilter();
+
+            if (pannerNode) {
+                sourceNode.connect(filterNode);
+                filterNode.connect(pannerNode);
+                pannerNode.connect(audioCtx.destination);
+            } else {
+                sourceNode.connect(filterNode);
+                filterNode.connect(audioCtx.destination);
+            }
+            isWebAudioInit = true;
+        }
+
+        // Offline Web Speech Fallback
+        function fallbackOfflineSpeech(text, speed) {
+            badge.className = 'vs-pill vs-pill-offline';
+            badge.innerText = '● Offline Engine (Local Voice)';
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.rate = parseFloat(speed);
+                window.speechSynthesis.speak(utter);
+            } else {
+                alert('Speech synthesis is not supported on your browser in offline mode.');
+            }
+        }
+
+        genBtn.addEventListener('click', async function() {
+            const text = textInput.value.trim();
+            if (!text) {
+                alert('Please enter some text to generate speech.');
+                return;
+            }
+
+            genBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline-flex';
+
+            // Online attempt with Cartesia API
+            if (navigator.onLine) {
+                try {
+                    const res = await fetch('/api/tts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            text: text,
+                            voice_id: voiceSelect.value
+                        })
+                    });
+
+                    if (!res.ok) throw new Error('API Generation failed');
+
+                    const blob = await res.blob();
+                    const audioUrl = URL.createObjectURL(blob);
+                    
+                    audioElem.src = audioUrl;
+                    audioElem.playbackRate = parseFloat(speedSelect.value);
+                    downloadLink.href = audioUrl;
+                    downloadLink.download = 'cartesia-' + voiceSelect.value.slice(0, 8) + '.wav';
+
+                    audioPanel.style.display = 'block';
+                    audioElem.play().catch(() => {});
+                    badge.className = 'vs-pill vs-pill-online';
+                    badge.innerText = '● Online (Cartesia Sonic-2)';
+                } catch (err) {
+                    console.warn('Online generation failed, falling back to offline:', err);
+                    fallbackOfflineSpeech(text, speedSelect.value);
+                }
+            } else {
+                fallbackOfflineSpeech(text, speedSelect.value);
+            }
+
+            genBtn.disabled = false;
+            btnText.style.display = 'inline-block';
+            btnLoader.style.display = 'none';
+        });
+
+        // Speed change listener
+        speedSelect.addEventListener('change', function() {
+            audioElem.playbackRate = parseFloat(this.value);
+        });
+
+        // 3D & Filter Controls
+        const fxButtons = document.querySelectorAll('.vs-fx-btn');
+        fxButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                initWebAudio();
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
+                fxButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const mode = this.dataset.fx;
+                if (!filterNode) return;
+
+                if (mode === 'normal') {
+                    filterNode.type = 'allpass';
+                } else if (mode === '3d') {
+                    filterNode.type = 'peaking';
+                    filterNode.frequency.value = 3000;
+                    filterNode.gain.value = 6;
+                } else if (mode === 'bass') {
+                    filterNode.type = 'lowshelf';
+                    filterNode.frequency.value = 250;
+                    filterNode.gain.value = 14;
+                } else if (mode === 'radio') {
+                    filterNode.type = 'bandpass';
+                    filterNode.frequency.value = 1800;
+                    filterNode.Q.value = 1.8;
+                } else if (mode === 'reverb') {
+                    filterNode.type = 'highshelf';
+                    filterNode.frequency.value = 4000;
+                    filterNode.gain.value = 10;
+                } else if (mode === 'telephone') {
+                    filterNode.type = 'bandpass';
+                    filterNode.frequency.value = 1200;
+                    filterNode.Q.value = 3.5;
+                }
+            });
+        });
+
+        // 3D Panner orbit slider
+        const panSlider = document.getElementById('vs-pan-slider');
+        const panVal = document.getElementById('vs-pan-val');
+        panSlider.addEventListener('input', function() {
+            initWebAudio();
+            const val = parseFloat(this.value);
+            if (pannerNode) pannerNode.pan.value = val;
+            if (val === 0) panVal.innerText = 'Center';
+            else if (val < 0) panVal.innerText = 'Left ' + Math.round(Math.abs(val) * 100) + '%';
+            else panVal.innerText = 'Right ' + Math.round(val * 100) + '%';
+        });
+    });
+    </script>
+    """
+    return render_page("AI Voice Studio", "voice-studio", content)
