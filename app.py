@@ -53,6 +53,22 @@ def render_base(title, content):
         main { padding: 20px 14px 60px; }
     </style>
 <style>#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window { display: none !important; }</style>
+
+<style id="floating-icon-remover">
+/* Forcefully destroy all floating widgets, bubbles, and avatars */
+#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window,
+.bot-avatar, [class*="floating"], [id*="floating"],
+div[style*="border-radius: 50%"][style*="position: fixed"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    z-index: -99999 !important;
+}
+</style>
+
 </head>
 <body>
     <nav>
@@ -847,6 +863,22 @@ def page_admin_panel():
         button { width: 100%; background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 <style>#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window { display: none !important; }</style>
+
+<style id="floating-icon-remover">
+/* Forcefully destroy all floating widgets, bubbles, and avatars */
+#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window,
+.bot-avatar, [class*="floating"], [id*="floating"],
+div[style*="border-radius: 50%"][style*="position: fixed"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    z-index: -99999 !important;
+}
+</style>
+
 </head>
 <body>
     <div class="box">
@@ -916,6 +948,22 @@ def page_admin_panel():
         main {{ padding: 20px 14px 60px; max-width: 1000px; margin: 0 auto; }}
     </style>
 <style>#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window { display: none !important; }</style>
+
+<style id="floating-icon-remover">
+/* Forcefully destroy all floating widgets, bubbles, and avatars */
+#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window,
+.bot-avatar, [class*="floating"], [id*="floating"],
+div[style*="border-radius: 50%"][style*="position: fixed"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    z-index: -99999 !important;
+}
+</style>
+
 </head>
 <body>
     <nav>
