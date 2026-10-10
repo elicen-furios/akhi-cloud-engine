@@ -2022,12 +2022,16 @@ def page_ai_studio():
                 <div>
                     <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Voice Actor Profile</label>
                     <select id="voice-id" style="width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; color: #0f172a; outline: none;">
-                        <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Natural Male (Conversational Standard)</option>
-                        <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">Corporate Male (Formal Crisp)</option>
-                        <option value="69267136-1bdc-4103-a11a-7a0676499b66">Deep Resonance (Male Storyteller)</option>
-                        <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Natural Female (Warm)</option>
-                        <option value="21b81c14-f857-4359-aa54-26de70819eb4">Expressive Female (Narrator)</option>
-                        <option value="b7d50908-b17c-442d-ad8d-810c63997ed9">Studio Anchor (Broadcast Standard)</option>
+                        <optgroup label="Female / Girl (Natural Human)">
+                            <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Conversational Female (Soft & Warm)</option>
+                            <option value="694f9389-aac1-45b6-b726-9d9369183238">Indian Accent Female (Fluent & Real)</option>
+                            <option value="21b81c14-f857-4359-aa54-26de70819eb4">Expressive Storyteller Female</option>
+                        </optgroup>
+                        <optgroup label="Male / Boy (Natural Human)">
+                            <option value="a0e99841-438c-4a64-b679-ae501e7d6091" selected>Conversational Male (Warm Everyday Voice)</option>
+                            <option value="42e3994e-7b70-4ccb-8c83-0599c2775a61">Indian Accent Male (Professional)</option>
+                            <option value="69267136-1bdc-4103-a11a-7a0676499b66">Deep Resonance Male (Clear Studio)</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div>
