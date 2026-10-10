@@ -177,7 +177,7 @@ def render_page(title, active_page, inner_content):
     with open(base_file, "r", encoding="utf-8") as f:
         html = f.read()
     html = html.replace("{{ title }}", title)
-    for p in ["home", "api-keys", "sandbox", "media", "docs", "database", "system", "login"]:
+    for p in ["home", "api-keys", "sandbox", "media", "docs", "database", "system", "login", "neural-studio"]:
         target = "{{ 'active' if active_page == '" + p + "' else '' }}"
         html = html.replace(target, "active" if active_page == p else "")
     html = html.replace("{{ content }}", inner_content)
@@ -1698,3 +1698,563 @@ def page_user_db_admin(db_slug):
     </div>
     """
     return render_page(f"Admin Panel - {db_slug}", "database", content)
+
+
+
+# ==============================================================================
+# AKHIL PRIVATE AI ENGINE (PURPOSE-BASED WHITE SUITE)
+# ==============================================================================
+
+AI_MODELS = {
+    "reasoning-core": {"m": "deepseek-ai/deepseek-v4-flash-0731", "k": "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"},
+    "deep-thinker": {"m": "moonshotai/kimi-k3", "k": "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"},
+    "computational-pro": {"m": "deepseek-ai/deepseek-v4-pro-0813", "k": "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"},
+    "cluster-ultra": {"m": "nvidia/nemotron-3-ultra-550b-a55b", "k": "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"}
+}
+
+@app.route("/api/ai-generate", methods=["POST"])
+def api_private_generate():
+    import urllib.request, json
+    d = request.get_json(silent=True) or {}
+    model_alias = d.get("model", "reasoning-core")
+    prompt = d.get("prompt", "").strip()
+    if not prompt:
+        return jsonify({"error": "Prompt zaroori hai"}), 400
+    cfg = AI_MODELS.get(model_alias, AI_MODELS["reasoning-core"])
+    headers = {"Authorization": f"Bearer {cfg['k']}", "Content-Type": "application/json"}
+    body = {"model": cfg["m"], "messages": [{"role": "user", "content": prompt}], "max_tokens": 4096}
+    try:
+        req = urllib.request.Request("https://integrate.api.nvidia.com/v1/chat/completions", data=json.dumps(body).encode("utf-8"), headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            res = json.loads(resp.read().decode("utf-8"))
+            msg = res["choices"][0]["message"]
+            return jsonify({"reply": msg.get("content", ""), "thought": msg.get("reasoning_content") or msg.get("reasoning", "")})
+    except Exception as e:
+        return jsonify({"error": "Generation fail ho gaya: " + str(e)}), 502
+
+@app.route("/api/tts-generate", methods=["POST"])
+def api_sonic_voice():
+    import urllib.request, json
+    d = request.get_json(silent=True) or {}
+    text_c = d.get("text", "").strip()
+    voice_id = d.get("voice_id", "a0e99841-438c-4a64-b679-ae501e7d6091").strip()
+    if not text_c:
+        return jsonify({"error": "Script text zaroori hai"}), 400
+    payload = {
+        "model_id": "sonic-2",
+        "transcript": text_c,
+        "voice": {"mode": "id", "id": voice_id},
+        "output_format": {"container": "wav", "encoding": "pcm_s16le", "sample_rate": 44100}
+    }
+    headers = {
+        "X-API-Key": "sk_car_ohzRe16X4ToST5Yz2mT4hZ",
+        "Cartesia-Version": "2024-06-10",
+        "Content-Type": "application/json"
+    }
+    try:
+        req = urllib.request.Request("https://api.cartesia.ai/tts/bytes", data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return Response(resp.read(), mimetype="audio/wav")
+    except Exception as e:
+        return jsonify({"error": "Voice synthesis fail: " + str(e)}), 502
+
+@app.route("/neural-studio")
+def page_neural_studio():
+    body = """
+    <div style="max-width:920px; margin:24px auto;">
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:28px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:16px; margin-bottom:20px;">
+                <div>
+                    <h2 style="margin:0; font-size:1.35rem; color:#0f172a; font-weight:700;">Akhil Neural Studio</h2>
+                    <p style="margin:4px 0 0; color:#64748b; font-size:0.85rem;">Autonomous Cognitive Reasoning & Deep Logic Engine</p>
+                </div>
+                <span style="background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; font-size:0.75rem; font-weight:700; padding:4px 10px; border-radius:20px;">● Neural Cluster Active</span>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Processing Core Mode</label>
+                <select id="ns-model" style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px; font-size:0.9rem; color:#0f172a;">
+                    <option value="reasoning-core">Neural Reasoning Core (Fast Adaptive Intelligence)</option>
+                    <option value="deep-thinker">Deep Logic Thinker (Complex Analytical Strategy)</option>
+                    <option value="computational-pro">Heavy Compute Engine (Maximum Output Depth)</option>
+                    <option value="cluster-ultra">Distributed Cluster Ultra (Multi-Scale Synthesis)</option>
+                </select>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Prompt / Command</label>
+                <textarea id="ns-prompt" rows="4" placeholder="Enter input prompt..." style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; font-size:0.95rem; color:#0f172a; outline:none;"></textarea>
+            </div>
+            <button id="ns-btn" style="width:100%; background:#0f172a; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:0.95rem; cursor:pointer;">Synthesize Intelligence</button>
+            <div id="ns-out" style="display:none; margin-top:20px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:18px;">
+                <div id="ns-thought" style="display:none; font-family:monospace; font-size:0.8rem; color:#2563eb; background:#eff6ff; padding:12px; border-radius:6px; margin-bottom:12px; border:1px solid #bfdbfe; white-space:pre-wrap;"></div>
+                <div id="ns-rep" style="font-size:0.95rem; line-height:1.6; color:#0f172a; white-space:pre-wrap;"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.getElementById('ns-btn').onclick = async () => {
+        const p = document.getElementById('ns-prompt').value.trim();
+        if(!p) return alert('Prompt daalna zaroori hai');
+        const b = document.getElementById('ns-btn');
+        b.disabled = true; b.innerText = "Synthesizing...";
+        try {
+            const r = await fetch('/api/ai-generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({model: document.getElementById('ns-model').value, prompt: p})
+            });
+            const d = await r.json();
+            if(!r.ok) throw new Error(d.error);
+            document.getElementById('ns-rep').innerText = d.reply || 'No output';
+            const t = document.getElementById('ns-thought');
+            if(d.thought) {
+                t.innerText = "🧠 Chain of Reasoning:\n" + d.thought;
+                t.style.display = 'block';
+            } else { t.style.display = 'none'; }
+            document.getElementById('ns-out').style.display = 'block';
+        } catch(e) { alert('Error: ' + e.message); }
+        finally { b.disabled = false; b.innerText = "Synthesize Intelligence"; }
+    };
+    </script>
+    """
+    return render_page("Akhil Neural Studio", "neural-studio", body)
+
+@app.route("/voice-studio")
+def page_voice_studio():
+    body = """
+    <div style="max-width:920px; margin:24px auto;">
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:28px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:16px; margin-bottom:20px;">
+                <div>
+                    <h2 style="margin:0; font-size:1.35rem; color:#0f172a; font-weight:700;">Voice Studio (Sonic)</h2>
+                    <p style="margin:4px 0 0; color:#64748b; font-size:0.85rem;">Realistic Neural Voice Synthesis with 3D Spatial Audio</p>
+                </div>
+                <span style="background:#ecfdf5; color:#059669; border:1px solid #a7f3d0; font-size:0.75rem; font-weight:700; padding:4px 10px; border-radius:20px;">● Sonic Ready</span>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Voice Script</label>
+                <textarea id="vs-text" rows="3" placeholder="Enter text to convert into realistic voice..." style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; font-size:0.95rem; color:#0f172a; outline:none;"></textarea>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;">
+                <div>
+                    <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Vocal Profile</label>
+                    <select id="vs-voice" style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px; font-size:0.9rem; color:#0f172a;">
+                        <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Natural Male (Conversational)</option>
+                        <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">Helpful Executive (Male)</option>
+                        <option value="69267136-1bdc-4103-a11a-7a0676499b66">Deep Narrator (Male)</option>
+                        <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Natural Female (Warm)</option>
+                        <option value="21b81c14-f857-4359-aa54-26de70819eb4">Expressive Female (Storyteller)</option>
+                        <option value="b7d50908-b17c-442d-ad8d-810c63997ed9">Broadcaster Female (Studio)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Cadence & Speed</label>
+                    <select id="vs-speed" style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px; font-size:0.9rem; color:#0f172a;">
+                        <option value="0.8">0.8x (Measured)</option>
+                        <option value="1.0" selected>1.0x (Standard)</option>
+                        <option value="1.2">1.2x (Fast)</option>
+                        <option value="1.5">1.5x (Express)</option>
+                    </select>
+                </div>
+            </div>
+            <button id="vs-btn" style="width:100%; background:#2563eb; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:0.95rem; cursor:pointer; margin-bottom:20px;">Generate Voice Audio</button>
+            <div id="vs-player-box" style="display:none; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:18px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <span style="font-weight:700; color:#0f172a; font-size:0.9rem;">Audio Wave Player</span>
+                    <a id="vs-dl" href="#" download="voice.wav" style="background:#059669; color:#fff; text-decoration:none; padding:6px 14px; border-radius:6px; font-size:0.8rem; font-weight:700;">Download .WAV</a>
+                </div>
+                <audio id="vs-audio" controls style="width:100%; margin-bottom:14px; outline:none;"></audio>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:10px;">
+                    <label style="font-size:0.85rem; color:#475569; font-weight:600;">🎧 3D Spatial Pan:</label>
+                    <input type="range" id="vs-pan" min="-1" max="1" step="0.1" value="0" style="width:180px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    let aCtx = null, pNode = null;
+    document.getElementById('vs-btn').onclick = async () => {
+        const t = document.getElementById('vs-text').value.trim();
+        if(!t) return alert('Script text enter karein');
+        const b = document.getElementById('vs-btn');
+        b.disabled = true; b.innerText = "Synthesizing...";
+        try {
+            const r = await fetch('/api/tts-generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: t, voice_id: document.getElementById('vs-voice').value})
+            });
+            if(!r.ok) throw new Error();
+            const blob = await r.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.getElementById('vs-audio');
+            a.src = url;
+            a.playbackRate = parseFloat(document.getElementById('vs-speed').value);
+            document.getElementById('vs-dl').href = url;
+            document.getElementById('vs-player-box').style.display = 'block';
+            a.play();
+        } catch(e) {
+            if('speechSynthesis' in window) {
+                const u = new SpeechSynthesisUtterance(t);
+                u.rate = parseFloat(document.getElementById('vs-speed').value);
+                window.speechSynthesis.speak(u);
+            } else alert('Synthesis failed');
+        } finally {
+            b.disabled = false; b.innerText = "Generate Voice Audio";
+        }
+    };
+    document.getElementById('vs-pan').oninput = (e) => {
+        if(!aCtx) {
+            const A = window.AudioContext || window.webkitAudioContext;
+            aCtx = new A();
+            const s = aCtx.createMediaElementSource(document.getElementById('vs-audio'));
+            pNode = aCtx.createStereoPanner();
+            s.connect(pNode);
+            pNode.connect(aCtx.destination);
+        }
+        if(pNode) pNode.pan.value = parseFloat(e.target.value);
+    };
+    </script>
+    """
+    return render_page("Voice Studio", "voice-studio", body)
+
+@app.route("/vision-studio")
+def page_vision_studio():
+    body = """
+    <div style="max-width:920px; margin:24px auto;">
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:28px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:16px; margin-bottom:20px;">
+                <div>
+                    <h2 style="margin:0; font-size:1.35rem; color:#0f172a; font-weight:700;">Vision & Image Lab</h2>
+                    <p style="margin:4px 0 0; color:#64748b; font-size:0.85rem;">High-Resolution Neural Image & Visual Generation Core</p>
+                </div>
+                <span style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; font-size:0.75rem; font-weight:700; padding:4px 10px; border-radius:20px;">● Visual Engine Online</span>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Visual Creation Mode</label>
+                <select id="vi-mode" style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px; font-size:0.9rem; color:#0f172a;">
+                    <option value="photoreal">Photorealistic HD Render</option>
+                    <option value="cinematic">Cinematic 4K Digital Art</option>
+                    <option value="vector">Minimalist Vector & Icon Design</option>
+                    <option value="cyberpunk">High-Contrast Cyberpunk & Neon</option>
+                </select>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Image Description (Prompt)</label>
+                <textarea id="vi-prompt" rows="3" placeholder="Describe the image you want to render..." style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; font-size:0.95rem; color:#0f172a; outline:none;"></textarea>
+            </div>
+            <button id="vi-btn" style="width:100%; background:#4338ca; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:0.95rem; cursor:pointer;">Generate Render</button>
+            <div id="vi-preview" style="display:none; margin-top:20px; text-align:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:18px;">
+                <div style="font-size:0.85rem; color:#64748b; margin-bottom:10px; font-weight:600;">Engine Render Stream Output:</div>
+                <img id="vi-img" src="" alt="Render" style="max-width:100%; border-radius:8px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom:12px;">
+                <div>
+                    <a id="vi-dl" href="#" target="_blank" download="render.jpg" style="background:#0f172a; color:#fff; text-decoration:none; padding:8px 18px; border-radius:6px; font-size:0.85rem; font-weight:700;">Download High-Res Render</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.getElementById('vi-btn').onclick = () => {
+        const p = document.getElementById('vi-prompt').value.trim();
+        if(!p) return alert('Image prompt daalna zaroori hai');
+        const b = document.getElementById('vi-btn');
+        b.disabled = true; b.innerText = "Rendering...";
+        const seed = Math.floor(Math.random() * 100000);
+        const encoded = encodeURIComponent(p + ', high quality, ' + document.getElementById('vi-mode').value);
+        const imgUrl = 'https://image.pollinations.ai/prompt/' + encoded + '?seed=' + seed + '&width=1024&height=1024&nologo=true';
+        const img = document.getElementById('vi-img');
+        img.onload = () => {
+            b.disabled = false; b.innerText = "Generate Render";
+            document.getElementById('vi-preview').style.display = 'block';
+            document.getElementById('vi-dl').href = imgUrl;
+        };
+        img.onerror = () => {
+            b.disabled = false; b.innerText = "Generate Render";
+            alert('Render fail ho gaya');
+        };
+        img.src = imgUrl;
+    };
+    </script>
+    """
+    return render_page("Vision & Image Lab", "vision-studio", body)
+
+
+
+# ==============================================================================
+# AKHIL NEURAL AI STUDIO (UNIFIED PRODUCTION DASHBOARD)
+# ==============================================================================
+@app.route("/ai-studio")
+def page_ai_studio():
+    body = """
+    <div style="max-width:1100px; margin:20px auto; padding:0 12px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        <!-- Header Strip -->
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:22px 26px; box-shadow:0 1px 3px rgba(0,0,0,0.04); display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+                <h1 style="margin:0; font-size:1.45rem; font-weight:700; color:#0f172a; letter-spacing:-0.02em;">Akhil Neural Studio</h1>
+                <p style="margin:4px 0 0; color:#64748b; font-size:0.88rem;">Unified Cognitive Inference, Sonic Vocal Engine & Visual Synthesis Core</p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <span style="display:inline-flex; align-items:center; gap:6px; background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; font-size:0.75rem; font-weight:700; padding:6px 12px; border-radius:20px;">
+                    <span style="width:7px; height:7px; background:#16a34a; border-radius:50%; display:inline-block;"></span>
+                    Telemetry Online
+                </span>
+            </div>
+        </div>
+
+        <!-- Metric KPI Cards -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:22px;">
+            <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:16px 20px;">
+                <span style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase;">Cognitive Cluster</span>
+                <div style="font-size:1.35rem; font-weight:700; color:#0f172a; margin-top:4px;">Multi-LLM 550B</div>
+                <div style="font-size:0.78rem; color:#16a34a; margin-top:2px;">● High Availability Node</div>
+            </div>
+            <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:16px 20px;">
+                <span style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase;">Acoustic Synthesizer</span>
+                <div style="font-size:1.35rem; font-weight:700; color:#0f172a; margin-top:4px;">Sonic-2 PCM</div>
+                <div style="font-size:0.78rem; color:#2563eb; margin-top:2px;">44.1 kHz Spatial Pan</div>
+            </div>
+            <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:16px 20px;">
+                <span style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase;">Visual Diffusion</span>
+                <div style="font-size:1.35rem; font-weight:700; color:#0f172a; margin-top:4px;">Photoreal HD</div>
+                <div style="font-size:0.78rem; color:#9333ea; margin-top:2px;">Adaptive Seed Matrix</div>
+            </div>
+        </div>
+
+        <!-- Studio Control Hub Tabs -->
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+            <div style="display:flex; border-bottom:1px solid #e2e8f0; background:#f8fafc; padding:4px 6px;">
+                <button onclick="switchTab('txt')" id="tab-btn-txt" style="flex:1; padding:12px; font-size:0.9rem; font-weight:700; border:none; background:#ffffff; color:#0f172a; border-radius:8px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.05); transition:all 0.2s;">⚡ Cognitive Intelligence</button>
+                <button onclick="switchTab('voc')" id="tab-btn-voc" style="flex:1; padding:12px; font-size:0.9rem; font-weight:600; border:none; background:transparent; color:#64748b; border-radius:8px; cursor:pointer; transition:all 0.2s;">🎙️ Sonic Voice Lab</button>
+                <button onclick="switchTab('vis')" id="tab-btn-vis" style="flex:1; padding:12px; font-size:0.9rem; font-weight:600; border:none; background:transparent; color:#64748b; border-radius:8px; cursor:pointer; transition:all 0.2s;">🎨 Visual Diffusion Lab</button>
+            </div>
+
+            <!-- Tab 1: Cognitive Intelligence Engine -->
+            <div id="tab-txt" style="padding:28px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px;">
+                    <div>
+                        <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Processing Model Alias</label>
+                        <select id="dash-txt-m" style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:11px; font-size:0.92rem; color:#0f172a; outline:none;">
+                            <option value="reasoning-core">Neural Reasoning Core (Low Latency / Logic)</option>
+                            <option value="deep-thinker">Deep Logic Thinker (Strategic Deep Problem Solving)</option>
+                            <option value="computational-pro">Heavy Compute Engine (Maximum Tokens & Depth)</option>
+                            <option value="cluster-ultra">Distributed Cluster Ultra (Multi-Scale Synthesis)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Execution Priority</label>
+                        <select style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:11px; font-size:0.92rem; color:#0f172a; outline:none;">
+                            <option selected>Direct Production Pipeline (Realtime)</option>
+                            <option>Deterministic Strict Verification</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Direct Prompt / Query</label>
+                    <textarea id="dash-txt-p" rows="4" placeholder="Enter query instructions or code to synthesize..." style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; font-size:0.95rem; color:#0f172a; outline:none; resize:vertical;"></textarea>
+                </div>
+
+                <button id="dash-txt-btn" style="background:#0f172a; color:#fff; border:none; padding:13px 24px; border-radius:8px; font-weight:700; font-size:0.92rem; cursor:pointer; width:100%;">Execute Neural Inference</button>
+
+                <div id="dash-txt-box" style="display:none; margin-top:22px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:20px;">
+                    <div id="dash-txt-thought" style="display:none; font-family:monospace; font-size:0.82rem; color:#2563eb; background:#eff6ff; padding:12px; border-radius:8px; margin-bottom:14px; border:1px solid #bfdbfe; white-space:pre-wrap;"></div>
+                    <div id="dash-txt-res" style="font-size:0.95rem; line-height:1.65; color:#0f172a; white-space:pre-wrap;"></div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Sonic Voice Lab -->
+            <div id="tab-voc" style="display:none; padding:28px;">
+                <div style="margin-bottom:18px;">
+                    <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Text Transcript</label>
+                    <textarea id="dash-voc-t" rows="3" placeholder="Enter text to synthesize natural vocal audio..." style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; font-size:0.95rem; color:#0f172a; outline:none;"></textarea>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+                    <div>
+                        <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Voice Tone Profile</label>
+                        <select id="dash-voc-v" style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:11px; font-size:0.92rem; color:#0f172a;">
+                            <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Natural Male (Conversational Barbershop)</option>
+                            <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">Helpful Executive (Male)</option>
+                            <option value="69267136-1bdc-4103-a11a-7a0676499b66">Deep British Narrator (Male)</option>
+                            <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Natural Calm (Female)</option>
+                            <option value="21b81c14-f857-4359-aa54-26de70819eb4">Expressive Narrative (Female)</option>
+                            <option value="b7d50908-b17c-442d-ad8d-810c63997ed9">Studio Broadcaster (Female)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Rate Cadence</label>
+                        <select id="dash-voc-s" style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:11px; font-size:0.92rem; color:#0f172a;">
+                            <option value="0.8">0.8x (Measured / Slow)</option>
+                            <option value="1.0" selected>1.0x (Optimal Natural)</option>
+                            <option value="1.2">1.2x (Fast Briefing)</option>
+                            <option value="1.5">1.5x (Accelerated)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="dash-voc-btn" style="background:#2563eb; color:#fff; border:none; padding:13px 24px; border-radius:8px; font-weight:700; font-size:0.92rem; cursor:pointer; width:100%;">Synthesize Audio Stream</button>
+
+                <div id="dash-voc-box" style="display:none; margin-top:22px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:18px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <span style="font-weight:700; color:#0f172a; font-size:0.9rem;">Audio Wave Player</span>
+                        <a id="dash-voc-dl" href="#" download="sonic-voice.wav" style="background:#059669; color:#fff; text-decoration:none; padding:6px 14px; border-radius:6px; font-size:0.8rem; font-weight:700;">Download .WAV</a>
+                    </div>
+                    <audio id="dash-voc-audio" controls style="width:100%; margin-bottom:14px; outline:none;"></audio>
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:10px;">
+                        <label style="font-size:0.85rem; color:#475569; font-weight:600;">🎧 3D Spatial Stereo Balance:</label>
+                        <input type="range" id="dash-voc-pan" min="-1" max="1" step="0.1" value="0" style="width:190px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Visual Diffusion Lab -->
+            <div id="tab-vis" style="display:none; padding:28px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px;">
+                    <div>
+                        <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Render Preset</label>
+                        <select id="dash-vis-m" style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:11px; font-size:0.92rem; color:#0f172a;">
+                            <option value="photoreal">Photorealistic HD Capture</option>
+                            <option value="cinematic">Cinematic 4K Digital Cinema</option>
+                            <option value="vector">Minimalist Vector & Icon Art</option>
+                            <option value="cyberpunk">Cyberpunk Neon & Contrast</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Canvas Aspect</label>
+                        <select id="dash-vis-asp" style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:11px; font-size:0.92rem; color:#0f172a;">
+                            <option value="1024x1024">Square (1:1 / 1024x1024)</option>
+                            <option value="1280x720">Landscape (16:9 / 1280x720)</option>
+                            <option value="720x1280">Portrait (9:16 / 720x1280)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Creative Image Description</label>
+                    <textarea id="dash-vis-p" rows="3" placeholder="Describe subjects, lighting, mood, camera framing..." style="width:100%; box-sizing:border-box; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; font-size:0.95rem; color:#0f172a; outline:none;"></textarea>
+                </div>
+
+                <button id="dash-vis-btn" style="background:#4338ca; color:#fff; border:none; padding:13px 24px; border-radius:8px; font-weight:700; font-size:0.92rem; cursor:pointer; width:100%;">Dispatch Visual Render</button>
+
+                <div id="dash-vis-box" style="display:none; margin-top:22px; text-align:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:20px;">
+                    <img id="dash-vis-img" src="" alt="Render" style="max-width:100%; max-height:480px; border-radius:8px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.08); margin-bottom:14px;">
+                    <div>
+                        <a id="dash-vis-dl" href="#" target="_blank" download="render.jpg" style="background:#0f172a; color:#fff; text-decoration:none; padding:9px 20px; border-radius:6px; font-size:0.85rem; font-weight:700;">Download Original HD Image</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function switchTab(t) {
+        ['txt', 'voc', 'vis'].forEach(tab => {
+            document.getElementById('tab-' + tab).style.display = (tab === t ? 'block' : 'none');
+            const btn = document.getElementById('tab-btn-' + tab);
+            if(tab === t) {
+                btn.style.background = '#ffffff';
+                btn.style.color = '#0f172a';
+                btn.style.fontWeight = '700';
+                btn.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
+            } else {
+                btn.style.background = 'transparent';
+                btn.style.color = '#64748b';
+                btn.style.fontWeight = '600';
+                btn.style.boxShadow = 'none';
+            }
+        });
+    }
+
+    // Cognitive Logic
+    document.getElementById('dash-txt-btn').onclick = async () => {
+        const p = document.getElementById('dash-txt-p').value.trim();
+        if(!p) return alert('Prompt instructions required');
+        const b = document.getElementById('dash-txt-btn');
+        b.disabled = true; b.innerText = "Synthesizing Thought...";
+        try {
+            const r = await fetch('/api/ai-generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({model: document.getElementById('dash-txt-m').value, prompt: p})
+            });
+            const d = await r.json();
+            if(!r.ok) throw new Error(d.error);
+            document.getElementById('dash-txt-res').innerText = d.reply || 'No text output returned';
+            const t = document.getElementById('dash-txt-thought');
+            if(d.thought) {
+                t.innerText = "🧠 Chain of Thought:\n" + d.thought;
+                t.style.display = 'block';
+            } else { t.style.display = 'none'; }
+            document.getElementById('dash-txt-box').style.display = 'block';
+        } catch(e) { alert('Cognitive Error: ' + e.message); }
+        finally { b.disabled = false; b.innerText = "Execute Neural Inference"; }
+    };
+
+    // Sonic Voice Logic
+    let aCtx = null, pNode = null;
+    document.getElementById('dash-voc-btn').onclick = async () => {
+        const t = document.getElementById('dash-voc-t').value.trim();
+        if(!t) return alert('Enter transcript text');
+        const b = document.getElementById('dash-voc-btn');
+        b.disabled = true; b.innerText = "Synthesizing Audio...";
+        try {
+            const r = await fetch('/api/tts-generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: t, voice_id: document.getElementById('dash-voc-v').value})
+            });
+            if(!r.ok) throw new Error();
+            const blob = await r.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.getElementById('dash-voc-audio');
+            a.src = url;
+            a.playbackRate = parseFloat(document.getElementById('dash-voc-s').value);
+            document.getElementById('dash-voc-dl').href = url;
+            document.getElementById('dash-voc-box').style.display = 'block';
+            a.play();
+        } catch(e) {
+            if('speechSynthesis' in window) {
+                const u = new SpeechSynthesisUtterance(t);
+                u.rate = parseFloat(document.getElementById('dash-voc-s').value);
+                window.speechSynthesis.speak(u);
+            } else alert('Synthesis failed');
+        } finally {
+            b.disabled = false; b.innerText = "Synthesize Audio Stream";
+        }
+    };
+    document.getElementById('dash-voc-pan').oninput = (e) => {
+        if(!aCtx) {
+            const A = window.AudioContext || window.webkitAudioContext;
+            aCtx = new A();
+            const s = aCtx.createMediaElementSource(document.getElementById('dash-voc-audio'));
+            pNode = aCtx.createStereoPanner();
+            s.connect(pNode);
+            pNode.connect(aCtx.destination);
+        }
+        if(pNode) pNode.pan.value = parseFloat(e.target.value);
+    };
+
+    // Visual Diffusion Logic
+    document.getElementById('dash-vis-btn').onclick = () => {
+        const p = document.getElementById('dash-vis-p').value.trim();
+        if(!p) return alert('Enter visual render prompt');
+        const b = document.getElementById('dash-vis-btn');
+        b.disabled = true; b.innerText = "Rendering Diffusion...";
+        const seed = Math.floor(Math.random() * 1000000);
+        const [w, h] = document.getElementById('dash-vis-asp').value.split('x');
+        const encoded = encodeURIComponent(p + ', highly detailed, ' + document.getElementById('dash-vis-m').value);
+        const imgUrl = 'https://image.pollinations.ai/prompt/' + encoded + '?seed=' + seed + '&width=' + w + '&height=' + h + '&nologo=true';
+        const img = document.getElementById('dash-vis-img');
+        img.onload = () => {
+            b.disabled = false; b.innerText = "Dispatch Visual Render";
+            document.getElementById('dash-vis-box').style.display = 'block';
+            document.getElementById('dash-vis-dl').href = imgUrl;
+        };
+        img.onerror = () => {
+            b.disabled = false; b.innerText = "Dispatch Visual Render";
+            alert('Visual render failed');
+        };
+        img.src = imgUrl;
+    };
+    </script>
+    """
+    return render_page("Neural AI Studio", "ai-studio", body)
