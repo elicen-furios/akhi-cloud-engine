@@ -1637,60 +1637,32 @@ def api_private_generate():
 
 @app.route("/api/tts-generate", methods=["POST"])
 def api_sonic_voice():
-    import urllib.request, json
+    import urllib.request, urllib.parse
     from flask import Response
     d = request.get_json(silent=True) or {}
     text_c = d.get("text", "").strip()
-    voice_id = str(d.get("voice_id", "")).strip()
-    if not voice_id:
-        voice_id = "694f9389-aac1-45b6-b726-9d9369183238"
-    
     if not text_c:
-        return jsonify({"error": "Please provide script text"}), 400
+        return jsonify({"error": "Please enter script text first"}), 400
 
-    # Auto detect hindi script/words
     is_hindi = any(ord(c) >= 2304 and ord(c) <= 2431 for c in text_c) or any(w in text_c.lower() for w in ["kaaka", "dada", "bhai", "namaste", "aap", "mera", "kya", "hai", "nahi", "kar"])
-    
-    # Multilingual vs English model handling based on selected voice & text
-    # Agar English native voices hain (Adam, Antoni, Rohan etc.) to sonic-2 use karein taaki exact male voice produce ho
-    multilingual_voices = ["694f9389-aac1-45b6-b726-9d9369183238", "42e3994e-7b70-4ccb-8c83-0599c2775a61", "79a125e8-cd45-4c13-8a67-188112f4dd22"]
-    
-    use_multi = is_hindi or (voice_id in multilingual_voices)
-    model_id = "sonic-multilingual" if use_multi else "sonic-2"
-
-    payload = {
-        "model_id": model_id,
-        "transcript": text_c,
-        "voice": {"mode": "id", "id": voice_id},
-        "output_format": {"container": "wav", "encoding": "pcm_s16le", "sample_rate": 44100}
-    }
-    
-    if model_id == "sonic-multilingual":
-        payload["language"] = "hi" if is_hindi else "en"
-
-    headers = {
-        "X-API-Key": "sk_car_ohzRe16X4ToST5Yz2mT4hZ",
-        "Cartesia-Version": "2024-06-10",
-        "Content-Type": "application/json"
-    }
+    lang = "hi" if is_hindi else "en"
 
     try:
-        req = urllib.request.Request("https://api.cartesia.ai/tts/bytes", data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=35) as resp:
-            audio_data = resp.read()
-            return Response(audio_data, mimetype="audio/wav")
+        chunks = [text_c[i:i+180] for i in range(0, len(text_c), 180)]
+        combined_audio = bytearray()
+
+        for chunk in chunks:
+            encoded_txt = urllib.parse.quote(chunk)
+            tts_url = f"https://translate.google.com/translate_tts?ie=UTF-8&q={encoded_txt}&tl={lang}&client=tw-ob"
+            req = urllib.request.Request(tts_url, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            })
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                combined_audio.extend(resp.read())
+
+        return Response(bytes(combined_audio), mimetype="audio/mpeg")
     except Exception as e:
-        # Fallback multi-language TTS
-        try:
-            import urllib.parse
-            encoded = urllib.parse.quote(text_c[:300])
-            tl = "hi" if is_hindi else "en"
-            fallback_url = f"https://translate.google.com/translate_tts?ie=UTF-8&tl={tl}&client=tw-ob&q={encoded}"
-            f_req = urllib.request.Request(fallback_url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(f_req, timeout=15) as f_resp:
-                return Response(f_resp.read(), mimetype="audio/mpeg")
-        except Exception as f_err:
-            return jsonify({"error": f"Audio engine error: {str(e)}"}), 500
+        return jsonify({"error": f"Audio engine error: {str(e)}"}), 500
 
 
 @app.route("/neural-studio")
