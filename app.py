@@ -1735,11 +1735,13 @@ def api_private_generate():
 @app.route("/api/tts-generate", methods=["POST"])
 def api_sonic_voice():
     import urllib.request, json
+    from flask import Response
     d = request.get_json(silent=True) or {}
     text_c = d.get("text", "").strip()
     voice_id = d.get("voice_id", "a0e99841-438c-4a64-b679-ae501e7d6091").strip()
     if not text_c:
-        return jsonify({"error": "Script text zaroori hai"}), 400
+        return jsonify({"error": "Please provide script text"}), 400
+    
     payload = {
         "model_id": "sonic-2",
         "transcript": text_c,
@@ -1754,9 +1756,20 @@ def api_sonic_voice():
     try:
         req = urllib.request.Request("https://api.cartesia.ai/tts/bytes", data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
         with urllib.request.urlopen(req, timeout=30) as resp:
-            return Response(resp.read(), mimetype="audio/wav")
+            audio_data = resp.read()
+            return Response(audio_data, mimetype="audio/wav")
     except Exception as e:
-        return jsonify({"error": "Voice synthesis fail: " + str(e)}), 502
+        # Fallback to Google TTS clean stream agar Cartesia rate limit ho jaye
+        try:
+            import urllib.parse
+            encoded = urllib.parse.quote(text_c[:300])
+            fallback_url = f"https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q={encoded}"
+            f_req = urllib.request.Request(fallback_url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(f_req, timeout=15) as f_resp:
+                return Response(f_resp.read(), mimetype="audio/mpeg")
+        except Exception as f_err:
+            return jsonify({"error": f"Audio engine error: {str(e)}"}), 500
+
 
 @app.route("/neural-studio")
 def page_neural_studio():
@@ -1985,73 +1998,165 @@ def page_vision_studio():
 @app.route("/ai-studio")
 def page_ai_studio():
     body = """
-    <div style="max-width: 800px; margin: 24px auto; padding: 0 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <div style="max-width: 820px; margin: 20px auto; padding: 0 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
         
         <!-- Header -->
-        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: #1e293b;">Voice Generator</h2>
-                    <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">Text ko high-quality natural voice me convert karein</p>
+                    <h2 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;">Voice Synthesis Studio</h2>
+                    <p style="margin: 3px 0 0; color: #64748b; font-size: 0.88rem;">Professional Multi-Tone Acoustic Engine</p>
                 </div>
-                <span style="font-size: 0.78rem; font-weight: 500; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 4px 10px; border-radius: 6px;">Online</span>
+                <span style="font-size: 0.78rem; font-weight: 600; color: #0f172a; background: #f8fafc; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 6px;">Engine Active</span>
             </div>
         </div>
 
-        <!-- Form Card -->
-        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-            
-            <div style="margin-bottom: 18px;">
-                <label style="display: block; font-size: 0.85rem; font-weight: 500; color: #334155; margin-bottom: 6px;">Script Text</label>
-                <textarea id="voice-text" rows="4" placeholder="Apna text yahan likhein jisko voice me convert karna hai..." style="width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font-size: 0.95rem; color: #0f172a; outline: none; font-family: inherit; resize: vertical;"></textarea>
+        <!-- Main Form -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-bottom: 18px;">
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Script Input</label>
+                <textarea id="voice-text" rows="4" style="width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font-size: 0.95rem; color: #0f172a; outline: none; font-family: inherit; resize: vertical;"></textarea>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;">
                 <div>
-                    <label style="display: block; font-size: 0.85rem; font-weight: 500; color: #334155; margin-bottom: 6px;">Voice Select Karein</label>
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Voice Actor Profile</label>
                     <select id="voice-id" style="width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; color: #0f172a; outline: none;">
-                        <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Natural Male (Conversational)</option>
-                        <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">Professional Male</option>
-                        <option value="69267136-1bdc-4103-a11a-7a0676499b66">Deep Male (Narrator)</option>
+                        <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Natural Male (Conversational Standard)</option>
+                        <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">Corporate Male (Formal Crisp)</option>
+                        <option value="69267136-1bdc-4103-a11a-7a0676499b66">Deep Resonance (Male Storyteller)</option>
                         <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Natural Female (Warm)</option>
-                        <option value="21b81c14-f857-4359-aa54-26de70819eb4">Expressive Female</option>
+                        <option value="21b81c14-f857-4359-aa54-26de70819eb4">Expressive Female (Narrator)</option>
+                        <option value="b7d50908-b17c-442d-ad8d-810c63997ed9">Studio Anchor (Broadcast Standard)</option>
                     </select>
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.85rem; font-weight: 500; color: #334155; margin-bottom: 6px;">Speed</label>
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Speaking Cadence</label>
                     <select id="voice-speed" style="width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; color: #0f172a; outline: none;">
-                        <option value="0.85">Slow (0.85x)</option>
-                        <option value="1.0" selected>Normal (1.0x)</option>
-                        <option value="1.2">Fast (1.2x)</option>
+                        <option value="0.85">0.85x (Deliberate)</option>
+                        <option value="1.0" selected>1.0x (Standard)</option>
+                        <option value="1.2">1.2x (Fast)</option>
+                        <option value="1.5">1.5x (Accelerated)</option>
                     </select>
                 </div>
             </div>
 
-            <button id="btn-gen-voice" style="width: 100%; background: #0284c7; color: #ffffff; border: none; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s;">Generate Voice</button>
+            <!-- Solid Black Button -->
+            <button id="btn-gen-voice" style="width: 100%; background: #0f172a; color: #ffffff; border: 1px solid #0f172a; padding: 12px; border-radius: 8px; font-size: 0.92rem; font-weight: 600; cursor: pointer; transition: background 0.15s;">Generate Voice Track</button>
+        </div>
 
-            <!-- Output Box -->
-            <div id="player-container" style="display: none; margin-top: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <span style="font-size: 0.85rem; font-weight: 500; color: #334155;">Generated Voice File</span>
-                    <a id="btn-download" href="#" download="audio.wav" style="background: #ffffff; color: #0284c7; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 0.82rem; font-weight: 500;">Download</a>
-                </div>
-                <audio id="audio-player" controls style="width: 100%; outline: none;"></audio>
+        <!-- Audio Output & Editing Console -->
+        <div id="player-container" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <span style="font-size: 0.9rem; font-weight: 700; color: #0f172a;">Generated Acoustic Stream</span>
+                <a id="btn-download" href="#" download="audio_track.wav" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600;">Download Audio</a>
             </div>
 
+            <audio id="audio-player" controls style="width: 100%; margin-bottom: 18px; outline: none;"></audio>
+
+            <!-- Voice Edit Controls -->
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                <div style="font-size: 0.82rem; font-weight: 700; color: #334155; text-transform: uppercase; margin-bottom: 14px; letter-spacing: 0.02em;">Acoustic Editing & 3D Spatial Controls</div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                            <label style="font-size: 0.8rem; font-weight: 600; color: #475569;">3D Spatial Stereo Balance</label>
+                            <span id="pan-val" style="font-size: 0.8rem; font-family: monospace; color: #0f172a;">Center</span>
+                        </div>
+                        <input type="range" id="voice-pan" min="-1" max="1" step="0.1" value="0" style="width: 100%;">
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                            <label style="font-size: 0.8rem; font-weight: 600; color: #475569;">Bass & Tone Emphasis</label>
+                            <span id="eq-val" style="font-size: 0.8rem; font-family: monospace; color: #0f172a;">Flat (0 dB)</span>
+                        </div>
+                        <input type="range" id="voice-eq" min="-10" max="10" step="1" value="0" style="width: 100%;">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 16px;">
+                    <button type="button" onclick="setPreset('clean')" style="flex:1; padding:8px; font-size:0.8rem; font-weight:600; border:1px solid #cbd5e1; background:#f8fafc; border-radius:6px; cursor:pointer;">Studio Clean</button>
+                    <button type="button" onclick="setPreset('deep')" style="flex:1; padding:8px; font-size:0.8rem; font-weight:600; border:1px solid #cbd5e1; background:#f8fafc; border-radius:6px; cursor:pointer;">Warm Bass</button>
+                    <button type="button" onclick="setPreset('left3d')" style="flex:1; padding:8px; font-size:0.8rem; font-weight:600; border:1px solid #cbd5e1; background:#f8fafc; border-radius:6px; cursor:pointer;">3D Left Ear</button>
+                    <button type="button" onclick="setPreset('right3d')" style="flex:1; padding:8px; font-size:0.8rem; font-weight:600; border:1px solid #cbd5e1; background:#f8fafc; border-radius:6px; cursor:pointer;">3D Right Ear</button>
+                </div>
+            </div>
         </div>
+
     </div>
 
     <script>
+    let audioCtx = null, panNode = null, bassNode = null, sourceNode = null;
+
+    function initAudioGraph() {
+        if (!audioCtx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+            const audioEl = document.getElementById('audio-player');
+            sourceNode = audioCtx.createMediaElementSource(audioEl);
+
+            panNode = audioCtx.createStereoPanner();
+            bassNode = audioCtx.createBiquadFilter();
+            bassNode.type = 'lowshelf';
+            bassNode.frequency.value = 250;
+            bassNode.gain.value = 0;
+
+            sourceNode.connect(bassNode);
+            bassNode.connect(panNode);
+            panNode.connect(audioCtx.destination);
+        }
+    }
+
+    document.getElementById('voice-pan').oninput = (e) => {
+        initAudioGraph();
+        const v = parseFloat(e.target.value);
+        panNode.pan.value = v;
+        const lbl = document.getElementById('pan-val');
+        if (v === 0) lbl.innerText = 'Center';
+        else if (v < 0) lbl.innerText = 'Left ' + Math.round(Math.abs(v)*100) + '%';
+        else lbl.innerText = 'Right ' + Math.round(v*100) + '%';
+    };
+
+    document.getElementById('voice-eq').oninput = (e) => {
+        initAudioGraph();
+        const v = parseFloat(e.target.value);
+        bassNode.gain.value = v;
+        document.getElementById('eq-val').innerText = (v > 0 ? '+' : '') + v + ' dB';
+    };
+
+    function setPreset(p) {
+        initAudioGraph();
+        const panInput = document.getElementById('voice-pan');
+        const eqInput = document.getElementById('voice-eq');
+        if (p === 'clean') {
+            panInput.value = 0; eqInput.value = 0;
+            panNode.pan.value = 0; bassNode.gain.value = 0;
+            document.getElementById('pan-val').innerText = 'Center';
+            document.getElementById('eq-val').innerText = 'Flat (0 dB)';
+        } else if (p === 'deep') {
+            eqInput.value = 8; bassNode.gain.value = 8;
+            document.getElementById('eq-val').innerText = '+8 dB';
+        } else if (p === 'left3d') {
+            panInput.value = -0.8; panNode.pan.value = -0.8;
+            document.getElementById('pan-val').innerText = 'Left 80%';
+        } else if (p === 'right3d') {
+            panInput.value = 0.8; panNode.pan.value = 0.8;
+            document.getElementById('pan-val').innerText = 'Right 80%';
+        }
+    }
+
     document.getElementById('btn-gen-voice').onclick = async () => {
         const text = document.getElementById('voice-text').value.trim();
         if (!text) {
-            alert('Kripya pehle text likhein');
+            alert('Please enter script text first');
             return;
         }
 
         const btn = document.getElementById('btn-gen-voice');
         btn.disabled = true;
-        btn.innerText = "Voice Generate Ho Rahi Hai...";
+        btn.innerText = "Synthesizing Audio Track...";
 
         try {
             const res = await fetch('/api/tts-generate', {
@@ -2065,24 +2170,26 @@ def page_ai_studio():
 
             if (!res.ok) {
                 const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || 'Audio generation me issue aaya');
+                throw new Error(errData.error || 'Server returned an error');
             }
 
             const audioBlob = await res.blob();
-            const url = URL.createObjectURL(audioBlob);
+            const audioUrl = URL.createObjectURL(audioBlob);
             const player = document.getElementById('audio-player');
-            player.src = url;
+            player.src = audioUrl;
             player.playbackRate = parseFloat(document.getElementById('voice-speed').value);
-            document.getElementById('btn-download').href = url;
+            document.getElementById('btn-download').href = audioUrl;
             document.getElementById('player-container').style.display = 'block';
+            initAudioGraph();
             player.play();
         } catch (e) {
-            alert('Error: ' + e.message);
+            alert('Generation Error: ' + e.message);
         } finally {
             btn.disabled = false;
-            btn.innerText = "Generate Voice";
+            btn.innerText = "Generate Voice Track";
         }
     };
     </script>
     """
     return render_page("Voice Studio", "ai-studio", body)
+
