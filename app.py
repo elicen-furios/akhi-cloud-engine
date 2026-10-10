@@ -1736,9 +1736,12 @@ def page_voice_studio():
             const r = await fetch('/api/tts-generate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({text: t, voice_id: document.getElementById('vs-voice').value})
+                body: JSON.stringify({text: t, voice_id: (document.getElementById('vs-voice') ? document.getElementById('vs-voice').value : 'default')})
             });
-            if(!r.ok) throw new Error();
+            if(!r.ok) {
+                const errData = await r.json().catch(() => ({}));
+                throw new Error(errData.error || 'Server error: ' + r.status);
+            }
             const blob = await r.blob();
             const url = URL.createObjectURL(blob);
             const a = document.getElementById('vs-audio');
@@ -2202,7 +2205,7 @@ def page_ai_studio():
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     text: text,
-                    voice_id: (window.currentVoiceId || document.getElementById('voice-id').value || '').trim()
+                    voice_id: (window.currentVoiceId || (document.getElementById('voice-id') ? document.getElementById('voice-id').value : '') || 'default').trim()
                 })
             });
 
