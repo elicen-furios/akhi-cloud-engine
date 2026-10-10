@@ -2417,3 +2417,27 @@ def page_ai_studio():
 
 
 
+
+# --- CLEAN AI ASSISTANT EXTENSION ---
+@app.route("/api/assistant-chat", methods=["POST"])
+def api_assistant_chat_v2():
+    import urllib.request, json
+    d = request.get_json(silent=True) or {}
+    msg = d.get("message", "").strip()
+    if not msg:
+        return jsonify({"reply": "Kripya message likhein."})
+    api_key = "AQ.Ab8RN6Ixk9UDdqH-XelvTCqUH5vweLfqk41O0dB-FO6CBIf6dA"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    payload = {
+        "contents": [{"parts": [{"text": msg}]}],
+        "systemInstruction": {"parts": [{"text": "You are a polite, helpful AI assistant. Answer accurately."}]}
+    }
+    try:
+        req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=25) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            reply_text = data["candidates"][0]["content"]["parts"][0]["text"]
+            return jsonify({"reply": reply_text})
+    except Exception as e:
+        return jsonify({"reply": f"AI service error: {str(e)}"}), 500
+
