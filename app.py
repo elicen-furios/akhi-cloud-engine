@@ -52,6 +52,17 @@ def render_base(title, content):
         nav .links a:hover { color: #f472b6; }
         main { padding: 20px 14px 60px; }
     </style>
+
+<style>
+/* FORCE HIDE ANY OLD FLOATING AVATARS OR GIRLS ICONS */
+img[src*="unsplash"], div[style*="unsplash"], [class*="avatar"], .bot-avatar, #mayara-bubble, #mayara-window {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+</style>
+
 </head>
 <body>
     <nav>
@@ -64,6 +75,121 @@ def render_base(title, content):
     <main>
         {content}
     </main>
+<!-- CLEAN SINGLE AI FLOATING BUTTON & CHAT -->
+<style>
+/* Destroy any old overlapping bubbles or ghost elements */
+[id*="mayara"], [class*="mayara"], [id*="chat-bubble"]:not(#ai-float-bubble), .bot-avatar, [alt*="AI Girl"], [title*="AI Girl"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+#ai-float-bubble {
+    position: fixed !important;
+    bottom: 22px !important;
+    right: 22px !important;
+    width: 48px !important;
+    height: 48px !important;
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #27272a !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.05em !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6) !important;
+    z-index: 99998 !important;
+    user-select: none !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
+#ai-chat-window {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 330px;
+    max-width: calc(100vw - 40px);
+    height: 460px;
+    background: #09090b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+    z-index: 99999;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
+.ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
+.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
+</style>
+
+<div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
+
+<div id="ai-chat-window">
+    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:26px; height:26px; border-radius:50%; background:#000; color:#fff; border:1px solid #27272a; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800;">AI</div>
+            <div>
+                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
+                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
+            </div>
+        </div>
+        <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
+    </div>
+
+    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
+        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
+    </div>
+
+    <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendFinalAIMsg();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
+        <button onclick="sendFinalAIMsg()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+async function sendFinalAIMsg() {
+    const inp = document.getElementById('ai-chat-input');
+    const txt = inp.value.trim();
+    if (!txt) return;
+
+    const box = document.getElementById('ai-chat-messages');
+    const uDiv = document.createElement('div');
+    uDiv.className = 'ai-msg ai-msg-user';
+    uDiv.innerText = txt;
+    box.appendChild(uDiv);
+    inp.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    const lDiv = document.createElement('div');
+    lDiv.className = 'ai-msg ai-msg-bot';
+    lDiv.innerText = 'Typing...';
+    box.appendChild(lDiv);
+    box.scrollTop = box.scrollHeight;
+
+    try {
+        const res = await fetch('/api/assistant-chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: txt})
+        });
+        const d = await res.json();
+        lDiv.innerText = d.reply || 'No response';
+    } catch(err) {
+        lDiv.innerText = 'Error: ' + err.message;
+    }
+    box.scrollTop = box.scrollHeight;
+}
+</script>
 </body>
 </html>"""
 
@@ -181,46 +307,56 @@ def render_page(title, active_page, inner_content):
         target = "{{ 'active' if active_page == '" + p + "' else '' }}"
         html = html.replace(target, "active" if active_page == p else "")
     html = html.replace("{{ content }}", inner_content)
-    html = html.replace("</body>", """
-<!-- SLEEK BLACK AI ASSISTANT -->
+    html = html.replace("<!-- CLEAN SINGLE AI FLOATING BUTTON & CHAT -->
 <style>
-#ai-float-bubble {
-    position: fixed;
-    bottom: 18px;
-    right: 18px;
-    width: 44px;
-    height: 44px;
-    background: #09090b;
-    color: #ffffff;
-    border: 1px solid #27272a;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
-    z-index: 99998;
-    user-select: none;
+/* Destroy any old overlapping bubbles or ghost elements */
+[id*="mayara"], [class*="mayara"], [id*="chat-bubble"]:not(#ai-float-bubble), .bot-avatar, [alt*="AI Girl"], [title*="AI Girl"] {
+    display: none !important;
+    visibility: hidden !important;
 }
+
+#ai-float-bubble {
+    position: fixed !important;
+    bottom: 22px !important;
+    right: 22px !important;
+    width: 48px !important;
+    height: 48px !important;
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #27272a !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.05em !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6) !important;
+    z-index: 99998 !important;
+    user-select: none !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
 #ai-chat-window {
     display: none;
     position: fixed;
-    bottom: 18px;
-    right: 18px;
-    width: 320px;
-    max-width: calc(100vw - 36px);
-    height: 440px;
+    bottom: 20px;
+    right: 20px;
+    width: 330px;
+    max-width: calc(100vw - 40px);
+    height: 460px;
     background: #09090b;
     border: 1px solid #27272a;
     border-radius: 12px;
-    box-shadow: 0 10px 32px rgba(0,0,0,0.6);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.7);
     z-index: 99999;
     flex-direction: column;
     overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
+
 .ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
 .ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
 .ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
@@ -231,7 +367,7 @@ def render_page(title, active_page, inner_content):
 <div id="ai-chat-window">
     <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
         <div style="display:flex; align-items:center; gap:8px;">
-            <div style="display:none;">AI</div>
+            <div style="width:26px; height:26px; border-radius:50%; background:#000; color:#fff; border:1px solid #27272a; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800;">AI</div>
             <div>
                 <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
                 <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
@@ -245,17 +381,132 @@ def render_page(title, active_page, inner_content):
     </div>
 
     <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
-        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendAIMessage();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
-        <button onclick="sendAIMessage()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendFinalAIMsg();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
+        <button onclick="sendFinalAIMsg()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
         </button>
     </div>
 </div>
 
 <script>
-async function sendAIMessage() {
+async function sendFinalAIMsg() {
+    const inp = document.getElementById('ai-chat-input');
+    const txt = inp.value.trim();
+    if (!txt) return;
+
+    const box = document.getElementById('ai-chat-messages');
+    const uDiv = document.createElement('div');
+    uDiv.className = 'ai-msg ai-msg-user';
+    uDiv.innerText = txt;
+    box.appendChild(uDiv);
+    inp.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    const lDiv = document.createElement('div');
+    lDiv.className = 'ai-msg ai-msg-bot';
+    lDiv.innerText = 'Typing...';
+    box.appendChild(lDiv);
+    box.scrollTop = box.scrollHeight;
+
+    try {
+        const res = await fetch('/api/assistant-chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: txt})
+        });
+        const d = await res.json();
+        lDiv.innerText = d.reply || 'No response';
+    } catch(err) {
+        lDiv.innerText = 'Error: ' + err.message;
+    }
+    box.scrollTop = box.scrollHeight;
+}
+</script>
+</body>", """
+
+<!-- CLEAN SINGLE AI FLOATING BUTTON & CHAT -->
+<style>
+/* Destroy any old overlapping bubbles or ghost elements */
+[id*="mayara"], [class*="mayara"], [id*="chat-bubble"]:not(#ai-float-bubble), .bot-avatar, [alt*="AI Girl"], [title*="AI Girl"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+#ai-float-bubble {
+    position: fixed !important;
+    bottom: 22px !important;
+    right: 22px !important;
+    width: 48px !important;
+    height: 48px !important;
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #27272a !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.05em !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6) !important;
+    z-index: 99998 !important;
+    user-select: none !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
+#ai-chat-window {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 330px;
+    max-width: calc(100vw - 40px);
+    height: 460px;
+    background: #09090b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+    z-index: 99999;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
+.ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
+.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
+</style>
+
+<div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
+
+<div id="ai-chat-window">
+    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:26px; height:26px; border-radius:50%; background:#000; color:#fff; border:1px solid #27272a; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800;">AI</div>
+            <div>
+                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
+                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
+            </div>
+        </div>
+        <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
+    </div>
+
+    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
+        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
+    </div>
+
+    <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendFinalAIMsg();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
+        <button onclick="sendFinalAIMsg()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+async function sendFinalAIMsg() {
     const inp = document.getElementById('ai-chat-input');
     const txt = inp.value.trim();
     if (!txt) return;
@@ -950,6 +1201,17 @@ def page_admin_panel():
         input { width: 100%; box-sizing: border-box; background: #1a1a22; border: 1px solid #27272a; color: #fff; padding: 12px; border-radius: 8px; margin: 15px 0; text-align: center; font-size: 16px; outline: none; }
         button { width: 100%; background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
+
+<style>
+/* FORCE HIDE ANY OLD FLOATING AVATARS OR GIRLS ICONS */
+img[src*="unsplash"], div[style*="unsplash"], [class*="avatar"], .bot-avatar, #mayara-bubble, #mayara-window {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+</style>
+
 </head>
 <body>
     <div class="box">
@@ -975,6 +1237,121 @@ def page_admin_panel():
         }
     }
     </script>
+<!-- CLEAN SINGLE AI FLOATING BUTTON & CHAT -->
+<style>
+/* Destroy any old overlapping bubbles or ghost elements */
+[id*="mayara"], [class*="mayara"], [id*="chat-bubble"]:not(#ai-float-bubble), .bot-avatar, [alt*="AI Girl"], [title*="AI Girl"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+#ai-float-bubble {
+    position: fixed !important;
+    bottom: 22px !important;
+    right: 22px !important;
+    width: 48px !important;
+    height: 48px !important;
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #27272a !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.05em !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6) !important;
+    z-index: 99998 !important;
+    user-select: none !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
+#ai-chat-window {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 330px;
+    max-width: calc(100vw - 40px);
+    height: 460px;
+    background: #09090b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+    z-index: 99999;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
+.ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
+.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
+</style>
+
+<div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
+
+<div id="ai-chat-window">
+    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:26px; height:26px; border-radius:50%; background:#000; color:#fff; border:1px solid #27272a; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800;">AI</div>
+            <div>
+                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
+                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
+            </div>
+        </div>
+        <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
+    </div>
+
+    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
+        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
+    </div>
+
+    <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendFinalAIMsg();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
+        <button onclick="sendFinalAIMsg()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+async function sendFinalAIMsg() {
+    const inp = document.getElementById('ai-chat-input');
+    const txt = inp.value.trim();
+    if (!txt) return;
+
+    const box = document.getElementById('ai-chat-messages');
+    const uDiv = document.createElement('div');
+    uDiv.className = 'ai-msg ai-msg-user';
+    uDiv.innerText = txt;
+    box.appendChild(uDiv);
+    inp.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    const lDiv = document.createElement('div');
+    lDiv.className = 'ai-msg ai-msg-bot';
+    lDiv.innerText = 'Typing...';
+    box.appendChild(lDiv);
+    box.scrollTop = box.scrollHeight;
+
+    try {
+        const res = await fetch('/api/assistant-chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: txt})
+        });
+        const d = await res.json();
+        lDiv.innerText = d.reply || 'No response';
+    } catch(err) {
+        lDiv.innerText = 'Error: ' + err.message;
+    }
+    box.scrollTop = box.scrollHeight;
+}
+</script>
 </body>
 </html>"""
 
@@ -1018,6 +1395,17 @@ def page_admin_panel():
         nav .links a {{ color: #a1a1aa; text-decoration: none; margin-left: 18px; font-size: 0.9rem; }}
         main {{ padding: 20px 14px 60px; max-width: 1000px; margin: 0 auto; }}
     </style>
+
+<style>
+/* FORCE HIDE ANY OLD FLOATING AVATARS OR GIRLS ICONS */
+img[src*="unsplash"], div[style*="unsplash"], [class*="avatar"], .bot-avatar, #mayara-bubble, #mayara-window {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+</style>
+
 </head>
 <body>
     <nav>
@@ -1104,6 +1492,121 @@ def page_admin_panel():
         else {{ alert(data.message || "Delete failed"); }}
     }}
     </script>
+<!-- CLEAN SINGLE AI FLOATING BUTTON & CHAT -->
+<style>
+/* Destroy any old overlapping bubbles or ghost elements */
+[id*="mayara"], [class*="mayara"], [id*="chat-bubble"]:not(#ai-float-bubble), .bot-avatar, [alt*="AI Girl"], [title*="AI Girl"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+#ai-float-bubble {
+    position: fixed !important;
+    bottom: 22px !important;
+    right: 22px !important;
+    width: 48px !important;
+    height: 48px !important;
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #27272a !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.05em !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6) !important;
+    z-index: 99998 !important;
+    user-select: none !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
+#ai-chat-window {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 330px;
+    max-width: calc(100vw - 40px);
+    height: 460px;
+    background: #09090b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+    z-index: 99999;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
+.ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
+.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
+</style>
+
+<div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
+
+<div id="ai-chat-window">
+    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:26px; height:26px; border-radius:50%; background:#000; color:#fff; border:1px solid #27272a; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800;">AI</div>
+            <div>
+                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
+                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
+            </div>
+        </div>
+        <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
+    </div>
+
+    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
+        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
+    </div>
+
+    <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendFinalAIMsg();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
+        <button onclick="sendFinalAIMsg()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+async function sendFinalAIMsg() {
+    const inp = document.getElementById('ai-chat-input');
+    const txt = inp.value.trim();
+    if (!txt) return;
+
+    const box = document.getElementById('ai-chat-messages');
+    const uDiv = document.createElement('div');
+    uDiv.className = 'ai-msg ai-msg-user';
+    uDiv.innerText = txt;
+    box.appendChild(uDiv);
+    inp.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    const lDiv = document.createElement('div');
+    lDiv.className = 'ai-msg ai-msg-bot';
+    lDiv.innerText = 'Typing...';
+    box.appendChild(lDiv);
+    box.scrollTop = box.scrollHeight;
+
+    try {
+        const res = await fetch('/api/assistant-chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: txt})
+        });
+        const d = await res.json();
+        lDiv.innerText = d.reply || 'No response';
+    } catch(err) {
+        lDiv.innerText = 'Error: ' + err.message;
+    }
+    box.scrollTop = box.scrollHeight;
+}
+</script>
 </body>
 </html>"""
 
