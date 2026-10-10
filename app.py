@@ -2020,7 +2020,7 @@ def page_ai_studio():
                     </div>
                     <div>
                         <h2 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;">Voice Synthesis Studio</h2>
-                        <p style="margin: 2px 0 0; color: #64748b; font-size: 0.88rem;">ElevenLabs-Grade Ultra-Realistic Neural Speech Engine</p>
+                        <p style="margin: 2px 0 0; color: #64748b; font-size: 0.88rem;">Generate natural voice from text</p>
                     </div>
                 </div>
                 <span style="font-size: 0.78rem; font-weight: 600; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 5px 12px; border-radius: 20px;">Ready</span>
@@ -2128,7 +2128,7 @@ def page_ai_studio():
                 <div style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #0f172a;">Select Voice Model</h3>
-                        <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">Human-recorded & ElevenLabs verified acoustic clones</p>
+                        <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">Select a voice model</p>
                     </div>
                     <button onclick="closeVoiceModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b; padding: 4px;">✕</button>
                 </div>
@@ -2170,7 +2170,7 @@ def page_ai_studio():
                     </div>
 
                     <!-- Category: ElevenLabs Verified Clones -->
-                    <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin: 10px 6px 4px;">ElevenLabs Verified Studio Clones</div>
+                    <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin: 10px 6px 4px;">Studio Voice Models</div>
 
                     <div class="voice-card" onclick="selectVoice('69267136-1bdc-4103-a11a-7a0676499b66', 'Adam (Deep Narration Studio)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
                         <div>
