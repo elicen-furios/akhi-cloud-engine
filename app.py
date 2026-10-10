@@ -1738,27 +1738,39 @@ def api_sonic_voice():
     from flask import Response
     d = request.get_json(silent=True) or {}
     text_c = d.get("text", "").strip()
-    voice_id = (d.get("voice_id") or "694f9389-aac1-45b6-b726-9d9369183238").strip()
-    lang = d.get("language", "hi")
+    voice_id = str(d.get("voice_id", "")).strip()
+    if not voice_id:
+        voice_id = "694f9389-aac1-45b6-b726-9d9369183238"
+    
     if not text_c:
         return jsonify({"error": "Please provide script text"}), 400
+
+    # Auto detect hindi script/words
+    is_hindi = any(ord(c) >= 2304 and ord(c) <= 2431 for c in text_c) or any(w in text_c.lower() for w in ["kaaka", "dada", "bhai", "namaste", "aap", "mera", "kya", "hai", "nahi", "kar"])
     
-    # Auto-detect hindi characters or default to hi/en
-    is_hindi = any(ord(c) >= 2304 and ord(c) <= 2431 for c in text_c) or "kaaka" in text_c.lower() or "dada" in text_c.lower()
-    selected_lang = "hi" if is_hindi else lang
+    # Multilingual vs English model handling based on selected voice & text
+    # Agar English native voices hain (Adam, Antoni, Rohan etc.) to sonic-2 use karein taaki exact male voice produce ho
+    multilingual_voices = ["694f9389-aac1-45b6-b726-9d9369183238", "42e3994e-7b70-4ccb-8c83-0599c2775a61", "79a125e8-cd45-4c13-8a67-188112f4dd22"]
+    
+    use_multi = is_hindi or (voice_id in multilingual_voices)
+    model_id = "sonic-multilingual" if use_multi else "sonic-2"
 
     payload = {
-        "model_id": "sonic-multilingual",
+        "model_id": model_id,
         "transcript": text_c,
         "voice": {"mode": "id", "id": voice_id},
-        "language": selected_lang,
         "output_format": {"container": "wav", "encoding": "pcm_s16le", "sample_rate": 44100}
     }
+    
+    if model_id == "sonic-multilingual":
+        payload["language"] = "hi" if is_hindi else "en"
+
     headers = {
         "X-API-Key": "sk_car_ohzRe16X4ToST5Yz2mT4hZ",
         "Cartesia-Version": "2024-06-10",
         "Content-Type": "application/json"
     }
+
     try:
         req = urllib.request.Request("https://api.cartesia.ai/tts/bytes", data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
         with urllib.request.urlopen(req, timeout=35) as resp:
@@ -1769,7 +1781,7 @@ def api_sonic_voice():
         try:
             import urllib.parse
             encoded = urllib.parse.quote(text_c[:300])
-            tl = "hi" if selected_lang == "hi" else "en"
+            tl = "hi" if is_hindi else "en"
             fallback_url = f"https://translate.google.com/translate_tts?ie=UTF-8&tl={tl}&client=tw-ob&q={encoded}"
             f_req = urllib.request.Request(fallback_url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(f_req, timeout=15) as f_resp:
@@ -2219,14 +2231,13 @@ def page_ai_studio():
     }
 
     function selectVoice(id, title) {
-        const inp = document.getElementById('voice-id');
-        inp.value = id;
-        inp.setAttribute('value', id);
-        document.getElementById('selected-voice-title').innerText = title;
-        document.querySelectorAll('.voice-card').forEach(el => el.style.border = '1px solid #e2e8f0');
-        if (event && event.currentTarget) {
-            event.currentTarget.style.border = '2px solid #0f172a';
-        }
+        window.currentVoiceId = id;
+        const el = document.getElementById('voice-id');
+        if (el) { el.value = id; }
+        const titleEl = document.getElementById('selected-voice-title');
+        if (titleEl) { titleEl.innerText = title; }
+        closeVoiceModal();
+    }
         closeVoiceModal();
     }
 
@@ -2368,7 +2379,7 @@ def page_ai_studio():
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     text: text,
-                    voice_id: (document.getElementById('voice-id').value || '').trim()
+                    voice_id: (window.currentVoiceId || document.getElementById('voice-id').value || '').trim()
                 })
             });
 
