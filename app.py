@@ -55,7 +55,7 @@ def render_base(title, content):
 </head>
 <body>
     <nav>
-        <a href="/" class="brand">⚡ AKHIL PLATFORM</a>
+        <a href="/" class="brand"> AKHIL PLATFORM</a>
         <div class="links">
             <a href="/">Home</a>
             <a href="/admin-panel">Cloud DB Panel</a>
@@ -1118,7 +1118,7 @@ def page_admin_panel():
 </head>
 <body>
     <nav>
-        <a href="/" class="brand">🔒 SECURE CORE V2.4</a>
+        <a href="/" class="brand"> SECURE CORE V2.4</a>
         <div class="links">
             <a href="/">Home</a>
             <a href="/admin-logout" style="color: #ef4444; font-weight: bold;">Logout</a>
@@ -1419,7 +1419,7 @@ def page_database_control_center():
 
             // Radar Scanning Animation Trigger
             err.style.color = '#38bdf8';
-            err.innerHTML = '⚡ <b>Scanning Cryptographic Registry...</b> Validating with backend cluster';
+            err.innerHTML = ' <b>Scanning Cryptographic Registry...</b> Validating with backend cluster';
             btnText.style.display = 'none';
             btnLoader.style.display = 'inline-flex';
             verifyBtn.disabled = true;
@@ -1439,7 +1439,7 @@ def page_database_control_center():
                 if (data.valid) {
                     input.classList.remove('dcc-verifying-border');
                     err.style.color = '#10b981';
-                    err.innerHTML = '✔ <b>SUCCESS: Key Verified!</b> Initializing Database Control Center...';
+                    err.innerHTML = ' <b>SUCCESS: Key Verified!</b> Initializing Database Control Center...';
                     verifiedKey = key;
 
                     setTimeout(() => {
@@ -1457,7 +1457,7 @@ def page_database_control_center():
                 verifyBtn.disabled = false;
 
                 err.style.color = '#f43f5e';
-                err.innerHTML = '✖ <b>Verification Failed:</b> Key not found in database.<br><span style="color:#cbd5e1; font-size:0.8rem;">Redirecting to generate a valid API Key in <b>2s</b>...</span>';
+                err.innerHTML = ' <b>Verification Failed:</b> Key not found in database.<br><span style="color:#cbd5e1; font-size:0.8rem;">Redirecting to generate a valid API Key in <b>2s</b>...</span>';
                 
                 setTimeout(() => {
                     window.location.href = '/api-keys';
@@ -1807,7 +1807,7 @@ def page_neural_studio():
             document.getElementById('ns-rep').innerText = d.reply || 'No output';
             const t = document.getElementById('ns-thought');
             if(d.thought) {
-                t.innerText = "🧠 Chain of Reasoning:\n" + d.thought;
+                t.innerText = " Chain of Reasoning:\n" + d.thought;
                 t.style.display = 'block';
             } else { t.style.display = 'none'; }
             document.getElementById('ns-out').style.display = 'block';
@@ -1864,7 +1864,7 @@ def page_voice_studio():
                 </div>
                 <audio id="vs-audio" controls style="width:100%; margin-bottom:14px; outline:none;"></audio>
                 <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:10px;">
-                    <label style="font-size:0.85rem; color:#475569; font-weight:600;">🎧 3D Spatial Pan:</label>
+                    <label style="font-size:0.85rem; color:#475569; font-weight:600;"> 3D Spatial Pan:</label>
                     <input type="range" id="vs-pan" min="-1" max="1" step="0.1" value="0" style="width:180px;">
                 </div>
             </div>
@@ -2022,12 +2022,12 @@ def page_ai_studio():
         <!-- Studio Control Hub Tabs -->
         <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
             <div style="display:flex; border-bottom:1px solid #e2e8f0; background:#f8fafc; padding:4px 6px;">
-                <button onclick="switchTab('txt')" id="tab-btn-txt" style="flex:1; padding:12px; font-size:0.9rem; font-weight:700; border:none; background:#ffffff; color:#0f172a; border-radius:8px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.05); transition:all 0.2s;">⚡ Cognitive Intelligence</button>
-                <button onclick="switchTab('voc')" id="tab-btn-voc" style="flex:1; padding:12px; font-size:0.9rem; font-weight:600; border:none; background:transparent; color:#64748b; border-radius:8px; cursor:pointer; transition:all 0.2s;">🎙️ Sonic Voice Lab</button>
-                <button onclick="switchTab('vis')" id="tab-btn-vis" style="flex:1; padding:12px; font-size:0.9rem; font-weight:600; border:none; background:transparent; color:#64748b; border-radius:8px; cursor:pointer; transition:all 0.2s;">🎨 Visual Diffusion Lab</button>
+                <button onclick="switchTab('txt')" id="tab-btn-txt" style="flex:1; padding:12px; font-size:0.9rem; font-weight:700; border:none; background:#ffffff; color:#0f172a; border-radius:8px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.05); transition:all 0.2s;"> Cognitive Intelligence Core</button>
+                <button onclick="switchTab('voc')" id="tab-btn-voc" style="flex:1; padding:12px; font-size:0.9rem; font-weight:600; border:none; background:transparent; color:#64748b; border-radius:8px; cursor:pointer; transition:all 0.2s;">️ Sonic Voice Synthesizer</button>
+                <button onclick="switchTab('vis')" id="tab-btn-vis" style="flex:1; padding:12px; font-size:0.9rem; font-weight:600; border:none; background:transparent; color:#64748b; border-radius:8px; cursor:pointer; transition:all 0.2s;"> Visual Diffusion Studio</button>
             </div>
 
-            <!-- Tab 1: Cognitive Intelligence Engine -->
+            <!-- Tab 1: Cognitive Intelligence Core Engine -->
             <div id="tab-txt" style="padding:28px;">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px;">
                     <div>
@@ -2061,7 +2061,7 @@ def page_ai_studio():
                 </div>
             </div>
 
-            <!-- Tab 2: Sonic Voice Lab -->
+            <!-- Tab 2: Sonic Voice Synthesizer -->
             <div id="tab-voc" style="display:none; padding:28px;">
                 <div style="margin-bottom:18px;">
                     <label style="display:block; font-size:0.8rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Text Transcript</label>
@@ -2100,13 +2100,13 @@ def page_ai_studio():
                     </div>
                     <audio id="dash-voc-audio" controls style="width:100%; margin-bottom:14px; outline:none;"></audio>
                     <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:10px;">
-                        <label style="font-size:0.85rem; color:#475569; font-weight:600;">🎧 3D Spatial Stereo Balance:</label>
+                        <label style="font-size:0.85rem; color:#475569; font-weight:600;"> Stereo Balance Control:</label>
                         <input type="range" id="dash-voc-pan" min="-1" max="1" step="0.1" value="0" style="width:190px;">
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 3: Visual Diffusion Lab -->
+            <!-- Tab 3: Visual Diffusion Studio -->
             <div id="tab-vis" style="display:none; padding:28px;">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px;">
                     <div>
@@ -2181,7 +2181,7 @@ def page_ai_studio():
             document.getElementById('dash-txt-res').innerText = d.reply || 'No text output returned';
             const t = document.getElementById('dash-txt-thought');
             if(d.thought) {
-                t.innerText = "🧠 Chain of Thought:\n" + d.thought;
+                t.innerText = " Cognitive Telemetry / Trace Log:\n" + d.thought;
                 t.style.display = 'block';
             } else { t.style.display = 'none'; }
             document.getElementById('dash-txt-box').style.display = 'block';
