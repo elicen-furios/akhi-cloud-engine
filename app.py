@@ -1986,185 +1986,194 @@ def page_vision_studio():
 def page_ai_studio():
     body = """
     <style>
-        .eng-wrap { max-width: 960px; margin: 10px auto; padding: 0 10px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #09090b; }
-        .eng-card { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 6px; padding: 14px 18px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
-        .eng-head { display: flex; justify-content: space-between; align-items: center; }
-        .eng-title { font-size: 1.1rem; font-weight: 700; color: #09090b; margin: 0; text-transform: uppercase; letter-spacing: -0.01em; font-family: monospace; }
-        .eng-sub { font-size: 0.8rem; color: #71717a; margin: 3px 0 0; }
-        .eng-badge { font-family: monospace; font-size: 0.72rem; font-weight: 700; color: #18181b; background: #f4f4f5; border: 1px solid #d4d4d8; padding: 4px 8px; border-radius: 3px; }
+        .dw-container { max-width: 1040px; margin: 16px auto; padding: 0 12px; font-family: -apple-system, "Segoe UI", Roboto, monospace; color: #000; }
+        .dw-shell { background: #ffffff; border: 2px solid #000000; box-shadow: 4px 4px 0px #000000; margin-bottom: 16px; }
+        
+        .dw-header { padding: 14px 18px; border-bottom: 2px solid #000000; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
+        .dw-sys-title { font-family: "SF Mono", Consolas, monospace; font-size: 1rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: #000; margin: 0; }
+        .dw-badge-danger { background: #000000; color: #ffffff; font-family: monospace; font-size: 0.72rem; font-weight: 800; padding: 4px 9px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #000; display: inline-flex; align-items: center; gap: 6px; }
+        .dw-dot-danger { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 6px #ef4444; }
 
-        .eng-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
-        @media(max-width: 680px) { .eng-grid { grid-template-columns: 1fr; } }
-        .eng-stat-box { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 6px; padding: 12px 14px; }
-        .eng-stat-lbl { font-family: monospace; font-size: 0.7rem; font-weight: 700; color: #71717a; text-transform: uppercase; }
-        .eng-stat-val { font-size: 1.05rem; font-weight: 700; color: #09090b; margin: 4px 0 2px; }
-        .eng-stat-sub { font-family: monospace; font-size: 0.72rem; color: #27272a; }
+        .dw-telemetry-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+        @media(max-width: 720px) { .dw-telemetry-row { grid-template-columns: 1fr; } }
+        .dw-stat-card { background: #ffffff; border: 2px solid #000000; box-shadow: 3px 3px 0px #000000; padding: 12px 14px; position: relative; }
+        .dw-stat-label { font-family: monospace; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; color: #52525b; letter-spacing: 0.06em; }
+        .dw-stat-value { font-family: "SF Mono", Consolas, monospace; font-size: 1.15rem; font-weight: 900; color: #000000; margin: 4px 0 2px; }
+        .dw-stat-foot { font-family: monospace; font-size: 0.7rem; font-weight: 700; color: #000000; }
 
-        .eng-tabs { display: flex; background: #f4f4f5; border: 1px solid #e4e4e7; border-bottom: none; border-radius: 6px 6px 0 0; padding: 4px; gap: 4px; }
-        .eng-tab-btn { flex: 1; padding: 9px 12px; font-family: monospace; font-size: 0.8rem; font-weight: 700; border: none; background: transparent; color: #71717a; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: all 0.15s; }
-        .eng-tab-btn.active { background: #ffffff; color: #09090b; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+        .dw-nav-tabs { display: flex; border-bottom: 2px solid #000000; background: #f4f4f5; }
+        .dw-tab-trigger { flex: 1; padding: 12px; font-family: monospace; font-size: 0.78rem; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; border: none; background: transparent; color: #52525b; cursor: pointer; border-right: 2px solid #000000; transition: all 0.1s; }
+        .dw-tab-trigger:last-child { border-right: none; }
+        .dw-tab-trigger.active { background: #ffffff; color: #000000; border-bottom: 2px solid transparent; font-weight: 900; }
 
-        .eng-body { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 0 0 6px 6px; padding: 18px; margin-bottom: 14px; }
-        .eng-lbl { display: block; font-family: monospace; font-size: 0.72rem; font-weight: 700; color: #27272a; text-transform: uppercase; margin-bottom: 5px; }
-        .eng-input { width: 100%; box-sizing: border-box; background: #fafafa; border: 1px solid #d4d4d8; border-radius: 4px; padding: 10px 12px; font-size: 0.88rem; color: #09090b; outline: none; font-family: inherit; }
-        .eng-input:focus { border-color: #09090b; background: #ffffff; }
+        .dw-panel-content { padding: 20px; background: #ffffff; }
+        .dw-input-label { display: block; font-family: monospace; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #000000; margin-bottom: 6px; }
+        .dw-field { width: 100%; box-sizing: border-box; background: #ffffff; border: 2px solid #000000; padding: 10px 12px; font-size: 0.9rem; color: #000000; font-family: inherit; font-weight: 600; outline: none; border-radius: 0; }
+        .dw-field:focus { background: #fffbeb; }
 
-        .eng-btn { width: 100%; background: #09090b; color: #fafafa; border: 1px solid #09090b; padding: 12px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; margin-top: 12px; }
-        .eng-btn:hover { background: #27272a; }
-        .eng-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .dw-execute-btn { width: 100%; background: #000000; color: #ffffff; border: 2px solid #000000; box-shadow: 3px 3px 0px #000000; padding: 13px; font-family: monospace; font-size: 0.88rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; margin-top: 14px; transition: transform 0.08s, box-shadow 0.08s; }
+        .dw-execute-btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0px #000000; }
+        .dw-execute-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000000; }
+        .dw-execute-btn:disabled { background: #71717a; border-color: #71717a; cursor: not-allowed; }
 
-        .eng-out { margin-top: 14px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 4px; padding: 14px; font-size: 0.88rem; line-height: 1.6; color: #09090b; }
-        .eng-log { font-family: monospace; font-size: 0.78rem; background: #f4f4f5; border-left: 3px solid #18181b; padding: 8px 10px; margin-bottom: 10px; color: #27272a; white-space: pre-wrap; }
+        .dw-terminal-out { margin-top: 18px; border: 2px solid #000000; background: #fafafa; padding: 16px; }
+        .dw-trace-log { font-family: monospace; font-size: 0.75rem; background: #ffffff; border: 1px dashed #000000; padding: 10px; margin-bottom: 12px; color: #000000; line-height: 1.5; white-space: pre-wrap; }
+        .dw-result-text { font-size: 0.92rem; line-height: 1.65; color: #000000; font-weight: 500; white-space: pre-wrap; }
     </style>
 
-    <div class="eng-wrap">
-        <div class="eng-card">
-            <div class="eng-head">
+    <div class="dw-container">
+        <!-- Title Shell -->
+        <div class="dw-shell">
+            <div class="dw-header">
                 <div>
-                    <h1 class="eng-title">Core Intelligence Console</h1>
-                    <p class="eng-sub">Cognitive Logic, Sonic Acoustics and Visual Synthesis Matrix</p>
+                    <h1 class="dw-sys-title">CENTRAL INTELLIGENCE COMMAND // AKHIL</h1>
+                    <div style="font-size:0.75rem; color:#52525b; font-family:monospace; margin-top:3px;">SYSTEM DISPATCH PROTOCOL // HIGH-SEC PRIVATE REPOSITORY</div>
                 </div>
-                <div class="eng-badge">STATUS // ARMED</div>
+                <div class="dw-badge-danger">
+                    <span class="dw-dot-danger"></span>
+                    CORE LOCKED
+                </div>
             </div>
         </div>
 
-        <div class="eng-grid">
-            <div class="eng-stat-box">
-                <div class="eng-stat-lbl">Inference Cluster</div>
-                <div class="eng-stat-val">550B Multi-Node</div>
-                <div class="eng-stat-sub">Latency: Sub-40ms Fast-Path</div>
+        <!-- Metric Shells -->
+        <div class="dw-telemetry-row">
+            <div class="dw-stat-card">
+                <div class="dw-stat-label">NEURAL MATRIX [CLUSTER]</div>
+                <div class="dw-stat-value">550B PARALLEL</div>
+                <div class="dw-stat-foot">LOAD: 0.02MS REALTIME</div>
             </div>
-            <div class="eng-stat-box">
-                <div class="eng-stat-lbl">Acoustic Model</div>
-                <div class="eng-stat-val">Sonic PCM 44.1k</div>
-                <div class="eng-stat-sub">Format: Raw Waveform</div>
+            <div class="dw-stat-card">
+                <div class="dw-stat-label">ACOUSTIC STREAM [SONIC]</div>
+                <div class="dw-stat-value">44.1 KHZ PCM</div>
+                <div class="dw-stat-foot">CHANNEL: STEREO MATRIX</div>
             </div>
-            <div class="eng-stat-box">
-                <div class="eng-stat-lbl">Visual Synthesis</div>
-                <div class="eng-stat-val">Adaptive Diffusion</div>
-                <div class="eng-stat-sub">Resolution: 1024 Standard</div>
+            <div class="dw-stat-card">
+                <div class="dw-stat-label">DIFFUSION ENGINE [VISION]</div>
+                <div class="dw-stat-value">1024 ULTRA HD</div>
+                <div class="dw-stat-foot">SEED: DETERMINISTIC RANDOM</div>
             </div>
         </div>
 
-        <div>
-            <div class="eng-tabs">
-                <button class="eng-tab-btn active" id="btn-t-cog" onclick="openEngine('cog')">Cognitive Engine</button>
-                <button class="eng-tab-btn" id="btn-t-snc" onclick="openEngine('snc')">Sonic Synthesizer</button>
-                <button class="eng-tab-btn" id="btn-t-vis" onclick="openEngine('vis')">Visual Studio</button>
+        <!-- Main Console -->
+        <div class="dw-shell">
+            <div class="dw-nav-tabs">
+                <button class="dw-tab-trigger active" id="btn-dw-cog" onclick="switchConsole('cog')">01 // COGNITIVE REASONING</button>
+                <button class="dw-tab-trigger" id="btn-dw-snc" onclick="switchConsole('snc')">02 // ACOUSTIC SYNTHESIS</button>
+                <button class="dw-tab-trigger" id="btn-dw-vis" onclick="switchConsole('vis')">03 // VISUAL DIFFUSION</button>
             </div>
 
-            <!-- Tab 1: Cognitive Engine -->
-            <div id="tab-cog" class="eng-body">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <!-- Tab 1: Cognitive Reasoning -->
+            <div id="tab-dw-cog" class="dw-panel-content">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
                     <div>
-                        <label class="eng-lbl">Execution Model</label>
-                        <select id="cg-model" class="eng-input">
-                            <option value="reasoning-core">Neural Reasoning Core (Realtime Analysis)</option>
-                            <option value="deep-thinker">Deep Strategic Thinker (Complex Logic)</option>
-                            <option value="computational-pro">Heavy Compute Engine (Maximum Tokens)</option>
-                            <option value="cluster-ultra">Distributed Cluster Ultra (Multi-Scale)</option>
+                        <label class="dw-input-label">PROCESSING CORE SELECT</label>
+                        <select id="cg-model" class="dw-field">
+                            <option value="reasoning-core">CORE-1: HIGH SPEED LOGIC ENGINE</option>
+                            <option value="deep-thinker">CORE-2: DEEP ANALYTICAL MATRIX</option>
+                            <option value="computational-pro">CORE-3: HEAVY COMPUTE RAW PRO</option>
+                            <option value="cluster-ultra">CORE-4: DISTRIBUTED 550B CLUSTER</option>
                         </select>
                     </div>
                     <div>
-                        <label class="eng-lbl">Execution Channel</label>
-                        <select class="eng-input">
-                            <option>Production Pipeline [Direct]</option>
-                            <option>Deterministic Strict Trace</option>
+                        <label class="dw-input-label">EXECUTION CONTEXT</label>
+                        <select class="dw-field">
+                            <option>RAW TERMINAL STREAM [ISOLATED]</option>
+                            <option>DETERMINISTIC VERIFICATION</option>
                         </select>
                     </div>
                 </div>
 
-                <div style="margin-bottom: 10px;">
-                    <label class="eng-lbl">Input Query / Command</label>
-                    <textarea id="cg-prompt" class="eng-input" rows="4" placeholder="Enter query parameters, technical instructions or source code..."></textarea>
+                <div style="margin-bottom:12px;">
+                    <label class="dw-input-label">INPUT STREAM // PROMPT INSTRUCTION</label>
+                    <textarea id="cg-prompt" class="dw-field" rows="4" placeholder="Enter query string, instruction vector or technical command..."></textarea>
                 </div>
 
-                <button id="cg-btn" class="eng-btn">Dispatch Inference Query</button>
+                <button id="cg-btn" class="dw-execute-btn">EXECUTE COGNITIVE DISPATCH</button>
 
-                <div id="cg-out" class="eng-out" style="display:none;">
-                    <div id="cg-trace" class="eng-log" style="display:none;"></div>
-                    <div id="cg-txt" style="white-space: pre-wrap;"></div>
+                <div id="cg-out" class="dw-terminal-out" style="display:none;">
+                    <div id="cg-trace" class="dw-trace-log" style="display:none;"></div>
+                    <div id="cg-txt" class="dw-result-text"></div>
                 </div>
             </div>
 
-            <!-- Tab 2: Sonic Voice -->
-            <div id="tab-snc" class="eng-body" style="display:none;">
-                <div style="margin-bottom: 12px;">
-                    <label class="eng-lbl">Vocal Script Transcript</label>
-                    <textarea id="snc-text" class="eng-input" rows="3" placeholder="Enter clean transcript text for acoustic generation..."></textarea>
+            <!-- Tab 2: Acoustic Voice -->
+            <div id="tab-dw-snc" class="dw-panel-content" style="display:none;">
+                <div style="margin-bottom:14px;">
+                    <label class="dw-input-label">RAW TRANSCRIPT STRING</label>
+                    <textarea id="snc-text" class="dw-field" rows="3" placeholder="Input vocal parameters text..."></textarea>
                 </div>
 
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
                     <div>
-                        <label class="eng-lbl">Voice Timbre Profile</label>
-                        <select id="snc-voice" class="eng-input">
-                            <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Natural Male (Conversational Standard)</option>
-                            <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">Command Executive (Male)</option>
-                            <option value="69267136-1bdc-4103-a11a-7a0676499b66">Deep Resonance (Male Narrator)</option>
-                            <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Natural Calm (Female Standard)</option>
-                            <option value="21b81c14-f857-4359-aa54-26de70819eb4">Expressive Acoustic (Female)</option>
-                            <option value="b7d50908-b17c-442d-ad8d-810c63997ed9">Studio Broadcaster (Female)</option>
+                        <label class="dw-input-label">VOCAL PROFILE SIGNATURE</label>
+                        <select id="snc-voice" class="dw-field">
+                            <option value="a0e99841-438c-4a64-b679-ae501e7d6091">ALPHA-MALE // NATURAL CONVERSATION</option>
+                            <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">EXECUTIVE-MALE // CRISP DISPATCH</option>
+                            <option value="69267136-1bdc-4103-a11a-7a0676499b66">DEEP-NARRATOR // STUDIO ACOUSTIC</option>
+                            <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">BETA-FEMALE // CALM MATRIX</option>
+                            <option value="21b81c14-f857-4359-aa54-26de70819eb4">STORYTELLER-FEMALE // DYNAMIC</option>
                         </select>
                     </div>
                     <div>
-                        <label class="eng-lbl">Delivery Cadence</label>
-                        <select id="snc-speed" class="eng-input">
-                            <option value="0.8">0.8x Precision Cadence</option>
-                            <option value="1.0" selected>1.0x Realtime Natural</option>
-                            <option value="1.2">1.2x Dynamic Stream</option>
-                            <option value="1.5">1.5x Rapid Briefing</option>
+                        <label class="dw-input-label">CADENCE RATE</label>
+                        <select id="snc-speed" class="dw-field">
+                            <option value="0.8">0.8X PRECISION CADENCE</option>
+                            <option value="1.0" selected>1.0X REALTIME STANDARD</option>
+                            <option value="1.2">1.2X RAPID TRANSMISSION</option>
+                            <option value="1.5">1.5X EMERGENCY BURST</option>
                         </select>
                     </div>
                 </div>
 
-                <button id="snc-btn" class="eng-btn">Generate Acoustic Stream</button>
+                <button id="snc-btn" class="dw-execute-btn">SYNTHESIZE ACOUSTIC WAVEFORM</button>
 
-                <div id="snc-out" class="eng-out" style="display:none;">
+                <div id="snc-out" class="dw-terminal-out" style="display:none;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <span class="eng-lbl" style="margin:0;">PCM Waveform Monitor</span>
-                        <a id="snc-dl" href="#" download="acoustic_stream.wav" style="font-family:monospace; font-size:0.75rem; color:#fafafa; background:#18181b; padding:4px 10px; border-radius:3px; text-decoration:none;">Download .WAV</a>
+                        <span class="dw-input-label" style="margin:0;">PCM BUFFER READY</span>
+                        <a id="snc-dl" href="#" download="sonic_stream.wav" style="font-family:monospace; font-size:0.75rem; background:#000; color:#fff; padding:5px 12px; text-decoration:none; font-weight:800;">DOWNLOAD .WAV</a>
                     </div>
-                    <audio id="snc-aud" controls style="width:100%; margin-bottom:10px;"></audio>
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e4e4e7; padding-top:8px;">
-                        <span class="eng-lbl" style="margin:0;">Spatial Stereo Pan:</span>
-                        <input type="range" id="snc-pan" min="-1" max="1" step="0.1" value="0" style="width:150px;">
+                    <audio id="snc-aud" controls style="width:100%; margin-bottom:12px;"></audio>
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #000; padding-top:10px;">
+                        <span class="dw-input-label" style="margin:0;">SPATIAL STEREO PAN:</span>
+                        <input type="range" id="snc-pan" min="-1" max="1" step="0.1" value="0" style="width:160px;">
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 3: Visual Studio -->
-            <div id="tab-vis" class="eng-body" style="display:none;">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <!-- Tab 3: Visual Diffusion -->
+            <div id="tab-dw-vis" class="dw-panel-content" style="display:none;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
                     <div>
-                        <label class="eng-lbl">Diffusion Style Preset</label>
-                        <select id="vs-mode" class="eng-input">
-                            <option value="photoreal">Photorealistic HD Capture</option>
-                            <option value="cinematic">Cinematic Digital Film</option>
-                            <option value="vector">Technical Vector Blueprint</option>
-                            <option value="cyberpunk">High-Contrast Industrial Neon</option>
+                        <label class="dw-input-label">DIFFUSION MATRIX PRESET</label>
+                        <select id="vs-mode" class="dw-field">
+                            <option value="photoreal">PHOTOREALISTIC OPTICAL HD</option>
+                            <option value="cinematic">CINEMATIC DIGITAL FORMAT</option>
+                            <option value="vector">TECHNICAL VECTOR BLUEPRINT</option>
+                            <option value="cyberpunk">HIGH-CONTRAST INDUSTRIAL NEON</option>
                         </select>
                     </div>
                     <div>
-                        <label class="eng-lbl">Canvas Dimensions</label>
-                        <select id="vs-asp" class="eng-input">
-                            <option value="1024x1024">Square (1024x1024 // 1:1)</option>
-                            <option value="1280x720">Landscape (1280x720 // 16:9)</option>
-                            <option value="720x1280">Portrait (720x1280 // 9:16)</option>
+                        <label class="dw-input-label">RESOLUTION FRAME</label>
+                        <select id="vs-asp" class="dw-field">
+                            <option value="1024x1024">1:1 // 1024X1024 SQUARE</option>
+                            <option value="1280x720">16:9 // 1280X720 HORIZONTAL</option>
+                            <option value="720x1280">9:16 // 720X1280 VERTICAL</option>
                         </select>
                     </div>
                 </div>
 
-                <div style="margin-bottom: 10px;">
-                    <label class="eng-lbl">Visual Synthesis Prompt</label>
-                    <textarea id="vs-prompt" class="eng-input" rows="3" placeholder="Enter composition instructions, scene dynamics, lighting specs..."></textarea>
+                <div style="margin-bottom:12px;">
+                    <label class="dw-input-label">VISUAL SYNTHESIS TARGET PROMPT</label>
+                    <textarea id="vs-prompt" class="dw-field" rows="3" placeholder="Enter composition vector, camera optics, framing coordinates..."></textarea>
                 </div>
 
-                <button id="vs-btn" class="eng-btn">Dispatch Visual Render</button>
+                <button id="vs-btn" class="dw-execute-btn">DISPATCH VISUAL DIFFUSION</button>
 
-                <div id="vs-out" class="eng-out" style="display:none; text-align:center;">
-                    <img id="vs-img" src="" alt="Synthesis Output" style="max-width:100%; border-radius:4px; border:1px solid #e4e4e7; margin-bottom:12px;">
+                <div id="vs-out" class="dw-terminal-out" style="display:none; text-align:center;">
+                    <img id="vs-img" src="" alt="Synthesis Output" style="max-width:100%; border:2px solid #000; box-shadow:4px 4px 0px #000; margin-bottom:14px;">
                     <div>
-                        <a id="vs-dl" href="#" target="_blank" download="render.jpg" style="font-family:monospace; font-size:0.75rem; color:#fafafa; background:#18181b; padding:6px 14px; border-radius:3px; text-decoration:none;">Download Master Render</a>
+                        <a id="vs-dl" href="#" target="_blank" download="render.jpg" style="font-family:monospace; font-size:0.75rem; background:#000; color:#fff; padding:8px 16px; text-decoration:none; font-weight:800; display:inline-block;">DOWNLOAD MASTER ASSET</a>
                     </div>
                 </div>
             </div>
@@ -2172,19 +2181,23 @@ def page_ai_studio():
     </div>
 
     <script>
-    function openEngine(target) {
-        ['cog', 'snc', 'vis'].forEach(k => {
-            document.getElementById('tab-' + k).style.display = (k === target ? 'block' : 'none');
-            const b = document.getElementById('btn-t-' + k);
-            if(k === target) b.classList.add('active'); else b.classList.remove('active');
+    function switchConsole(k) {
+        ['cog', 'snc', 'vis'].forEach(t => {
+            document.getElementById('tab-dw-' + t).style.display = (t === k ? 'block' : 'none');
+            const b = document.getElementById('btn-dw-' + t);
+            if(t === k) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
         });
     }
 
     document.getElementById('cg-btn').onclick = async () => {
         const p = document.getElementById('cg-prompt').value.trim();
-        if(!p) return alert('Prompt required');
+        if(!p) return alert('PROMPT VECTOR REQUIRED');
         const b = document.getElementById('cg-btn');
-        b.disabled = true; b.innerText = "EXECUTING QUERY...";
+        b.disabled = true; b.innerText = "EXECUTING DISPATCH...";
         try {
             const r = await fetch('/api/ai-generate', {
                 method: 'POST',
@@ -2193,7 +2206,7 @@ def page_ai_studio():
             });
             const d = await r.json();
             if(!r.ok) throw new Error(d.error);
-            document.getElementById('cg-txt').innerText = d.reply || 'No text output returned';
+            document.getElementById('cg-txt').innerText = d.reply || 'NO OUTPUT BUFFER';
             const t = document.getElementById('cg-trace');
             if(d.thought) {
                 t.innerText = "EXECUTION TRACE LOG:
@@ -2201,16 +2214,16 @@ def page_ai_studio():
                 t.style.display = 'block';
             } else { t.style.display = 'none'; }
             document.getElementById('cg-out').style.display = 'block';
-        } catch(e) { alert('Inference Failure: ' + e.message); }
-        finally { b.disabled = false; b.innerText = "DISPATCH INFERENCE QUERY"; }
+        } catch(e) { alert('FATAL: ' + e.message); }
+        finally { b.disabled = false; b.innerText = "EXECUTE COGNITIVE DISPATCH"; }
     };
 
     let aCtx = null, pNode = null;
     document.getElementById('snc-btn').onclick = async () => {
         const t = document.getElementById('snc-text').value.trim();
-        if(!t) return alert('Enter transcript');
+        if(!t) return alert('TRANSCRIPT REQUIRED');
         const b = document.getElementById('snc-btn');
-        b.disabled = true; b.innerText = "SYNTHESIZING ACOUSTICS...";
+        b.disabled = true; b.innerText = "STREAMING ACOUSTIC BUFFER...";
         try {
             const r = await fetch('/api/tts-generate', {
                 method: 'POST',
@@ -2231,9 +2244,9 @@ def page_ai_studio():
                 const u = new SpeechSynthesisUtterance(t);
                 u.rate = parseFloat(document.getElementById('snc-speed').value);
                 window.speechSynthesis.speak(u);
-            } else alert('Synthesis failed');
+            } else alert('SYNTHESIS FAILED');
         } finally {
-            b.disabled = false; b.innerText = "GENERATE ACOUSTIC STREAM";
+            b.disabled = false; b.innerText = "SYNTHESIZE ACOUSTIC WAVEFORM";
         }
     };
     document.getElementById('snc-pan').oninput = (e) => {
@@ -2250,22 +2263,22 @@ def page_ai_studio():
 
     document.getElementById('vs-btn').onclick = () => {
         const p = document.getElementById('vs-prompt').value.trim();
-        if(!p) return alert('Visual render prompt required');
+        if(!p) return alert('TARGET PROMPT REQUIRED');
         const b = document.getElementById('vs-btn');
         b.disabled = true; b.innerText = "COMPUTING DIFFUSION MATRIX...";
         const seed = Math.floor(Math.random() * 1000000);
         const [w, h] = document.getElementById('vs-asp').value.split('x');
-        const encoded = encodeURIComponent(p + ', highly detailed, ' + document.getElementById('vs-mode').value);
+        const encoded = encodeURIComponent(p + ', high quality, ' + document.getElementById('vs-mode').value);
         const imgUrl = 'https://image.pollinations.ai/prompt/' + encoded + '?seed=' + seed + '&width=' + w + '&height=' + h + '&nologo=true';
         const img = document.getElementById('vs-img');
         img.onload = () => {
-            b.disabled = false; b.innerText = "DISPATCH VISUAL RENDER";
+            b.disabled = false; b.innerText = "DISPATCH VISUAL DIFFUSION";
             document.getElementById('vs-out').style.display = 'block';
             document.getElementById('vs-dl').href = imgUrl;
         };
         img.onerror = () => {
-            b.disabled = false; b.innerText = "DISPATCH VISUAL RENDER";
-            alert('Visual render failed');
+            b.disabled = false; b.innerText = "DISPATCH VISUAL DIFFUSION";
+            alert('RENDER FAILURE');
         };
         img.src = imgUrl;
     };
