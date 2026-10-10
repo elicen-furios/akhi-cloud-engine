@@ -1738,14 +1738,20 @@ def api_sonic_voice():
     from flask import Response
     d = request.get_json(silent=True) or {}
     text_c = d.get("text", "").strip()
-    voice_id = d.get("voice_id", "a0e99841-438c-4a64-b679-ae501e7d6091").strip()
+    voice_id = d.get("voice_id", "79a125e8-cd45-4c13-8a67-188112f4dd22").strip()
+    lang = d.get("language", "hi")
     if not text_c:
         return jsonify({"error": "Please provide script text"}), 400
     
+    # Auto-detect hindi characters or default to hi/en
+    is_hindi = any(ord(c) >= 2304 and ord(c) <= 2431 for c in text_c) or "kaaka" in text_c.lower() or "dada" in text_c.lower()
+    selected_lang = "hi" if is_hindi else lang
+
     payload = {
-        "model_id": "sonic-2",
+        "model_id": "sonic-multilingual",
         "transcript": text_c,
         "voice": {"mode": "id", "id": voice_id},
+        "language": selected_lang,
         "output_format": {"container": "wav", "encoding": "pcm_s16le", "sample_rate": 44100}
     }
     headers = {
@@ -1755,15 +1761,16 @@ def api_sonic_voice():
     }
     try:
         req = urllib.request.Request("https://api.cartesia.ai/tts/bytes", data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=30) as resp:
+        with urllib.request.urlopen(req, timeout=35) as resp:
             audio_data = resp.read()
             return Response(audio_data, mimetype="audio/wav")
     except Exception as e:
-        # Fallback to Google TTS clean stream agar Cartesia rate limit ho jaye
+        # Fallback multi-language TTS
         try:
             import urllib.parse
             encoded = urllib.parse.quote(text_c[:300])
-            fallback_url = f"https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q={encoded}"
+            tl = "hi" if selected_lang == "hi" else "en"
+            fallback_url = f"https://translate.google.com/translate_tts?ie=UTF-8&tl={tl}&client=tw-ob&q={encoded}"
             f_req = urllib.request.Request(fallback_url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(f_req, timeout=15) as f_resp:
                 return Response(f_resp.read(), mimetype="audio/mpeg")
@@ -2031,15 +2038,19 @@ def page_ai_studio():
                 <div>
                     <label style="display: block; font-size: 0.84rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Voice Profile</label>
                     <select id="voice-id" style="width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; color: #0f172a; outline: none;">
-                        <optgroup label="Real Female / Girl">
-                            <option value="79a125e8-cd45-4c13-8a67-188112f4dd22" selected>Natural Girl (Warm & Friendly)</option>
-                            <option value="694f9389-aac1-45b6-b726-9d9369183238">Indian Accent Female (Fluent)</option>
-                            <option value="21b81c14-f857-4359-aa54-26de70819eb4">Expressive Girl (Soft Tone)</option>
+                        <optgroup label="India - Hindi (Real Human Emotion)">
+                            <option value="694f9389-aac1-45b6-b726-9d9369183238" selected>Hindi Female (Natural Storyteller & Dialogue)</option>
+                            <option value="42e3994e-7b70-4ccb-8c83-0599c2775a61">Hindi Male (Natural Conversational Boy)</option>
+                            <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Indian Accent Girl (Warm Hindi/English)</option>
+                            <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Indian Accent Male (Real Tone)</option>
                         </optgroup>
-                        <optgroup label="Real Male / Boy">
-                            <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Natural Boy (Conversational)</option>
-                            <option value="42e3994e-7b70-4ccb-8c83-0599c2775a61">Indian Accent Male (Real Human)</option>
-                            <option value="69267136-1bdc-4103-a11a-7a0676499b66">Deep Studio Male (Narrator)</option>
+                        <optgroup label="Global - Female (Real Human)">
+                            <option value="21b81c14-f857-4359-aa54-26de70819eb4">US Natural Female (Expressive Warm)</option>
+                            <option value="b7d50908-b17c-442d-ad8d-810c63997ed9">UK British Female (Studio Voice)</option>
+                        </optgroup>
+                        <optgroup label="Global - Male (Real Human)">
+                            <option value="69267136-1bdc-4103-a11a-7a0676499b66">US Deep Studio Male (Narrator)</option>
+                            <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">UK British Male (Conversational)</option>
                         </optgroup>
                     </select>
                 </div>
@@ -2055,7 +2066,7 @@ def page_ai_studio():
             </div>
 
             <!-- Stylized Indigo Accent Button with SVG Icon -->
-            <button id="btn-gen-voice" style="width: 100%; background: #2563eb; color: #ffffff; border: 1px solid #1d4ed8; padding: 13px; border-radius: 8px; font-size: 0.94rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(37,99,235,0.2);">
+            <button id="btn-gen-voice" style="width: 100%; background: #0f172a; color: #ffffff; border: 1px solid #0f172a; padding: 13px; border-radius: 8px; font-size: 0.94rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
