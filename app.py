@@ -52,23 +52,6 @@ def render_base(title, content):
         nav .links a:hover { color: #f472b6; }
         main { padding: 20px 14px 60px; }
     </style>
-<style>#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window { display: none !important; }</style>
-
-<style id="floating-icon-remover">
-/* Forcefully destroy all floating widgets, bubbles, and avatars */
-#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window,
-.bot-avatar, [class*="floating"], [id*="floating"],
-div[style*="border-radius: 50%"][style*="position: fixed"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    z-index: -99999 !important;
-}
-</style>
-
 </head>
 <body>
     <nav>
@@ -199,7 +182,112 @@ def render_page(title, active_page, inner_content):
         html = html.replace(target, "active" if active_page == p else "")
     html = html.replace("{{ content }}", inner_content)
     html = html.replace("</body>", """
+<!-- SLEEK BLACK AI ASSISTANT -->
+<style>
+#ai-float-bubble {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    background: #09090b;
+    color: #ffffff;
+    border: 1px solid #27272a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    z-index: 99998;
+    user-select: none;
+}
+#ai-chat-window {
+    display: none;
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    width: 320px;
+    max-width: calc(100vw - 36px);
+    height: 440px;
+    background: #09090b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    box-shadow: 0 10px 32px rgba(0,0,0,0.6);
+    z-index: 99999;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
+.ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
+.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
+</style>
 
+<div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
+
+<div id="ai-chat-window">
+    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:none;">AI</div>
+            <div>
+                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
+                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
+            </div>
+        </div>
+        <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
+    </div>
+
+    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
+        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
+    </div>
+
+    <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendAIMessage();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
+        <button onclick="sendAIMessage()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<script>
+async function sendAIMessage() {
+    const inp = document.getElementById('ai-chat-input');
+    const txt = inp.value.trim();
+    if (!txt) return;
+
+    const box = document.getElementById('ai-chat-messages');
+    const uDiv = document.createElement('div');
+    uDiv.className = 'ai-msg ai-msg-user';
+    uDiv.innerText = txt;
+    box.appendChild(uDiv);
+    inp.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    const lDiv = document.createElement('div');
+    lDiv.className = 'ai-msg ai-msg-bot';
+    lDiv.innerText = 'Typing...';
+    box.appendChild(lDiv);
+    box.scrollTop = box.scrollHeight;
+
+    try {
+        const res = await fetch('/api/assistant-chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: txt})
+        });
+        const d = await res.json();
+        lDiv.innerText = d.reply || 'No response';
+    } catch(err) {
+        lDiv.innerText = 'Error: ' + err.message;
+    }
+    box.scrollTop = box.scrollHeight;
+}
+</script>
 </body>""")
     return html, 200, {"Content-Type": "text/html; charset=utf-8"}
 
@@ -862,23 +950,6 @@ def page_admin_panel():
         input { width: 100%; box-sizing: border-box; background: #1a1a22; border: 1px solid #27272a; color: #fff; padding: 12px; border-radius: 8px; margin: 15px 0; text-align: center; font-size: 16px; outline: none; }
         button { width: 100%; background: linear-gradient(135deg, #ec4899, #a855f7); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
-<style>#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window { display: none !important; }</style>
-
-<style id="floating-icon-remover">
-/* Forcefully destroy all floating widgets, bubbles, and avatars */
-#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window,
-.bot-avatar, [class*="floating"], [id*="floating"],
-div[style*="border-radius: 50%"][style*="position: fixed"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    z-index: -99999 !important;
-}
-</style>
-
 </head>
 <body>
     <div class="box">
@@ -947,23 +1018,6 @@ div[style*="border-radius: 50%"][style*="position: fixed"] {
         nav .links a {{ color: #a1a1aa; text-decoration: none; margin-left: 18px; font-size: 0.9rem; }}
         main {{ padding: 20px 14px 60px; max-width: 1000px; margin: 0 auto; }}
     </style>
-<style>#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window { display: none !important; }</style>
-
-<style id="floating-icon-remover">
-/* Forcefully destroy all floating widgets, bubbles, and avatars */
-#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window,
-.bot-avatar, [class*="floating"], [id*="floating"],
-div[style*="border-radius: 50%"][style*="position: fixed"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    z-index: -99999 !important;
-}
-</style>
-
 </head>
 <body>
     <nav>
@@ -1583,34 +1637,60 @@ def api_private_generate():
 
 @app.route("/api/tts-generate", methods=["POST"])
 def api_sonic_voice():
-    import urllib.request, urllib.parse
+    import urllib.request, json
     from flask import Response
     d = request.get_json(silent=True) or {}
     text_c = d.get("text", "").strip()
+    voice_id = str(d.get("voice_id", "")).strip()
+    if not voice_id:
+        voice_id = "694f9389-aac1-45b6-b726-9d9369183238"
+    
     if not text_c:
         return jsonify({"error": "Please provide script text"}), 400
 
-    # Auto-detect Hindi vs English
+    # Auto detect hindi script/words
     is_hindi = any(ord(c) >= 2304 and ord(c) <= 2431 for c in text_c) or any(w in text_c.lower() for w in ["kaaka", "dada", "bhai", "namaste", "aap", "mera", "kya", "hai", "nahi", "kar"])
-    lang = "hi" if is_hindi else "en"
+    
+    # Multilingual vs English model handling based on selected voice & text
+    # Agar English native voices hain (Adam, Antoni, Rohan etc.) to sonic-2 use karein taaki exact male voice produce ho
+    multilingual_voices = ["694f9389-aac1-45b6-b726-9d9369183238", "42e3994e-7b70-4ccb-8c83-0599c2775a61", "79a125e8-cd45-4c13-8a67-188112f4dd22"]
+    
+    use_multi = is_hindi or (voice_id in multilingual_voices)
+    model_id = "sonic-multilingual" if use_multi else "sonic-2"
 
-    # Multi-chunk TTS generation (Supports long texts without quota failure)
+    payload = {
+        "model_id": model_id,
+        "transcript": text_c,
+        "voice": {"mode": "id", "id": voice_id},
+        "output_format": {"container": "wav", "encoding": "pcm_s16le", "sample_rate": 44100}
+    }
+    
+    if model_id == "sonic-multilingual":
+        payload["language"] = "hi" if is_hindi else "en"
+
+    headers = {
+        "X-API-Key": "sk_car_ohzRe16X4ToST5Yz2mT4hZ",
+        "Cartesia-Version": "2024-06-10",
+        "Content-Type": "application/json"
+    }
+
     try:
-        chunks = [text_c[i:i+200] for i in range(0, len(text_c), 200)]
-        combined_audio = bytearray()
-
-        for chunk in chunks:
-            encoded_txt = urllib.parse.quote(chunk)
-            tts_url = f"https://translate.google.com/translate_tts?ie=UTF-8&q={encoded_txt}&tl={lang}&client=tw-ob"
-            req = urllib.request.Request(tts_url, headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-            })
-            with urllib.request.urlopen(req, timeout=12) as resp:
-                combined_audio.extend(resp.read())
-
-        return Response(bytes(combined_audio), mimetype="audio/mpeg")
+        req = urllib.request.Request("https://api.cartesia.ai/tts/bytes", data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=35) as resp:
+            audio_data = resp.read()
+            return Response(audio_data, mimetype="audio/wav")
     except Exception as e:
-        return jsonify({"error": f"Audio engine error: {str(e)}"}), 500
+        # Fallback multi-language TTS
+        try:
+            import urllib.parse
+            encoded = urllib.parse.quote(text_c[:300])
+            tl = "hi" if is_hindi else "en"
+            fallback_url = f"https://translate.google.com/translate_tts?ie=UTF-8&tl={tl}&client=tw-ob&q={encoded}"
+            f_req = urllib.request.Request(fallback_url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(f_req, timeout=15) as f_resp:
+                return Response(f_resp.read(), mimetype="audio/mpeg")
+        except Exception as f_err:
+            return jsonify({"error": f"Audio engine error: {str(e)}"}), 500
 
 
 @app.route("/neural-studio")
@@ -1736,12 +1816,9 @@ def page_voice_studio():
             const r = await fetch('/api/tts-generate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({text: t, voice_id: (document.getElementById('vs-voice') ? document.getElementById('vs-voice').value : 'default')})
+                body: JSON.stringify({text: t, voice_id: document.getElementById('vs-voice').value})
             });
-            if(!r.ok) {
-                const errData = await r.json().catch(() => ({}));
-                throw new Error(errData.error || 'Server error: ' + r.status);
-            }
+            if(!r.ok) throw new Error();
             const blob = await r.blob();
             const url = URL.createObjectURL(blob);
             const a = document.getElementById('vs-audio');
@@ -2205,7 +2282,7 @@ def page_ai_studio():
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     text: text,
-                    voice_id: (window.currentVoiceId || (document.getElementById('voice-id') ? document.getElementById('voice-id').value : '') || 'default').trim()
+                    voice_id: (window.currentVoiceId || document.getElementById('voice-id').value || '').trim()
                 })
             });
 
@@ -2246,40 +2323,12 @@ def page_ai_studio():
 
 # --- CLEAN AI ASSISTANT EXTENSION ---
 @app.route("/api/assistant-chat", methods=["POST"])
-def api_assistant_chat_nvidia():
+def api_assistant_chat_v2():
     import urllib.request, json
     d = request.get_json(silent=True) or {}
     msg = d.get("message", "").strip()
     if not msg:
-        return jsonify({"reply": "Kripya koi message likhein."})
-
-    api_key = "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"
-    url = "https://integrate.api.nvidia.com/v1/chat/completions"
-    
-    payload = {
-        "model": "meta/llama-3.1-8b-instruct",
-        "messages": [
-            {"role": "system", "content": "You are a professional, helpful, and concise AI Assistant."},
-            {"role": "user", "content": msg}
-        ],
-        "temperature": 0.5,
-        "max_tokens": 1024
-    }
-
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-
-    try:
-        req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            reply_text = data["choices"][0]["message"]["content"]
-            return jsonify({"reply": reply_text})
-    except Exception as e:
-        return jsonify({"reply": f"AI error: {str(e)}"}), 500
-
+        return jsonify({"reply": "Kripya message likhein."})
     api_key = "AQ.Ab8RN6Ixk9UDdqH-XelvTCqUH5vweLfqk41O0dB-FO6CBIf6dA"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     payload = {

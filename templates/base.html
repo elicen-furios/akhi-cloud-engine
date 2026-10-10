@@ -518,45 +518,6 @@
     }
 
     </style>
-
-<style>
-/* FORCE HIDE ANY OLD FLOATING AVATARS OR GIRLS ICONS */
-img[src*="unsplash"], div[style*="unsplash"], [class*="avatar"], .bot-avatar, #mayara-bubble, #mayara-window {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-}
-</style>
-
-
-<style>
-/* FORCE HIDE ANY OLD FLOATING AVATARS OR GIRLS ICONS */
-img[src*="unsplash"], div[style*="unsplash"], [class*="avatar"], .bot-avatar, #mayara-bubble, #mayara-window {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-}
-</style>
-
-<style>#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window { display: none !important; }</style>
-
-<style id="floating-icon-remover">
-/* Forcefully destroy all floating widgets, bubbles, and avatars */
-#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window,
-.bot-avatar, [class*="floating"], [id*="floating"],
-div[style*="border-radius: 50%"][style*="position: fixed"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    z-index: -99999 !important;
-}
-</style>
-
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -871,7 +832,112 @@ div[style*="border-radius: 50%"][style*="position: fixed"] {
 
 
 
+<!-- SLEEK BLACK AI ASSISTANT -->
+<style>
+#ai-float-bubble {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    background: #09090b;
+    color: #ffffff;
+    border: 1px solid #27272a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    z-index: 99998;
+    user-select: none;
+}
+#ai-chat-window {
+    display: none;
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    width: 320px;
+    max-width: calc(100vw - 36px);
+    height: 440px;
+    background: #09090b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    box-shadow: 0 10px 32px rgba(0,0,0,0.6);
+    z-index: 99999;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
+.ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
+.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
+</style>
 
+<div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
+
+<div id="ai-chat-window">
+    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:none;">AI</div>
+            <div>
+                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
+                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
+            </div>
+        </div>
+        <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
+    </div>
+
+    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
+        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
+    </div>
+
+    <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendAIMessage();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
+        <button onclick="sendAIMessage()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<script>
+async function sendAIMessage() {
+    const inp = document.getElementById('ai-chat-input');
+    const txt = inp.value.trim();
+    if (!txt) return;
+
+    const box = document.getElementById('ai-chat-messages');
+    const uDiv = document.createElement('div');
+    uDiv.className = 'ai-msg ai-msg-user';
+    uDiv.innerText = txt;
+    box.appendChild(uDiv);
+    inp.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    const lDiv = document.createElement('div');
+    lDiv.className = 'ai-msg ai-msg-bot';
+    lDiv.innerText = 'Typing...';
+    box.appendChild(lDiv);
+    box.scrollTop = box.scrollHeight;
+
+    try {
+        const res = await fetch('/api/assistant-chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: txt})
+        });
+        const d = await res.json();
+        lDiv.innerText = d.reply || 'No response';
+    } catch(err) {
+        lDiv.innerText = 'Error: ' + err.message;
+    }
+    box.scrollTop = box.scrollHeight;
+}
+</script>
 
 
 <div id="wsModalHub" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(5,8,16,0.88); backdrop-filter:blur(8px); z-index:99999; align-items:center; justify-content:center;">
@@ -1047,170 +1113,6 @@ div[style*="border-radius: 50%"][style*="position: fixed"] {
 
         toggleProfileEditor();
     }
-</script>
-
-
-
-
-<!-- ROBOT AI CHAT WIDGET -->
-<style>
-#robot-float-btn {
-    position: fixed !important;
-    bottom: 20px !important;
-    right: 20px !important;
-    width: 48px !important;
-    height: 48px !important;
-    background: #000000 !important;
-    border: 1.5px solid #27272a !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 24px !important;
-    cursor: pointer !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.6) !important;
-    z-index: 99998 !important;
-    user-select: none !important;
-    transition: transform 0.2s ease;
-}
-#robot-float-btn:hover {
-    transform: scale(1.08);
-}
-#robot-chat-window {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 330px;
-    max-width: calc(100vw - 40px);
-    height: 460px;
-    background: #09090b;
-    border: 1px solid #27272a;
-    border-radius: 14px;
-    box-shadow: 0 12px 36px rgba(0,0,0,0.7);
-    z-index: 99999;
-    flex-direction: column;
-    overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-.robot-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
-.robot-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
-.robot-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
-</style>
-
-<div id="robot-float-btn" onclick="openRobotChat()">🤖</div>
-
-<div id="robot-chat-window">
-    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
-        <div style="display:flex; align-items:center; gap:8px;">
-            <div style="width:28px; height:28px; border-radius:50%; background:#000; border:1px solid #27272a; display:flex; align-items:center; justify-content:center; font-size:16px;">🤖</div>
-            <div>
-                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
-                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
-            </div>
-        </div>
-        <button onclick="closeRobotChat()" style="background:none; border:none; color:#a1a1aa; font-size:1.2rem; cursor:pointer; padding:2px 6px;">✕</button>
-    </div>
-
-    <div id="robot-messages-box" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
-        <div class="robot-msg robot-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
-    </div>
-
-    <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
-        <input type="text" id="robot-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendRobotMsg();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
-        <button onclick="sendRobotMsg()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-        </button>
-    </div>
-</div>
-
-<script>
-function openRobotChat() {
-    document.getElementById('robot-chat-window').style.display = 'flex';
-    document.getElementById('robot-float-btn').style.display = 'none';
-    document.getElementById('robot-chat-input').focus();
-}
-
-function closeRobotChat() {
-    document.getElementById('robot-chat-window').style.display = 'none';
-    document.getElementById('robot-float-btn').style.display = 'flex';
-}
-
-async function sendRobotMsg() {
-    const inp = document.getElementById('robot-chat-input');
-    const txt = inp.value.trim();
-    if (!txt) return;
-
-    const box = document.getElementById('robot-messages-box');
-    const uDiv = document.createElement('div');
-    uDiv.className = 'robot-msg robot-msg-user';
-    uDiv.innerText = txt;
-    box.appendChild(uDiv);
-    inp.value = '';
-    box.scrollTop = box.scrollHeight;
-
-    const lDiv = document.createElement('div');
-    lDiv.className = 'robot-msg robot-msg-bot';
-    lDiv.innerText = 'Thinking...';
-    box.appendChild(lDiv);
-    box.scrollTop = box.scrollHeight;
-
-    try {
-        const res = await fetch('/api/assistant-chat', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({message: txt})
-        });
-        const d = await res.json();
-        lDiv.innerText = d.reply || 'No response';
-    } catch(err) {
-        lDiv.innerText = 'Error: ' + err.message;
-    }
-    box.scrollTop = box.scrollHeight;
-}
-</script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll("button").forEach(function(b) {
-        if (b.innerText.includes("Generate Natural Voice") || b.id === "btn-gen-voice" || b.id === "vs-btn") {
-            b.onclick = async function(e) {
-                e.preventDefault();
-                var textInput = document.querySelector("textarea") || document.getElementById("vs-text");
-                var txt = textInput ? textInput.value.trim() : "";
-                if (!txt) {
-                    alert("Kripya script box me text type karein!");
-                    return;
-                }
-                var origText = b.innerHTML;
-                b.disabled = true;
-                b.innerHTML = "<span>Generating Audio...</span>";
-
-                try {
-                    var resp = await fetch("/api/tts-generate", {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({text: txt})
-                    });
-                    if (!resp.ok) {
-                        var errJson = await resp.json().catch(() => ({}));
-                        throw new Error(errJson.error || "Generation error: " + resp.status);
-                    }
-                    var blob = await resp.blob();
-                    var audioUrl = URL.createObjectURL(blob);
-                    var audio = new Audio(audioUrl);
-                    audio.play();
-                } catch(err) {
-                    alert("Voice error: " + err.message);
-                } finally {
-                    b.disabled = false;
-                    b.innerHTML = origText;
-                }
-            };
-        }
-    });
-});
 </script>
 
 </body>
