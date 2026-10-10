@@ -684,6 +684,7 @@ img[src*="unsplash"], div[style*="unsplash"], [class*="avatar"], .bot-avatar, #m
 }
 </style>
 
+<style>#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window { display: none !important; }</style>
 </head>
 <body>
     <div class="gate-card">
@@ -842,6 +843,7 @@ img[src*="unsplash"], div[style*="unsplash"], [class*="avatar"], .bot-avatar, #m
 }
 </style>
 
+<style>#ai-float-bubble, #ai-chat-window, #mayara-bubble, #mayara-window { display: none !important; }</style>
 </head>
 <body>
     <div class="container">
