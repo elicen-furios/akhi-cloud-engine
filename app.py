@@ -231,7 +231,7 @@ def render_page(title, active_page, inner_content):
 <div id="ai-chat-window">
     <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
         <div style="display:flex; align-items:center; gap:8px;">
-            <div style="width:26px; height:26px; border-radius:50%; background:#27272a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800;">AI</div>
+            <div style="display:none;">AI</div>
             <div>
                 <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
                 <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
@@ -413,7 +413,7 @@ def page_login():
 
         <!-- Returning User / Active Session State Card -->
         <div class="card" id="logged-in-profile-card" style="display:none; text-align:center; padding:38px 28px; border-radius:20px;">
-            <div style="width:58px; height:58px; border-radius:50%; background:#10b981; color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-weight:700; font-size:1.4rem;">
+            <div style="display:none;">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <h2 style="font-size:1.35rem; font-weight:700; margin-bottom:6px;">Active Developer Session</h2>
@@ -1159,7 +1159,7 @@ def page_database_control_center():
     <div class="dcc-container">
         <div id="dcc-gate" class="dcc-card" style="max-width: 480px; margin: 40px auto;">
             <div style="text-align:center; margin-bottom: 22px;">
-                <div style="display:inline-block; padding:12px; border-radius:50%; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25); margin-bottom:12px;">
+                <div style="display:none;">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 </div>
                 <h2 style="font-size:1.4rem; font-weight:700; margin:0 0 6px;">Database Control Center</h2>
@@ -1175,7 +1175,7 @@ def page_database_control_center():
             <button type="button" id="dcc-verify-btn" onclick="verifyAccessKey()" class="dcc-btn dcc-btn-primary" style="position:relative; overflow:hidden;">
                 <span id="dcc-btn-text">Verify API Key</span>
                 <span id="dcc-btn-loader" style="display:none; align-items:center; justify-content:center; gap:8px;">
-                    <span style="width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation: dccSpin 0.7s linear infinite; display:inline-block;"></span>
+                    <span style="display:none;"></span>
                     <span>Scanning Database Registry...</span>
                 </span>
             </button>
@@ -1190,7 +1190,7 @@ def page_database_control_center():
                 <div>
                     <h2 style="font-size:1.35rem; font-weight:700; margin:0 0 4px;">Database Control Center</h2>
                     <span style="font-size:0.8rem; color:#10b981; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                        <span style="width:8px; height:8px; background:#10b981; border-radius:50%; display:inline-block;"></span> Authenticated Session Active
+                        <span style="display:none;"></span> Authenticated Session Active
                     </span>
                 </div>
                 
@@ -1206,7 +1206,7 @@ def page_database_control_center():
             <div id="dcc-profile-panel" style="display:none; background:#020617; border:1px solid rgba(56,189,248,0.25); border-radius:10px; padding:18px; margin-bottom:24px;">
                 <h3 style="font-size:1rem; font-weight:600; margin:0 0 14px;">Profile Settings</h3>
                 <div style="display:flex; gap:16px; align-items:center; margin-bottom:14px;">
-                    <img id="dcc-profile-preview" src="https://api.dicebear.com/7.x/bottts/svg?seed=DBMaster" style="width:60px; height:60px; border-radius:50%; border:2px solid #38bdf8; object-fit:cover;">
+                    <img id="dcc-profile-preview" src="https://api.dicebear.com/7.x/bottts/svg?seed=DBMaster" style="display:none;">
                     <div style="flex:1;">
                         <label class="dcc-label">Profile Photo URL</label>
                         <input type="url" id="dcc-profile-url-input" class="dcc-input" placeholder="https://example.com/avatar.jpg">
@@ -1986,7 +1986,7 @@ def page_ai_studio():
         <div id="player-container" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></div>
+                    <div style="display:none;"></div>
                     <span style="font-size: 0.88rem; font-weight: 700; color: #0f172a;">Master Generated Audio Track</span>
                 </div>
                 <a id="btn-download" href="#" download="master_voice.wav" style="background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px;">

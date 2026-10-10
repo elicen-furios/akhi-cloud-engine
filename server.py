@@ -242,7 +242,7 @@ def page_login():
 
         <!-- Returning User / Active Session State Card -->
         <div class="card" id="logged-in-profile-card" style="display:none; text-align:center; padding:38px 28px; border-radius:20px;">
-            <div style="width:58px; height:58px; border-radius:50%; background:#10b981; color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-weight:700; font-size:1.4rem;">
+            <div style="display:none;">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <h2 style="font-size:1.35rem; font-weight:700; margin-bottom:6px;">Active Developer Session</h2>
@@ -801,7 +801,7 @@ def page_admin_panel():
 <div id="ai-chat-window">
     <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
         <div style="display:flex; align-items:center; gap:8px;">
-            <div style="width:26px; height:26px; border-radius:50%; background:#27272a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800;">AI</div>
+            <div style="display:none;">AI</div>
             <div>
                 <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
                 <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
@@ -928,7 +928,7 @@ async function sendGlobalAIMessage() {
         <div class="header">
             <div>
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981;"></span>
+                    <span style="display:none;"></span>
                     <span style="font-size:0.75rem; font-weight:700; color:#10b981; letter-spacing:1px;">ADMIN PANEL // OBSIDIAN VAULT</span>
                 </div>
                 <h1 style="font-size:1.8rem; font-weight:800; margin-top:4px;">Master Control Center</h1>
@@ -1070,7 +1070,7 @@ async function sendGlobalAIMessage() {
 <div id="ai-chat-window">
     <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
         <div style="display:flex; align-items:center; gap:8px;">
-            <div style="width:26px; height:26px; border-radius:50%; background:#27272a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800;">AI</div>
+            <div style="display:none;">AI</div>
             <div>
                 <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
                 <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>

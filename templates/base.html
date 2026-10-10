@@ -561,7 +561,7 @@
             </div>
 
             <a href="/login" class="user-badge" id="header-user-btn">
-                <div class="user-avatar-circle" id="user-initial"></div>
+                
                 <span id="user-name-tag">Sign In</span>
             </a>
         </header>
@@ -807,7 +807,7 @@
 
     <!-- AI Girl Chatbot Launcher -->
     <div id="ai-chat-launcher" onclick="toggleAiChat()" title="Talk with AI Assistant">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="AI Girl Assistant">
+        <img src="?auto=format&fit=crop&w=200&q=80" alt="AI Girl Assistant">
     </div>
 
     <!-- AI Chatbot Box -->
@@ -881,7 +881,7 @@
 <div id="ai-chat-window">
     <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
         <div style="display:flex; align-items:center; gap:8px;">
-            <div style="width:26px; height:26px; border-radius:50%; background:#27272a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800;">AI</div>
+            <div style="display:none;">AI</div>
             <div>
                 <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
                 <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
@@ -945,7 +945,7 @@ async function sendAIMessage() {
         
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:14px; margin-bottom:16px;">
             <div onclick="toggleProfileEditor()" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
-                <img id="wsDisplayAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=AdminNode" style="width:38px; height:38px; border-radius:50%; background:#1e293b; border:1px solid #38bdf8;">
+                <img id="wsDisplayAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=AdminNode" style="display:none;">
                 <div>
                     <div id="wsDisplayName" style="font-size:14px; font-weight:600;">Cluster Admin</div>
                     <div style="font-size:11px; color:#38bdf8;">Tap to edit profile</div>

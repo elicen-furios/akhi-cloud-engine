@@ -498,7 +498,7 @@ def key_provision_portal():
                         ISSUE API KEY
                     </button>
                     <div class="profile-chip" onclick="switchRoute('/profile')">
-                        <div class="avatar-letter" id="user-chip-badge">A</div>
+                        
                         <span id="user-chip-handle" style="font-family:var(--hud-font); font-size:0.8rem;">OPERATIVE</span>
                     </div>
                 </div>

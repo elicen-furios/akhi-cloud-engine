@@ -500,7 +500,7 @@ def main_dashboard():
                     <span>+ Issue API Key ↗</span>
                 </a>
                 <div class="user-chip">
-                    <div class="user-avatar">A</div>
+                    
                     <div class="user-details">
                         <div>Akhil</div>
                         <div class="user-status"><div class="status-dot"></div> Online</div>
@@ -547,7 +547,7 @@ def main_dashboard():
                 </ul>
 
                 <div class="sidebar-character-card">
-                    <div class="character-avatar"></div>
+                    
                     <div>
                         <div style="font-size:12px; font-weight:800;">AKHIL</div>
                         <div style="font-size:10px; color:#64748b;">DEVELOPER CONSOLE<br>// 夢を作る</div>
