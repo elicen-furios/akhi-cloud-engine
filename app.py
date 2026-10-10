@@ -1738,7 +1738,7 @@ def api_sonic_voice():
     from flask import Response
     d = request.get_json(silent=True) or {}
     text_c = d.get("text", "").strip()
-    voice_id = d.get("voice_id", "79a125e8-cd45-4c13-8a67-188112f4dd22").strip()
+    voice_id = (d.get("voice_id") or "694f9389-aac1-45b6-b726-9d9369183238").strip()
     lang = d.get("language", "hi")
     if not text_c:
         return jsonify({"error": "Please provide script text"}), 400
@@ -2219,8 +2219,14 @@ def page_ai_studio():
     }
 
     function selectVoice(id, title) {
-        document.getElementById('voice-id').value = id;
+        const inp = document.getElementById('voice-id');
+        inp.value = id;
+        inp.setAttribute('value', id);
         document.getElementById('selected-voice-title').innerText = title;
+        document.querySelectorAll('.voice-card').forEach(el => el.style.border = '1px solid #e2e8f0');
+        if (event && event.currentTarget) {
+            event.currentTarget.style.border = '2px solid #0f172a';
+        }
         closeVoiceModal();
     }
 
@@ -2362,7 +2368,7 @@ def page_ai_studio():
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     text: text,
-                    voice_id: document.getElementById('voice-id').value
+                    voice_id: (document.getElementById('voice-id').value || '').trim()
                 })
             });
 
