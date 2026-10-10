@@ -1985,303 +1985,102 @@ def page_vision_studio():
 @app.route("/ai-studio")
 def page_ai_studio():
     body = """
-    <style>
-        .dw-container { max-width: 1040px; margin: 16px auto; padding: 0 12px; font-family: -apple-system, "Segoe UI", Roboto, monospace; color: #000; }
-        .dw-shell { background: #ffffff; border: 2px solid #000000; box-shadow: 4px 4px 0px #000000; margin-bottom: 16px; }
-        
-        .dw-header { padding: 14px 18px; border-bottom: 2px solid #000000; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
-        .dw-sys-title { font-family: "SF Mono", Consolas, monospace; font-size: 1rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: #000; margin: 0; }
-        .dw-badge-danger { background: #000000; color: #ffffff; font-family: monospace; font-size: 0.72rem; font-weight: 800; padding: 4px 9px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #000; display: inline-flex; align-items: center; gap: 6px; }
-        .dw-dot-danger { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 6px #ef4444; }
-
-        .dw-telemetry-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-        @media(max-width: 720px) { .dw-telemetry-row { grid-template-columns: 1fr; } }
-        .dw-stat-card { background: #ffffff; border: 2px solid #000000; box-shadow: 3px 3px 0px #000000; padding: 12px 14px; position: relative; }
-        .dw-stat-label { font-family: monospace; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; color: #52525b; letter-spacing: 0.06em; }
-        .dw-stat-value { font-family: "SF Mono", Consolas, monospace; font-size: 1.15rem; font-weight: 900; color: #000000; margin: 4px 0 2px; }
-        .dw-stat-foot { font-family: monospace; font-size: 0.7rem; font-weight: 700; color: #000000; }
-
-        .dw-nav-tabs { display: flex; border-bottom: 2px solid #000000; background: #f4f4f5; }
-        .dw-tab-trigger { flex: 1; padding: 12px; font-family: monospace; font-size: 0.78rem; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; border: none; background: transparent; color: #52525b; cursor: pointer; border-right: 2px solid #000000; transition: all 0.1s; }
-        .dw-tab-trigger:last-child { border-right: none; }
-        .dw-tab-trigger.active { background: #ffffff; color: #000000; border-bottom: 2px solid transparent; font-weight: 900; }
-
-        .dw-panel-content { padding: 20px; background: #ffffff; }
-        .dw-input-label { display: block; font-family: monospace; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #000000; margin-bottom: 6px; }
-        .dw-field { width: 100%; box-sizing: border-box; background: #ffffff; border: 2px solid #000000; padding: 10px 12px; font-size: 0.9rem; color: #000000; font-family: inherit; font-weight: 600; outline: none; border-radius: 0; }
-        .dw-field:focus { background: #fffbeb; }
-
-        .dw-execute-btn { width: 100%; background: #000000; color: #ffffff; border: 2px solid #000000; box-shadow: 3px 3px 0px #000000; padding: 13px; font-family: monospace; font-size: 0.88rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; margin-top: 14px; transition: transform 0.08s, box-shadow 0.08s; }
-        .dw-execute-btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0px #000000; }
-        .dw-execute-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000000; }
-        .dw-execute-btn:disabled { background: #71717a; border-color: #71717a; cursor: not-allowed; }
-
-        .dw-terminal-out { margin-top: 18px; border: 2px solid #000000; background: #fafafa; padding: 16px; }
-        .dw-trace-log { font-family: monospace; font-size: 0.75rem; background: #ffffff; border: 1px dashed #000000; padding: 10px; margin-bottom: 12px; color: #000000; line-height: 1.5; white-space: pre-wrap; }
-        .dw-result-text { font-size: 0.92rem; line-height: 1.65; color: #000000; font-weight: 500; white-space: pre-wrap; }
-    </style>
-
-    <div class="dw-container">
-        <!-- Title Shell -->
-        <div class="dw-shell">
-            <div class="dw-header">
+    <div style="max-width: 820px; margin: 20px auto; padding: 0 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <!-- Header -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h1 class="dw-sys-title">CENTRAL INTELLIGENCE COMMAND // AKHIL</h1>
-                    <div style="font-size:0.75rem; color:#52525b; font-family:monospace; margin-top:3px;">SYSTEM DISPATCH PROTOCOL // HIGH-SEC PRIVATE REPOSITORY</div>
+                    <h2 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a; letter-spacing: -0.01em;">Voice Studio</h2>
+                    <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">Convert your text script into ultra-realistic studio quality speech.</p>
                 </div>
-                <div class="dw-badge-danger">
-                    <span class="dw-dot-danger"></span>
-                    CORE LOCKED
-                </div>
+                <span style="font-size: 0.75rem; font-weight: 600; color: #0f172a; background: #f8fafc; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 6px;">Service Ready</span>
             </div>
         </div>
 
-        <!-- Metric Shells -->
-        <div class="dw-telemetry-row">
-            <div class="dw-stat-card">
-                <div class="dw-stat-label">NEURAL MATRIX [CLUSTER]</div>
-                <div class="dw-stat-value">550B PARALLEL</div>
-                <div class="dw-stat-foot">LOAD: 0.02MS REALTIME</div>
-            </div>
-            <div class="dw-stat-card">
-                <div class="dw-stat-label">ACOUSTIC STREAM [SONIC]</div>
-                <div class="dw-stat-value">44.1 KHZ PCM</div>
-                <div class="dw-stat-foot">CHANNEL: STEREO MATRIX</div>
-            </div>
-            <div class="dw-stat-card">
-                <div class="dw-stat-label">DIFFUSION ENGINE [VISION]</div>
-                <div class="dw-stat-value">1024 ULTRA HD</div>
-                <div class="dw-stat-foot">SEED: DETERMINISTIC RANDOM</div>
-            </div>
-        </div>
-
-        <!-- Main Console -->
-        <div class="dw-shell">
-            <div class="dw-nav-tabs">
-                <button class="dw-tab-trigger active" id="btn-dw-cog" onclick="switchConsole('cog')">01 // COGNITIVE REASONING</button>
-                <button class="dw-tab-trigger" id="btn-dw-snc" onclick="switchConsole('snc')">02 // ACOUSTIC SYNTHESIS</button>
-                <button class="dw-tab-trigger" id="btn-dw-vis" onclick="switchConsole('vis')">03 // VISUAL DIFFUSION</button>
+        <!-- Studio Control Box -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Script Text</label>
+                <textarea id="v-text" rows="4" placeholder="Type or paste the text you want to convert into speech..." style="width: 100%; box-sizing: border-box; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 14px; font-size: 0.92rem; color: #0f172a; outline: none; resize: vertical; font-family: inherit;"></textarea>
             </div>
 
-            <!-- Tab 1: Cognitive Reasoning -->
-            <div id="tab-dw-cog" class="dw-panel-content">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
-                    <div>
-                        <label class="dw-input-label">PROCESSING CORE SELECT</label>
-                        <select id="cg-model" class="dw-field">
-                            <option value="reasoning-core">CORE-1: HIGH SPEED LOGIC ENGINE</option>
-                            <option value="deep-thinker">CORE-2: DEEP ANALYTICAL MATRIX</option>
-                            <option value="computational-pro">CORE-3: HEAVY COMPUTE RAW PRO</option>
-                            <option value="cluster-ultra">CORE-4: DISTRIBUTED 550B CLUSTER</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="dw-input-label">EXECUTION CONTEXT</label>
-                        <select class="dw-field">
-                            <option>RAW TERMINAL STREAM [ISOLATED]</option>
-                            <option>DETERMINISTIC VERIFICATION</option>
-                        </select>
-                    </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Voice Character</label>
+                    <select id="v-voice" style="width: 100%; box-sizing: border-box; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; color: #0f172a; outline: none;">
+                        <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Natural Male (Conversational)</option>
+                        <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">Professional Executive (Male)</option>
+                        <option value="69267136-1bdc-4103-a11a-7a0676499b66">Deep Storyteller (Male)</option>
+                        <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Natural Female (Warm)</option>
+                        <option value="21b81c14-f857-4359-aa54-26de70819eb4">Expressive Female (Narrator)</option>
+                        <option value="b7d50908-b17c-442d-ad8d-810c63997ed9">Studio Anchor (Female)</option>
+                    </select>
                 </div>
-
-                <div style="margin-bottom:12px;">
-                    <label class="dw-input-label">INPUT STREAM // PROMPT INSTRUCTION</label>
-                    <textarea id="cg-prompt" class="dw-field" rows="4" placeholder="Enter query string, instruction vector or technical command..."></textarea>
-                </div>
-
-                <button id="cg-btn" class="dw-execute-btn">EXECUTE COGNITIVE DISPATCH</button>
-
-                <div id="cg-out" class="dw-terminal-out" style="display:none;">
-                    <div id="cg-trace" class="dw-trace-log" style="display:none;"></div>
-                    <div id="cg-txt" class="dw-result-text"></div>
+                <div>
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Speaking Speed</label>
+                    <select id="v-speed" style="width: 100%; box-sizing: border-box; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; color: #0f172a; outline: none;">
+                        <option value="0.85">Slow (0.85x)</option>
+                        <option value="1.0" selected>Normal (1.0x)</option>
+                        <option value="1.2">Fast (1.2x)</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- Tab 2: Acoustic Voice -->
-            <div id="tab-dw-snc" class="dw-panel-content" style="display:none;">
-                <div style="margin-bottom:14px;">
-                    <label class="dw-input-label">RAW TRANSCRIPT STRING</label>
-                    <textarea id="snc-text" class="dw-field" rows="3" placeholder="Input vocal parameters text..."></textarea>
+            <button id="v-btn" style="width: 100%; background: #0f172a; color: #ffffff; border: none; padding: 12px; border-radius: 8px; font-size: 0.92rem; font-weight: 600; cursor: pointer; transition: background 0.2s;">Generate Audio</button>
+
+            <!-- Player Output -->
+            <div id="v-player" style="display: none; margin-top: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: #0f172a;">Generated Audio Track</span>
+                    <a id="v-dl" href="#" download="speech.wav" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.78rem; font-weight: 600; padding: 5px 12px; border-radius: 6px; text-decoration: none;">Download Audio</a>
                 </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
-                    <div>
-                        <label class="dw-input-label">VOCAL PROFILE SIGNATURE</label>
-                        <select id="snc-voice" class="dw-field">
-                            <option value="a0e99841-438c-4a64-b679-ae501e7d6091">ALPHA-MALE // NATURAL CONVERSATION</option>
-                            <option value="fb26447f-308b-471e-8b00-8e9f04284eb5">EXECUTIVE-MALE // CRISP DISPATCH</option>
-                            <option value="69267136-1bdc-4103-a11a-7a0676499b66">DEEP-NARRATOR // STUDIO ACOUSTIC</option>
-                            <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">BETA-FEMALE // CALM MATRIX</option>
-                            <option value="21b81c14-f857-4359-aa54-26de70819eb4">STORYTELLER-FEMALE // DYNAMIC</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="dw-input-label">CADENCE RATE</label>
-                        <select id="snc-speed" class="dw-field">
-                            <option value="0.8">0.8X PRECISION CADENCE</option>
-                            <option value="1.0" selected>1.0X REALTIME STANDARD</option>
-                            <option value="1.2">1.2X RAPID TRANSMISSION</option>
-                            <option value="1.5">1.5X EMERGENCY BURST</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button id="snc-btn" class="dw-execute-btn">SYNTHESIZE ACOUSTIC WAVEFORM</button>
-
-                <div id="snc-out" class="dw-terminal-out" style="display:none;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <span class="dw-input-label" style="margin:0;">PCM BUFFER READY</span>
-                        <a id="snc-dl" href="#" download="sonic_stream.wav" style="font-family:monospace; font-size:0.75rem; background:#000; color:#fff; padding:5px 12px; text-decoration:none; font-weight:800;">DOWNLOAD .WAV</a>
-                    </div>
-                    <audio id="snc-aud" controls style="width:100%; margin-bottom:12px;"></audio>
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #000; padding-top:10px;">
-                        <span class="dw-input-label" style="margin:0;">SPATIAL STEREO PAN:</span>
-                        <input type="range" id="snc-pan" min="-1" max="1" step="0.1" value="0" style="width:160px;">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 3: Visual Diffusion -->
-            <div id="tab-dw-vis" class="dw-panel-content" style="display:none;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
-                    <div>
-                        <label class="dw-input-label">DIFFUSION MATRIX PRESET</label>
-                        <select id="vs-mode" class="dw-field">
-                            <option value="photoreal">PHOTOREALISTIC OPTICAL HD</option>
-                            <option value="cinematic">CINEMATIC DIGITAL FORMAT</option>
-                            <option value="vector">TECHNICAL VECTOR BLUEPRINT</option>
-                            <option value="cyberpunk">HIGH-CONTRAST INDUSTRIAL NEON</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="dw-input-label">RESOLUTION FRAME</label>
-                        <select id="vs-asp" class="dw-field">
-                            <option value="1024x1024">1:1 // 1024X1024 SQUARE</option>
-                            <option value="1280x720">16:9 // 1280X720 HORIZONTAL</option>
-                            <option value="720x1280">9:16 // 720X1280 VERTICAL</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div style="margin-bottom:12px;">
-                    <label class="dw-input-label">VISUAL SYNTHESIS TARGET PROMPT</label>
-                    <textarea id="vs-prompt" class="dw-field" rows="3" placeholder="Enter composition vector, camera optics, framing coordinates..."></textarea>
-                </div>
-
-                <button id="vs-btn" class="dw-execute-btn">DISPATCH VISUAL DIFFUSION</button>
-
-                <div id="vs-out" class="dw-terminal-out" style="display:none; text-align:center;">
-                    <img id="vs-img" src="" alt="Synthesis Output" style="max-width:100%; border:2px solid #000; box-shadow:4px 4px 0px #000; margin-bottom:14px;">
-                    <div>
-                        <a id="vs-dl" href="#" target="_blank" download="render.jpg" style="font-family:monospace; font-size:0.75rem; background:#000; color:#fff; padding:8px 16px; text-decoration:none; font-weight:800; display:inline-block;">DOWNLOAD MASTER ASSET</a>
-                    </div>
-                </div>
+                <audio id="v-aud" controls style="width: 100%; outline: none;"></audio>
             </div>
         </div>
     </div>
 
     <script>
-    function switchConsole(k) {
-        ['cog', 'snc', 'vis'].forEach(t => {
-            document.getElementById('tab-dw-' + t).style.display = (t === k ? 'block' : 'none');
-            const b = document.getElementById('btn-dw-' + t);
-            if(t === k) {
-                b.classList.add('active');
-            } else {
-                b.classList.remove('active');
+    document.getElementById('v-btn').onclick = async () => {
+        const text = document.getElementById('v-text').value.trim();
+        if(!text) {
+            alert('Please enter text to generate speech');
+            return;
+        }
+
+        const btn = document.getElementById('v-btn');
+        btn.disabled = true;
+        btn.innerText = "Generating Audio...";
+
+        try {
+            const res = await fetch('/api/tts-generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    text: text,
+                    voice_id: document.getElementById('v-voice').value
+                })
+            });
+
+            if(!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || 'Server error generating voice');
             }
-        });
-    }
 
-    document.getElementById('cg-btn').onclick = async () => {
-        const p = document.getElementById('cg-prompt').value.trim();
-        if(!p) return alert('PROMPT VECTOR REQUIRED');
-        const b = document.getElementById('cg-btn');
-        b.disabled = true; b.innerText = "EXECUTING DISPATCH...";
-        try {
-            const r = await fetch('/api/ai-generate', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({model: document.getElementById('cg-model').value, prompt: p})
-            });
-            const d = await r.json();
-            if(!r.ok) throw new Error(d.error);
-            document.getElementById('cg-txt').innerText = d.reply || 'NO OUTPUT BUFFER';
-            const t = document.getElementById('cg-trace');
-            if(d.thought) {
-                t.innerText = "EXECUTION TRACE LOG:
-" + d.thought;
-                t.style.display = 'block';
-            } else { t.style.display = 'none'; }
-            document.getElementById('cg-out').style.display = 'block';
-        } catch(e) { alert('FATAL: ' + e.message); }
-        finally { b.disabled = false; b.innerText = "EXECUTE COGNITIVE DISPATCH"; }
-    };
-
-    let aCtx = null, pNode = null;
-    document.getElementById('snc-btn').onclick = async () => {
-        const t = document.getElementById('snc-text').value.trim();
-        if(!t) return alert('TRANSCRIPT REQUIRED');
-        const b = document.getElementById('snc-btn');
-        b.disabled = true; b.innerText = "STREAMING ACOUSTIC BUFFER...";
-        try {
-            const r = await fetch('/api/tts-generate', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({text: t, voice_id: document.getElementById('snc-voice').value})
-            });
-            if(!r.ok) throw new Error();
-            const blob = await r.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.getElementById('snc-aud');
-            a.src = url;
-            a.playbackRate = parseFloat(document.getElementById('snc-speed').value);
-            document.getElementById('snc-dl').href = url;
-            document.getElementById('snc-out').style.display = 'block';
-            a.play();
-        } catch(e) {
-            if('speechSynthesis' in window) {
-                const u = new SpeechSynthesisUtterance(t);
-                u.rate = parseFloat(document.getElementById('snc-speed').value);
-                window.speechSynthesis.speak(u);
-            } else alert('SYNTHESIS FAILED');
+            const blob = await res.blob();
+            const audioUrl = URL.createObjectURL(blob);
+            const audio = document.getElementById('v-aud');
+            audio.src = audioUrl;
+            audio.playbackRate = parseFloat(document.getElementById('v-speed').value);
+            document.getElementById('v-dl').href = audioUrl;
+            document.getElementById('v-player').style.display = 'block';
+            audio.play();
+        } catch(err) {
+            alert('Error: ' + err.message);
         } finally {
-            b.disabled = false; b.innerText = "SYNTHESIZE ACOUSTIC WAVEFORM";
+            btn.disabled = false;
+            btn.innerText = "Generate Audio";
         }
-    };
-    document.getElementById('snc-pan').oninput = (e) => {
-        if(!aCtx) {
-            const A = window.AudioContext || window.webkitAudioContext;
-            aCtx = new A();
-            const s = aCtx.createMediaElementSource(document.getElementById('snc-aud'));
-            pNode = aCtx.createStereoPanner();
-            s.connect(pNode);
-            pNode.connect(aCtx.destination);
-        }
-        if(pNode) pNode.pan.value = parseFloat(e.target.value);
-    };
-
-    document.getElementById('vs-btn').onclick = () => {
-        const p = document.getElementById('vs-prompt').value.trim();
-        if(!p) return alert('TARGET PROMPT REQUIRED');
-        const b = document.getElementById('vs-btn');
-        b.disabled = true; b.innerText = "COMPUTING DIFFUSION MATRIX...";
-        const seed = Math.floor(Math.random() * 1000000);
-        const [w, h] = document.getElementById('vs-asp').value.split('x');
-        const encoded = encodeURIComponent(p + ', high quality, ' + document.getElementById('vs-mode').value);
-        const imgUrl = 'https://image.pollinations.ai/prompt/' + encoded + '?seed=' + seed + '&width=' + w + '&height=' + h + '&nologo=true';
-        const img = document.getElementById('vs-img');
-        img.onload = () => {
-            b.disabled = false; b.innerText = "DISPATCH VISUAL DIFFUSION";
-            document.getElementById('vs-out').style.display = 'block';
-            document.getElementById('vs-dl').href = imgUrl;
-        };
-        img.onerror = () => {
-            b.disabled = false; b.innerText = "DISPATCH VISUAL DIFFUSION";
-            alert('RENDER FAILURE');
-        };
-        img.src = imgUrl;
     };
     </script>
     """
-    return render_page("Neural AI Studio", "ai-studio", body)
+    return render_page("Voice Studio", "ai-studio", body)
