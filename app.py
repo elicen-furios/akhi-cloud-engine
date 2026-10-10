@@ -2,7 +2,7 @@ import os
 import sqlite3
 import secrets
 from flask_cors import CORS
-from flask import Flask, request, jsonify, send_file, session
+from flask import Response, Flask, request, jsonify, send_file, session
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -919,7 +919,7 @@ def api_chat_handler():
 
 # ---------------- SECURE CLOUD DATABASE ENGINE ----------------
 import json, sqlite3, os, html
-from flask import session, redirect
+from flask import Response, session, redirect
 
 MASTER_ADMIN_KEY = "8630"
 API_AUTH_KEY = "akhil_8630_secure"
