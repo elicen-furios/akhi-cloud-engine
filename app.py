@@ -1583,60 +1583,61 @@ def api_private_generate():
 
 @app.route("/api/tts-generate", methods=["POST"])
 def api_sonic_voice():
-    import urllib.request, json
+    import urllib.request, json, asyncio, edge_tts
     from flask import Response
     d = request.get_json(silent=True) or {}
     text_c = d.get("text", "").strip()
     voice_id = str(d.get("voice_id", "")).strip()
-    if not voice_id:
-        voice_id = "694f9389-aac1-45b6-b726-9d9369183238"
-    
     if not text_c:
         return jsonify({"error": "Please provide script text"}), 400
 
-    # Auto detect hindi script/words
     is_hindi = any(ord(c) >= 2304 and ord(c) <= 2431 for c in text_c) or any(w in text_c.lower() for w in ["kaaka", "dada", "bhai", "namaste", "aap", "mera", "kya", "hai", "nahi", "kar"])
-    
-    # Multilingual vs English model handling based on selected voice & text
-    # Agar English native voices hain (Adam, Antoni, Rohan etc.) to sonic-2 use karein taaki exact male voice produce ho
-    multilingual_voices = ["694f9389-aac1-45b6-b726-9d9369183238", "42e3994e-7b70-4ccb-8c83-0599c2775a61", "79a125e8-cd45-4c13-8a67-188112f4dd22"]
-    
-    use_multi = is_hindi or (voice_id in multilingual_voices)
-    model_id = "sonic-multilingual" if use_multi else "sonic-2"
 
-    payload = {
-        "model_id": model_id,
-        "transcript": text_c,
-        "voice": {"mode": "id", "id": voice_id},
-        "output_format": {"container": "wav", "encoding": "pcm_s16le", "sample_rate": 44100}
-    }
-    
-    if model_id == "sonic-multilingual":
-        payload["language"] = "hi" if is_hindi else "en"
-
-    headers = {
-        "X-API-Key": "sk_car_ohzRe16X4ToST5Yz2mT4hZ",
-        "Cartesia-Version": "2024-06-10",
-        "Content-Type": "application/json"
-    }
-
+    # Attempt 1: Cartesia Sonic
     try:
+        multilingual_voices = ["694f9389-aac1-45b6-b726-9d9369183238", "42e3994e-7b70-4ccb-8c83-0599c2775a61", "79a125e8-cd45-4c13-8a67-188112f4dd22"]
+        use_multi = is_hindi or (voice_id in multilingual_voices)
+        model_id = "sonic-multilingual" if use_multi else "sonic-2"
+        target_vid = voice_id if voice_id else "694f9389-aac1-45b6-b726-9d9369183238"
+
+        payload = {
+            "model_id": model_id,
+            "transcript": text_c,
+            "voice": {"mode": "id", "id": target_vid},
+            "output_format": {"container": "wav", "encoding": "pcm_s16le", "sample_rate": 44100}
+        }
+        if model_id == "sonic-multilingual":
+            payload["language"] = "hi" if is_hindi else "en"
+
+        headers = {
+            "X-API-Key": "sk_car_ohzRe16X4ToST5Yz2mT4hZ",
+            "Cartesia-Version": "2024-06-10",
+            "Content-Type": "application/json"
+        }
         req = urllib.request.Request("https://api.cartesia.ai/tts/bytes", data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=35) as resp:
-            audio_data = resp.read()
-            return Response(audio_data, mimetype="audio/wav")
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return Response(resp.read(), mimetype="audio/wav")
+    except Exception:
+        pass
+
+    # Attempt 2: High-Quality Microsoft Neural Voices (Edge TTS)
+    try:
+        edge_voice = "hi-IN-MadhurNeural" if is_hindi else "en-US-GuyNeural"
+        async def _gen():
+            communicate = edge_tts.Communicate(text_c, edge_voice)
+            out = bytearray()
+            async for chunk in communicate.stream():
+                if chunk["type"] == "audio":
+                    out.extend(chunk["data"])
+            return bytes(out)
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        audio_data = loop.run_until_complete(_gen())
+        loop.close()
+        return Response(audio_data, mimetype="audio/mpeg")
     except Exception as e:
-        # Fallback multi-language TTS
-        try:
-            import urllib.parse
-            encoded = urllib.parse.quote(text_c[:300])
-            tl = "hi" if is_hindi else "en"
-            fallback_url = f"https://translate.google.com/translate_tts?ie=UTF-8&tl={tl}&client=tw-ob&q={encoded}"
-            f_req = urllib.request.Request(fallback_url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(f_req, timeout=15) as f_resp:
-                return Response(f_resp.read(), mimetype="audio/mpeg")
-        except Exception as f_err:
-            return jsonify({"error": f"Audio engine error: {str(e)}"}), 500
+        return jsonify({"error": f"TTS synthesis failed: {str(e)}"}), 500
 
 
 @app.route("/neural-studio")
