@@ -1170,5 +1170,48 @@ async function sendRobotMsg() {
 }
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("button").forEach(function(b) {
+        if (b.innerText.includes("Generate Natural Voice") || b.id === "btn-gen-voice" || b.id === "vs-btn") {
+            b.onclick = async function(e) {
+                e.preventDefault();
+                var textInput = document.querySelector("textarea") || document.getElementById("vs-text");
+                var txt = textInput ? textInput.value.trim() : "";
+                if (!txt) {
+                    alert("Kripya script box me text type karein!");
+                    return;
+                }
+                var origText = b.innerHTML;
+                b.disabled = true;
+                b.innerHTML = "<span>Generating Audio...</span>";
+
+                try {
+                    var resp = await fetch("/api/tts-generate", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({text: txt})
+                    });
+                    if (!resp.ok) {
+                        var errJson = await resp.json().catch(() => ({}));
+                        throw new Error(errJson.error || "Generation error: " + resp.status);
+                    }
+                    var blob = await resp.blob();
+                    var audioUrl = URL.createObjectURL(blob);
+                    var audio = new Audio(audioUrl);
+                    audio.play();
+                } catch(err) {
+                    alert("Voice error: " + err.message);
+                } finally {
+                    b.disabled = false;
+                    b.innerHTML = origText;
+                }
+            };
+        }
+    });
+});
+</script>
+
 </body>
 </html>
