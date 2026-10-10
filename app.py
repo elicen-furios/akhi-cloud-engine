@@ -2281,7 +2281,7 @@ def api_assistant_chat_nvidia():
     url = "https://integrate.api.nvidia.com/v1/chat/completions"
     
     payload = {
-        "model": "meta/llama-3.3-70b-instruct",
+        "model": "meta/llama-3.1-8b-instruct",
         "messages": [
             {"role": "system", "content": "You are a professional, helpful, and concise AI Assistant."},
             {"role": "user", "content": msg}
