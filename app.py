@@ -2270,12 +2270,40 @@ def page_ai_studio():
 
 # --- CLEAN AI ASSISTANT EXTENSION ---
 @app.route("/api/assistant-chat", methods=["POST"])
-def api_assistant_chat_v2():
+def api_assistant_chat_nvidia():
     import urllib.request, json
     d = request.get_json(silent=True) or {}
     msg = d.get("message", "").strip()
     if not msg:
-        return jsonify({"reply": "Kripya message likhein."})
+        return jsonify({"reply": "Kripya koi message likhein."})
+
+    api_key = "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"
+    url = "https://integrate.api.nvidia.com/v1/chat/completions"
+    
+    payload = {
+        "model": "meta/llama-3.1-70b-instruct",
+        "messages": [
+            {"role": "system", "content": "You are a professional, helpful, and concise AI Assistant."},
+            {"role": "user", "content": msg}
+        ],
+        "temperature": 0.5,
+        "max_tokens": 1024
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}"
+    }
+
+    try:
+        req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            reply_text = data["choices"][0]["message"]["content"]
+            return jsonify({"reply": reply_text})
+    except Exception as e:
+        return jsonify({"reply": f"AI error: {str(e)}"}), 500
+
     api_key = "AQ.Ab8RN6Ixk9UDdqH-XelvTCqUH5vweLfqk41O0dB-FO6CBIf6dA"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     payload = {
