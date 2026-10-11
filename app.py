@@ -4,7 +4,17 @@ import secrets
 from flask_cors import CORS
 from flask import Response, Flask, request, jsonify, send_file, session
 
+
+
 app = Flask(__name__)
+
+@app.after_request
+def apply_sec_headers(resp):
+    resp.headers["X-Content-Type-Options"] = "nosniff"
+    resp.headers["X-Frame-Options"] = "DENY"
+    resp.headers["X-XSS-Protection"] = "1; mode=block"
+    return resp
+
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 
@@ -763,7 +773,8 @@ def admin_panel_login():
     user = (data.get("username") or "").strip()
     pwd = (data.get("password") or "").strip()
 
-    if user == "AKHIL" and pwd == "akhilrawat027@gmail.com":
+    admin_pass = os.environ.get('ADMIN_PASSWORD', 'akhilrawat027@gmail.com')
+    if user == 'AKHIL' and pwd == admin_pass:
         session["admin_authenticated"] = True
         return jsonify({"status": "success"})
     return jsonify({"status": "error", "message": "INVALID CREDENTIALS: Access Denied"}), 401
