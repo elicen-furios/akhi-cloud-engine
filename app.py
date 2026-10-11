@@ -1954,7 +1954,7 @@ def page_ai_studio():
             </div>
 
             <!-- Solid Jet Black Button -->
-            <button id="btn-gen-voice" style="width: 100%; background: #0f172a; color: #ffffff; border: 1px solid #0f172a; padding: 13px; border-radius: 8px; font-size: 0.94rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);">
+            <button id="btn-gen-voice" onclick="generateVoice()" style="width: 100%; background: #0f172a; color: #ffffff; border: 1px solid #0f172a; padding: 13px; border-radius: 8px; font-size: 0.94rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -2247,7 +2247,71 @@ def page_ai_studio():
         }
     }
 
-    document.getElementById('btn-gen-voice').onclick = async () => {
+    
+    window.generateVoice = async function() {
+        const txtEl = document.getElementById('voice-text');
+        const text = (txtEl ? txtEl.value : '').trim();
+        if (!text) {
+            alert('Please enter script text first');
+            return;
+        }
+
+        const btn = document.getElementById('btn-gen-voice');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span>Synthesizing Voice...</span>';
+        }
+
+        try {
+            const vIdEl = document.getElementById('voice-id');
+            const vId = (window.currentVoiceId || (vIdEl ? vIdEl.value : '') || '').trim();
+            const res = await fetch('/api/tts-generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text, voice_id: vId })
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Audio generation failed on server');
+            }
+
+            const blob = await res.blob();
+            const audioUrl = URL.createObjectURL(blob);
+            const player = document.getElementById('audio-player');
+            const pCont = document.getElementById('player-container');
+            const dlBtn = document.getElementById('btn-download');
+
+            if (pCont) pCont.style.display = 'block';
+            if (dlBtn) dlBtn.href = audioUrl;
+
+            if (player) {
+                player.src = audioUrl;
+                const spdEl = document.getElementById('voice-speed');
+                if (spdEl) player.playbackRate = parseFloat(spdEl.value || 1.0);
+                try {
+                    if (typeof initAudioGraph === 'function') initAudioGraph();
+                } catch(e) {}
+                await player.play().catch(e => console.log('Autoplay deferred:', e));
+            }
+        } catch (err) {
+            alert('Error: ' + err.message);
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>
+                    <span>Generate Natural Voice</span>
+                `;
+            }
+        }
+    };
+
+    // removed redundant handler
         const text = document.getElementById('voice-text').value.trim();
         if (!text) {
             alert('Please enter script text first');
