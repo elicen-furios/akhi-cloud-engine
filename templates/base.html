@@ -1115,5 +1115,59 @@ async function sendAIMessage() {
     }
 </script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const btn = document.getElementById("btn-gen-voice");
+    if (!btn) return;
+
+    btn.onclick = async function(e) {
+        if (e) e.preventDefault();
+        const txtBox = document.getElementById("voice-text");
+        const text = (txtBox ? txtBox.value : "").trim();
+        if (!text) {
+            alert("Please enter script text first");
+            return;
+        }
+
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = "<span>Synthesizing Voice...</span>";
+
+        try {
+            const res = await fetch("/api/tts-generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text })
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || ("Server error: " + res.status));
+            }
+
+            const blob = await res.blob();
+            const audioUrl = URL.createObjectURL(blob);
+            const player = document.getElementById("audio-player");
+            const container = document.getElementById("player-container");
+            const dl = document.getElementById("btn-download");
+
+            if (container) container.style.display = "block";
+            if (dl) dl.href = audioUrl;
+            if (player) {
+                player.src = audioUrl;
+                player.load();
+                await player.play().catch(err => console.log("Autoplay deferred:", err));
+            }
+        } catch (err) {
+            alert("Voice Studio Error: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    };
+});
+</script>
+
 </body>
 </html>
