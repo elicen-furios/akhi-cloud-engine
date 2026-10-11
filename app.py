@@ -74,6 +74,102 @@ def render_base(title, content):
     <main>
         {content}
     </main>
+
+<script>
+let audioCtx = null;
+let sourceNode = null;
+let pannerNode = null;
+let bassFilter = null;
+let gainNode = null;
+
+function setupAudioFX() {
+    const audio = document.getElementById('audio-player');
+    if (!audio) return;
+
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
+    if (!sourceNode) {
+        try {
+            sourceNode = audioCtx.createMediaElementSource(audio);
+            pannerNode = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            bassFilter = audioCtx.createBiquadFilter();
+            bassFilter.type = 'lowshelf';
+            bassFilter.frequency.value = 250;
+
+            gainNode = audioCtx.createGain();
+
+            // Connect nodes
+            if (pannerNode) {
+                sourceNode.connect(pannerNode);
+                pannerNode.connect(bassFilter);
+            } else {
+                sourceNode.connect(bassFilter);
+            }
+            bassFilter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+        } catch(e) {
+            console.log('Audio nodes already bound:', e);
+        }
+    }
+}
+
+// Sliders live control
+document.addEventListener('input', function(e) {
+    setupAudioFX();
+    const id = e.target.id;
+    const val = parseFloat(e.target.value);
+
+    if (id === 'pan-slider' || e.target.getAttribute('name') === 'pan') {
+        if (pannerNode) pannerNode.pan.value = val;
+        const lbl = document.getElementById('pan-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Center' : (val < 0 ? 'Left ' + Math.abs(Math.round(val*100)) + '%' : 'Right ' + Math.round(val*100) + '%');
+    }
+    if (id === 'bass-slider' || e.target.getAttribute('name') === 'bass') {
+        if (bassFilter) bassFilter.gain.value = val;
+        const lbl = document.getElementById('bass-val');
+        if (lbl) lbl.innerText = val + ' dB';
+    }
+    if (id === 'reverb-slider' || e.target.getAttribute('name') === 'reverb') {
+        const lbl = document.getElementById('reverb-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Dry' : 'Wet ' + Math.round(val*100) + '%';
+    }
+});
+
+// Preset Buttons click handler
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const txt = btn.innerText.trim();
+
+    setupAudioFX();
+
+    if (txt.includes('Studio Dry')) {
+        if (pannerNode) pannerNode.pan.value = 0;
+        if (bassFilter) bassFilter.gain.value = 0;
+    } else if (txt.includes('Warm Bass')) {
+        if (bassFilter) bassFilter.gain.value = 8;
+    } else if (txt.includes('Left Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = -0.85;
+    } else if (txt.includes('Right Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = 0.85;
+    }
+});
+
+// Audio play par auto-resume
+document.addEventListener('DOMContentLoaded', function() {
+    const audio = document.getElementById('audio-player');
+    if (audio) {
+        audio.addEventListener('play', setupAudioFX);
+    }
+});
+</script>
+
 </body>
 </html>"""
 
@@ -191,7 +287,103 @@ def render_page(title, active_page, inner_content):
         target = "{{ 'active' if active_page == '" + p + "' else '' }}"
         html = html.replace(target, "active" if active_page == p else "")
     html = html.replace("{{ content }}", inner_content)
-    html = html.replace("</body>", """
+    html = html.replace("
+<script>
+let audioCtx = null;
+let sourceNode = null;
+let pannerNode = null;
+let bassFilter = null;
+let gainNode = null;
+
+function setupAudioFX() {
+    const audio = document.getElementById('audio-player');
+    if (!audio) return;
+
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
+    if (!sourceNode) {
+        try {
+            sourceNode = audioCtx.createMediaElementSource(audio);
+            pannerNode = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            bassFilter = audioCtx.createBiquadFilter();
+            bassFilter.type = 'lowshelf';
+            bassFilter.frequency.value = 250;
+
+            gainNode = audioCtx.createGain();
+
+            // Connect nodes
+            if (pannerNode) {
+                sourceNode.connect(pannerNode);
+                pannerNode.connect(bassFilter);
+            } else {
+                sourceNode.connect(bassFilter);
+            }
+            bassFilter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+        } catch(e) {
+            console.log('Audio nodes already bound:', e);
+        }
+    }
+}
+
+// Sliders live control
+document.addEventListener('input', function(e) {
+    setupAudioFX();
+    const id = e.target.id;
+    const val = parseFloat(e.target.value);
+
+    if (id === 'pan-slider' || e.target.getAttribute('name') === 'pan') {
+        if (pannerNode) pannerNode.pan.value = val;
+        const lbl = document.getElementById('pan-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Center' : (val < 0 ? 'Left ' + Math.abs(Math.round(val*100)) + '%' : 'Right ' + Math.round(val*100) + '%');
+    }
+    if (id === 'bass-slider' || e.target.getAttribute('name') === 'bass') {
+        if (bassFilter) bassFilter.gain.value = val;
+        const lbl = document.getElementById('bass-val');
+        if (lbl) lbl.innerText = val + ' dB';
+    }
+    if (id === 'reverb-slider' || e.target.getAttribute('name') === 'reverb') {
+        const lbl = document.getElementById('reverb-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Dry' : 'Wet ' + Math.round(val*100) + '%';
+    }
+});
+
+// Preset Buttons click handler
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const txt = btn.innerText.trim();
+
+    setupAudioFX();
+
+    if (txt.includes('Studio Dry')) {
+        if (pannerNode) pannerNode.pan.value = 0;
+        if (bassFilter) bassFilter.gain.value = 0;
+    } else if (txt.includes('Warm Bass')) {
+        if (bassFilter) bassFilter.gain.value = 8;
+    } else if (txt.includes('Left Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = -0.85;
+    } else if (txt.includes('Right Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = 0.85;
+    }
+});
+
+// Audio play par auto-resume
+document.addEventListener('DOMContentLoaded', function() {
+    const audio = document.getElementById('audio-player');
+    if (audio) {
+        audio.addEventListener('play', setupAudioFX);
+    }
+});
+</script>
+
+</body>", """
 <!-- SLEEK BLACK AI ASSISTANT -->
 <style>
 #ai-float-bubble {
@@ -298,6 +490,102 @@ async function sendAIMessage() {
     box.scrollTop = box.scrollHeight;
 }
 </script>
+
+<script>
+let audioCtx = null;
+let sourceNode = null;
+let pannerNode = null;
+let bassFilter = null;
+let gainNode = null;
+
+function setupAudioFX() {
+    const audio = document.getElementById('audio-player');
+    if (!audio) return;
+
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
+    if (!sourceNode) {
+        try {
+            sourceNode = audioCtx.createMediaElementSource(audio);
+            pannerNode = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            bassFilter = audioCtx.createBiquadFilter();
+            bassFilter.type = 'lowshelf';
+            bassFilter.frequency.value = 250;
+
+            gainNode = audioCtx.createGain();
+
+            // Connect nodes
+            if (pannerNode) {
+                sourceNode.connect(pannerNode);
+                pannerNode.connect(bassFilter);
+            } else {
+                sourceNode.connect(bassFilter);
+            }
+            bassFilter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+        } catch(e) {
+            console.log('Audio nodes already bound:', e);
+        }
+    }
+}
+
+// Sliders live control
+document.addEventListener('input', function(e) {
+    setupAudioFX();
+    const id = e.target.id;
+    const val = parseFloat(e.target.value);
+
+    if (id === 'pan-slider' || e.target.getAttribute('name') === 'pan') {
+        if (pannerNode) pannerNode.pan.value = val;
+        const lbl = document.getElementById('pan-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Center' : (val < 0 ? 'Left ' + Math.abs(Math.round(val*100)) + '%' : 'Right ' + Math.round(val*100) + '%');
+    }
+    if (id === 'bass-slider' || e.target.getAttribute('name') === 'bass') {
+        if (bassFilter) bassFilter.gain.value = val;
+        const lbl = document.getElementById('bass-val');
+        if (lbl) lbl.innerText = val + ' dB';
+    }
+    if (id === 'reverb-slider' || e.target.getAttribute('name') === 'reverb') {
+        const lbl = document.getElementById('reverb-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Dry' : 'Wet ' + Math.round(val*100) + '%';
+    }
+});
+
+// Preset Buttons click handler
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const txt = btn.innerText.trim();
+
+    setupAudioFX();
+
+    if (txt.includes('Studio Dry')) {
+        if (pannerNode) pannerNode.pan.value = 0;
+        if (bassFilter) bassFilter.gain.value = 0;
+    } else if (txt.includes('Warm Bass')) {
+        if (bassFilter) bassFilter.gain.value = 8;
+    } else if (txt.includes('Left Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = -0.85;
+    } else if (txt.includes('Right Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = 0.85;
+    }
+});
+
+// Audio play par auto-resume
+document.addEventListener('DOMContentLoaded', function() {
+    const audio = document.getElementById('audio-player');
+    if (audio) {
+        audio.addEventListener('play', setupAudioFX);
+    }
+});
+</script>
+
 </body>""")
     return html, 200, {"Content-Type": "text/html; charset=utf-8"}
 
@@ -986,6 +1274,102 @@ def page_admin_panel():
         }
     }
     </script>
+
+<script>
+let audioCtx = null;
+let sourceNode = null;
+let pannerNode = null;
+let bassFilter = null;
+let gainNode = null;
+
+function setupAudioFX() {
+    const audio = document.getElementById('audio-player');
+    if (!audio) return;
+
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
+    if (!sourceNode) {
+        try {
+            sourceNode = audioCtx.createMediaElementSource(audio);
+            pannerNode = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            bassFilter = audioCtx.createBiquadFilter();
+            bassFilter.type = 'lowshelf';
+            bassFilter.frequency.value = 250;
+
+            gainNode = audioCtx.createGain();
+
+            // Connect nodes
+            if (pannerNode) {
+                sourceNode.connect(pannerNode);
+                pannerNode.connect(bassFilter);
+            } else {
+                sourceNode.connect(bassFilter);
+            }
+            bassFilter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+        } catch(e) {
+            console.log('Audio nodes already bound:', e);
+        }
+    }
+}
+
+// Sliders live control
+document.addEventListener('input', function(e) {
+    setupAudioFX();
+    const id = e.target.id;
+    const val = parseFloat(e.target.value);
+
+    if (id === 'pan-slider' || e.target.getAttribute('name') === 'pan') {
+        if (pannerNode) pannerNode.pan.value = val;
+        const lbl = document.getElementById('pan-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Center' : (val < 0 ? 'Left ' + Math.abs(Math.round(val*100)) + '%' : 'Right ' + Math.round(val*100) + '%');
+    }
+    if (id === 'bass-slider' || e.target.getAttribute('name') === 'bass') {
+        if (bassFilter) bassFilter.gain.value = val;
+        const lbl = document.getElementById('bass-val');
+        if (lbl) lbl.innerText = val + ' dB';
+    }
+    if (id === 'reverb-slider' || e.target.getAttribute('name') === 'reverb') {
+        const lbl = document.getElementById('reverb-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Dry' : 'Wet ' + Math.round(val*100) + '%';
+    }
+});
+
+// Preset Buttons click handler
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const txt = btn.innerText.trim();
+
+    setupAudioFX();
+
+    if (txt.includes('Studio Dry')) {
+        if (pannerNode) pannerNode.pan.value = 0;
+        if (bassFilter) bassFilter.gain.value = 0;
+    } else if (txt.includes('Warm Bass')) {
+        if (bassFilter) bassFilter.gain.value = 8;
+    } else if (txt.includes('Left Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = -0.85;
+    } else if (txt.includes('Right Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = 0.85;
+    }
+});
+
+// Audio play par auto-resume
+document.addEventListener('DOMContentLoaded', function() {
+    const audio = document.getElementById('audio-player');
+    if (audio) {
+        audio.addEventListener('play', setupAudioFX);
+    }
+});
+</script>
+
 </body>
 </html>"""
 
@@ -1115,6 +1499,102 @@ def page_admin_panel():
         else {{ alert(data.message || "Delete failed"); }}
     }}
     </script>
+
+<script>
+let audioCtx = null;
+let sourceNode = null;
+let pannerNode = null;
+let bassFilter = null;
+let gainNode = null;
+
+function setupAudioFX() {
+    const audio = document.getElementById('audio-player');
+    if (!audio) return;
+
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
+    if (!sourceNode) {
+        try {
+            sourceNode = audioCtx.createMediaElementSource(audio);
+            pannerNode = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            bassFilter = audioCtx.createBiquadFilter();
+            bassFilter.type = 'lowshelf';
+            bassFilter.frequency.value = 250;
+
+            gainNode = audioCtx.createGain();
+
+            // Connect nodes
+            if (pannerNode) {
+                sourceNode.connect(pannerNode);
+                pannerNode.connect(bassFilter);
+            } else {
+                sourceNode.connect(bassFilter);
+            }
+            bassFilter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+        } catch(e) {
+            console.log('Audio nodes already bound:', e);
+        }
+    }
+}
+
+// Sliders live control
+document.addEventListener('input', function(e) {
+    setupAudioFX();
+    const id = e.target.id;
+    const val = parseFloat(e.target.value);
+
+    if (id === 'pan-slider' || e.target.getAttribute('name') === 'pan') {
+        if (pannerNode) pannerNode.pan.value = val;
+        const lbl = document.getElementById('pan-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Center' : (val < 0 ? 'Left ' + Math.abs(Math.round(val*100)) + '%' : 'Right ' + Math.round(val*100) + '%');
+    }
+    if (id === 'bass-slider' || e.target.getAttribute('name') === 'bass') {
+        if (bassFilter) bassFilter.gain.value = val;
+        const lbl = document.getElementById('bass-val');
+        if (lbl) lbl.innerText = val + ' dB';
+    }
+    if (id === 'reverb-slider' || e.target.getAttribute('name') === 'reverb') {
+        const lbl = document.getElementById('reverb-val');
+        if (lbl) lbl.innerText = val === 0 ? 'Dry' : 'Wet ' + Math.round(val*100) + '%';
+    }
+});
+
+// Preset Buttons click handler
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const txt = btn.innerText.trim();
+
+    setupAudioFX();
+
+    if (txt.includes('Studio Dry')) {
+        if (pannerNode) pannerNode.pan.value = 0;
+        if (bassFilter) bassFilter.gain.value = 0;
+    } else if (txt.includes('Warm Bass')) {
+        if (bassFilter) bassFilter.gain.value = 8;
+    } else if (txt.includes('Left Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = -0.85;
+    } else if (txt.includes('Right Ear 3D')) {
+        if (pannerNode) pannerNode.pan.value = 0.85;
+    }
+});
+
+// Audio play par auto-resume
+document.addEventListener('DOMContentLoaded', function() {
+    const audio = document.getElementById('audio-player');
+    if (audio) {
+        audio.addEventListener('play', setupAudioFX);
+    }
+});
+</script>
+
 </body>
 </html>"""
 
@@ -1939,7 +2419,7 @@ def page_ai_studio():
                         <span id="selected-voice-title" style="font-weight: 600;">Aanya (Hindi Warm Dialogue)</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </div>
-                    <input type="hidden" id="voice-id" value="694f9389-aac1-45b6-b726-9d9369183238">
+                    <input type="hidden" id="voice-id" style="position:relative; z-index:99; pointer-events:auto; touch-action:manipulation; cursor:pointer;" value="694f9389-aac1-45b6-b726-9d9369183238">
                 </div>
 
                 <div>
