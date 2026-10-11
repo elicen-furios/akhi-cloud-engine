@@ -74,6 +74,64 @@ def render_base(title, content):
     <main>
         {content}
     </main>
+
+<script>
+async function triggerVoiceGen(e) {
+    if (e) e.preventDefault();
+    const txtBox = document.getElementById('voice-text');
+    const text = (txtBox ? txtBox.value : '').trim();
+    if (!text) {
+        alert('Please enter script text first');
+        return;
+    }
+
+    const btn = document.getElementById('btn-gen-voice');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Synthesizing Voice...</span>';
+    }
+
+    try {
+        const response = await fetch('/api/tts-generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || ('Server returned ' + response.status));
+        }
+
+        const blob = await response.blob();
+        const audioUrl = URL.createObjectURL(blob);
+
+        const player = document.getElementById('audio-player');
+        const container = document.getElementById('player-container');
+        const dl = document.getElementById('btn-download');
+
+        if (container) container.style.display = 'block';
+        if (dl) dl.href = audioUrl;
+
+        if (player) {
+            player.src = audioUrl;
+            player.load();
+            player.play().catch(function(err) {
+                console.log('Autoplay handled:', err);
+            });
+        }
+    } catch (err) {
+        alert('Voice Studio Error: ' + err.message);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+        }
+    }
+}
+</script>
+
 </body>
 </html>"""
 
@@ -191,7 +249,65 @@ def render_page(title, active_page, inner_content):
         target = "{{ 'active' if active_page == '" + p + "' else '' }}"
         html = html.replace(target, "active" if active_page == p else "")
     html = html.replace("{{ content }}", inner_content)
-    html = html.replace("</body>", """
+    html = html.replace("
+<script>
+async function triggerVoiceGen(e) {
+    if (e) e.preventDefault();
+    const txtBox = document.getElementById('voice-text');
+    const text = (txtBox ? txtBox.value : '').trim();
+    if (!text) {
+        alert('Please enter script text first');
+        return;
+    }
+
+    const btn = document.getElementById('btn-gen-voice');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Synthesizing Voice...</span>';
+    }
+
+    try {
+        const response = await fetch('/api/tts-generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || ('Server returned ' + response.status));
+        }
+
+        const blob = await response.blob();
+        const audioUrl = URL.createObjectURL(blob);
+
+        const player = document.getElementById('audio-player');
+        const container = document.getElementById('player-container');
+        const dl = document.getElementById('btn-download');
+
+        if (container) container.style.display = 'block';
+        if (dl) dl.href = audioUrl;
+
+        if (player) {
+            player.src = audioUrl;
+            player.load();
+            player.play().catch(function(err) {
+                console.log('Autoplay handled:', err);
+            });
+        }
+    } catch (err) {
+        alert('Voice Studio Error: ' + err.message);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+        }
+    }
+}
+</script>
+
+</body>", """
 <!-- SLEEK BLACK AI ASSISTANT -->
 <style>
 #ai-float-bubble {
@@ -298,6 +414,64 @@ async function sendAIMessage() {
     box.scrollTop = box.scrollHeight;
 }
 </script>
+
+<script>
+async function triggerVoiceGen(e) {
+    if (e) e.preventDefault();
+    const txtBox = document.getElementById('voice-text');
+    const text = (txtBox ? txtBox.value : '').trim();
+    if (!text) {
+        alert('Please enter script text first');
+        return;
+    }
+
+    const btn = document.getElementById('btn-gen-voice');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Synthesizing Voice...</span>';
+    }
+
+    try {
+        const response = await fetch('/api/tts-generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || ('Server returned ' + response.status));
+        }
+
+        const blob = await response.blob();
+        const audioUrl = URL.createObjectURL(blob);
+
+        const player = document.getElementById('audio-player');
+        const container = document.getElementById('player-container');
+        const dl = document.getElementById('btn-download');
+
+        if (container) container.style.display = 'block';
+        if (dl) dl.href = audioUrl;
+
+        if (player) {
+            player.src = audioUrl;
+            player.load();
+            player.play().catch(function(err) {
+                console.log('Autoplay handled:', err);
+            });
+        }
+    } catch (err) {
+        alert('Voice Studio Error: ' + err.message);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+        }
+    }
+}
+</script>
+
 </body>""")
     return html, 200, {"Content-Type": "text/html; charset=utf-8"}
 
@@ -986,6 +1160,64 @@ def page_admin_panel():
         }
     }
     </script>
+
+<script>
+async function triggerVoiceGen(e) {
+    if (e) e.preventDefault();
+    const txtBox = document.getElementById('voice-text');
+    const text = (txtBox ? txtBox.value : '').trim();
+    if (!text) {
+        alert('Please enter script text first');
+        return;
+    }
+
+    const btn = document.getElementById('btn-gen-voice');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Synthesizing Voice...</span>';
+    }
+
+    try {
+        const response = await fetch('/api/tts-generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || ('Server returned ' + response.status));
+        }
+
+        const blob = await response.blob();
+        const audioUrl = URL.createObjectURL(blob);
+
+        const player = document.getElementById('audio-player');
+        const container = document.getElementById('player-container');
+        const dl = document.getElementById('btn-download');
+
+        if (container) container.style.display = 'block';
+        if (dl) dl.href = audioUrl;
+
+        if (player) {
+            player.src = audioUrl;
+            player.load();
+            player.play().catch(function(err) {
+                console.log('Autoplay handled:', err);
+            });
+        }
+    } catch (err) {
+        alert('Voice Studio Error: ' + err.message);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+        }
+    }
+}
+</script>
+
 </body>
 </html>"""
 
@@ -1115,6 +1347,64 @@ def page_admin_panel():
         else {{ alert(data.message || "Delete failed"); }}
     }}
     </script>
+
+<script>
+async function triggerVoiceGen(e) {
+    if (e) e.preventDefault();
+    const txtBox = document.getElementById('voice-text');
+    const text = (txtBox ? txtBox.value : '').trim();
+    if (!text) {
+        alert('Please enter script text first');
+        return;
+    }
+
+    const btn = document.getElementById('btn-gen-voice');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Synthesizing Voice...</span>';
+    }
+
+    try {
+        const response = await fetch('/api/tts-generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || ('Server returned ' + response.status));
+        }
+
+        const blob = await response.blob();
+        const audioUrl = URL.createObjectURL(blob);
+
+        const player = document.getElementById('audio-player');
+        const container = document.getElementById('player-container');
+        const dl = document.getElementById('btn-download');
+
+        if (container) container.style.display = 'block';
+        if (dl) dl.href = audioUrl;
+
+        if (player) {
+            player.src = audioUrl;
+            player.load();
+            player.play().catch(function(err) {
+                console.log('Autoplay handled:', err);
+            });
+        }
+    } catch (err) {
+        alert('Voice Studio Error: ' + err.message);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+        }
+    }
+}
+</script>
+
 </body>
 </html>"""
 
@@ -1672,6 +1962,9 @@ def api_tts_engine():
         return jsonify({"error": f"Audio processing failed: {str(e)}"}), 500
 
     except Exception as e:
+        return jsonify({"error": f"Audio processing failed: {str(e)}"}), 500
+
+    except Exception as e:
         return jsonify({"error": f"Audio engine error: {str(e)}"}), 500
 
 
@@ -1954,7 +2247,7 @@ def page_ai_studio():
             </div>
 
             <!-- Solid Jet Black Button -->
-            <button id="btn-gen-voice" onclick="generateVoice()" style="width: 100%; background: #0f172a; color: #ffffff; border: 1px solid #0f172a; padding: 13px; border-radius: 8px; font-size: 0.94rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);">
+            <button id="btn-gen-voice" onclick="triggerVoiceGen(event)" onclick="generateVoice()" style="width: 100%; background: #0f172a; color: #ffffff; border: 1px solid #0f172a; padding: 13px; border-radius: 8px; font-size: 0.94rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
