@@ -1647,7 +1647,7 @@ def api_private_generate():
         return jsonify({"error": "Generation fail ho gaya: " + str(e)}), 502
 
 @app.route("/api/tts-generate", methods=["POST"])
-def api_sonic_voice():
+def api_tts_engine():
     import urllib.request, urllib.parse
     from flask import Response
     d = request.get_json(silent=True) or {}
@@ -1655,23 +1655,22 @@ def api_sonic_voice():
     if not text_c:
         return jsonify({"error": "Please enter script text first"}), 400
 
-    is_hindi = any(ord(c) >= 2304 and ord(c) <= 2431 for c in text_c) or any(w in text_c.lower() for w in ["kaaka", "dada", "bhai", "namaste", "aap", "mera", "kya", "hai", "nahi", "kar"])
+    is_hindi = any(ord(c) >= 2304 and ord(c) <= 2431 for c in text_c) or any(w in text_c.lower() for w in ["hai", "kya", "namaste", "bhai", "aap", "kaise", "mera"])
     lang = "hi" if is_hindi else "en"
 
     try:
-        chunks = [text_c[i:i+180] for i in range(0, len(text_c), 180)]
-        combined_audio = bytearray()
-
+        chunks = [text_c[i:i+160] for i in range(0, len(text_c), 160)]
+        audio_stream = bytearray()
         for chunk in chunks:
-            encoded_txt = urllib.parse.quote(chunk)
-            tts_url = f"https://translate.google.com/translate_tts?ie=UTF-8&q={encoded_txt}&tl={lang}&client=tw-ob"
-            req = urllib.request.Request(tts_url, headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-            })
-            with urllib.request.urlopen(req, timeout=15) as resp:
-                combined_audio.extend(resp.read())
+            enc = urllib.parse.quote(chunk)
+            url = f"https://translate.google.com/translate_tts?ie=UTF-8&q={enc}&tl={lang}&client=tw-ob"
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                audio_stream.extend(resp.read())
+        return Response(bytes(audio_stream), mimetype="audio/mpeg")
+    except Exception as e:
+        return jsonify({"error": f"Audio processing failed: {str(e)}"}), 500
 
-        return Response(bytes(combined_audio), mimetype="audio/mpeg")
     except Exception as e:
         return jsonify({"error": f"Audio engine error: {str(e)}"}), 500
 
