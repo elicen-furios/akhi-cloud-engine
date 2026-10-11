@@ -1403,5 +1403,157 @@ document.addEventListener('DOMContentLoaded', activateSliders);
 setTimeout(activateSliders, 1000);
 </script>
 
+
+<script id="audio-dsp-engine">
+let actx = null;
+let mSource = null;
+let panner = null;
+let bassEQ = null;
+let convolver = null;
+let wetGain = null;
+let dryGain = null;
+
+// Synthetic Spring Impulse Generator (No external file needed, 100% works offline)
+function buildSpringImpulse(ctx, duration, decay) {
+    const rate = ctx.sampleRate;
+    const length = rate * duration;
+    const impulse = ctx.createBuffer(2, length, rate);
+    const left = impulse.getChannelData(0);
+    const right = impulse.getChannelData(1);
+
+    for (let i = 0; i < length; i++) {
+        const n = i;
+        // Spring bounce acoustic simulation
+        const harmonic = Math.sin(n * 0.04) * 0.3;
+        const e = Math.exp(-i / (rate * decay));
+        left[i] = ((Math.random() * 2 - 1) + harmonic) * e;
+        right[i] = ((Math.random() * 2 - 1) + harmonic) * e;
+    }
+    return impulse;
+}
+
+function initRealAudioDSP() {
+    const player = document.getElementById('audio-player');
+    if (!player) return;
+
+    if (!actx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        actx = new AudioCtx();
+    }
+    if (actx.state === 'suspended') {
+        actx.resume();
+    }
+
+    if (!mSource) {
+        try {
+            mSource = actx.createMediaElementSource(player);
+
+            // 1. Panner (3D Ear Balance)
+            panner = actx.createStereoPanner ? actx.createStereoPanner() : null;
+
+            // 2. Vocal Warmth / Bass EQ
+            bassEQ = actx.createBiquadFilter();
+            bassEQ.type = 'lowshelf';
+            bassEQ.frequency.value = 250;
+            bassEQ.gain.value = 0;
+
+            // 3. Spring Reverb Ambience
+            convolver = actx.createConvolver();
+            convolver.buffer = buildSpringImpulse(actx, 2.2, 0.45);
+
+            wetGain = actx.createGain();
+            dryGain = actx.createGain();
+            wetGain.gain.value = 0; // default dry
+            dryGain.gain.value = 1;
+
+            // Chain: Source -> Panner -> BassEQ
+            let nodeChain = mSource;
+            if (panner) {
+                mSource.connect(panner);
+                nodeChain = panner;
+            }
+            nodeChain.connect(bassEQ);
+
+            // BassEQ splits into: Dry path + Spring Reverb path
+            bassEQ.connect(dryGain);
+            dryGain.connect(actx.destination);
+
+            bassEQ.connect(convolver);
+            convolver.connect(wetGain);
+            wetGain.connect(actx.destination);
+
+            console.log("Real Web Audio DSP Suite Connected!");
+        } catch(e) {
+            console.log("Audio routing active:", e);
+        }
+    }
+}
+
+// Live touch listener for Sliders
+document.addEventListener('input', function(e) {
+    initRealAudioDSP();
+    const t = e.target;
+    const v = parseFloat(t.value);
+
+    // 3D Ear Balance slider
+    if (t.id === 'pan-slider' || t.min === '-1') {
+        if (panner) panner.pan.value = v;
+        const lbl = document.getElementById('pan-val') || t.parentElement.querySelector('span');
+        if (lbl) lbl.innerText = v === 0 ? 'Center' : (v < 0 ? 'Left ' + Math.abs(Math.round(v*100)) + '%' : 'Right ' + Math.round(v*100) + '%');
+    }
+
+    // Vocal Warmth / Bass slider
+    if (t.id === 'bass-slider' || t.min === '-10') {
+        if (bassEQ) bassEQ.gain.value = v;
+        const lbl = document.getElementById('bass-val') || t.parentElement.querySelector('span');
+        if (lbl) lbl.innerText = v + ' dB';
+    }
+
+    // Spring Ambience slider
+    if (t.id === 'reverb-slider' || t.name === 'reverb' || (t.min === '0' && t.max === '1')) {
+        if (wetGain && dryGain) {
+            wetGain.gain.value = v * 1.5;
+            dryGain.gain.value = Math.max(0.2, 1 - v * 0.5);
+        }
+        const lbl = document.getElementById('reverb-val') || t.parentElement.querySelector('span');
+        if (lbl) lbl.innerText = v === 0 ? 'Dry' : Math.round(v * 100) + '%';
+    }
+});
+
+// Preset Buttons (Studio Dry, Spring Reverb, Warm Bass, Left 3D, Right 3D)
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const txt = btn.innerText.trim();
+    initRealAudioDSP();
+
+    if (txt.includes('Studio Dry')) {
+        if (panner) panner.pan.value = 0;
+        if (bassEQ) bassEQ.gain.value = 0;
+        if (wetGain) wetGain.gain.value = 0;
+        if (dryGain) dryGain.gain.value = 1;
+    } else if (txt.includes('Spring Reverb')) {
+        if (wetGain && dryGain) {
+            wetGain.gain.value = 1.2;
+            dryGain.gain.value = 0.6;
+        }
+    } else if (txt.includes('Warm Bass')) {
+        if (bassEQ) bassEQ.gain.value = 12;
+    } else if (txt.includes('Left Ear 3D')) {
+        if (panner) panner.pan.value = -0.9;
+    } else if (txt.includes('Right Ear 3D')) {
+        if (panner) panner.pan.value = 0.9;
+    }
+});
+
+// Player trigger hook
+document.addEventListener('DOMContentLoaded', function() {
+    const p = document.getElementById('audio-player');
+    if (p) {
+        p.addEventListener('play', initRealAudioDSP);
+    }
+});
+</script>
+
 </body>
 </html>
