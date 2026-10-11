@@ -1170,4 +1170,147 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 </body>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Fix Voice Picker: Convert non-working div into fully clickable select
+    const pickerBtn = document.getElementById("voice-picker-btn");
+    const voiceInput = document.getElementById("voice-id");
+    if (pickerBtn) {
+        const selectEl = document.createElement("select");
+        selectEl.id = "voice-id";
+        selectEl.style.cssText = "width:100%; box-sizing:border-box; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:10px 12px; font-size:0.9rem; color:#0f172a; outline:none; cursor:pointer; font-weight:600;";
+        selectEl.innerHTML = `
+            <option value="694f9389-aac1-45b6-b726-9d9369183238" selected>Aanya (Hindi Warm Dialogue)</option>
+            <option value="95856005-0332-41b0-9f45-6677c7b2756d">Aditi (Hindi Expressive Narrator)</option>
+            <option value="25608d0a-9d92-4f36-a192-35805adbeab7">Kabir (Hindi Confident Male)</option>
+            <option value="fb26447f-308b-471e-8b00-8d9f042846b8">Rohan (Deep Executive Male)</option>
+            <option value="a0e998e3-1827-4a51-93e8-e25c57707322">Sarah (Natural English US)</option>
+        `;
+        pickerBtn.parentNode.replaceChild(selectEl, pickerBtn);
+        if (voiceInput && voiceInput.parentNode) voiceInput.remove();
+    }
+
+    // 2. Web Audio Mastering FX Engine Setup
+    let audioCtx = null;
+    let sourceNode = null;
+    let pannerNode = null;
+    let bassFilter = null;
+
+    function initFX() {
+        const player = document.getElementById("audio-player");
+        if (!player) return;
+        if (!audioCtx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AC();
+        }
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        if (!sourceNode) {
+            try {
+                sourceNode = audioCtx.createMediaElementSource(player);
+                pannerNode = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+                bassFilter = audioCtx.createBiquadFilter();
+                bassFilter.type = "lowshelf";
+                bassFilter.frequency.value = 250;
+                bassFilter.gain.value = 0;
+
+                if (pannerNode) {
+                    sourceNode.connect(pannerNode);
+                    pannerNode.connect(bassFilter);
+                } else {
+                    sourceNode.connect(bassFilter);
+                }
+                bassFilter.connect(audioCtx.destination);
+            } catch(e) {}
+        }
+    }
+
+    // 3. Connect Sliders & Presets
+    document.addEventListener("input", function(e) {
+        initFX();
+        const t = e.target;
+        const v = parseFloat(t.value);
+        if (t.id === "pan-slider" || t.min === "-1") {
+            if (pannerNode) pannerNode.pan.value = v;
+            const l = document.getElementById("pan-val");
+            if (l) l.innerText = v === 0 ? "Center" : (v < 0 ? "Left " + Math.abs(Math.round(v*100)) + "%" : "Right " + Math.round(v*100) + "%");
+        }
+        if (t.id === "bass-slider" || t.min === "-10") {
+            if (bassFilter) bassFilter.gain.value = v;
+            const l = document.getElementById("bass-val");
+            if (l) l.innerText = v + " dB";
+        }
+    });
+
+    document.addEventListener("click", function(e) {
+        const b = e.target.closest("button");
+        if (!b) return;
+        const txt = b.innerText.trim();
+        initFX();
+        if (txt.includes("Studio Dry")) {
+            if (pannerNode) pannerNode.pan.value = 0;
+            if (bassFilter) bassFilter.gain.value = 0;
+        } else if (txt.includes("Warm Bass")) {
+            if (bassFilter) bassFilter.gain.value = 8;
+        } else if (txt.includes("Left Ear 3D")) {
+            if (pannerNode) pannerNode.pan.value = -0.85;
+        } else if (txt.includes("Right Ear 3D")) {
+            if (pannerNode) pannerNode.pan.value = 0.85;
+        }
+    });
+
+    // 4. Generate Voice Handler
+    const genBtn = document.getElementById("btn-gen-voice");
+    if (genBtn) {
+        genBtn.onclick = async function(e) {
+            if (e) e.preventDefault();
+            const txt = (document.getElementById("voice-text")?.value || "").trim();
+            if (!txt) {
+                alert("Please enter script text first");
+                return;
+            }
+            const origHtml = genBtn.innerHTML;
+            genBtn.disabled = true;
+            genBtn.innerHTML = "<span>Synthesizing Voice...</span>";
+
+            try {
+                const vSelect = document.getElementById("voice-id");
+                const voiceId = vSelect ? vSelect.value : "";
+                const res = await fetch("/api/tts-generate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: txt, voice_id: voiceId })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.error || ("Status: " + res.status));
+                }
+
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const p = document.getElementById("audio-player");
+                const cont = document.getElementById("player-container");
+                const dl = document.getElementById("btn-download");
+
+                if (cont) cont.style.display = "block";
+                if (dl) dl.href = url;
+                if (p) {
+                    p.src = url;
+                    p.load();
+                    initFX();
+                    await p.play().catch(() => {});
+                }
+            } catch (err) {
+                alert("Generation Error: " + err.message);
+            } finally {
+                genBtn.disabled = false;
+                genBtn.innerHTML = origHtml;
+            }
+        };
+    }
+});
+</script>
+
 </html>
