@@ -1174,31 +1174,31 @@ const ANIME_VOICES = [
         id: "694f9389-aac1-45b6-b726-9d9369183238",
         name: "Aanya (Hindi Warm Dialogue)",
         tag: "Warm • Friendly • Natural Female",
-        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Aanya"
+        avatar: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=120&auto=format&fit=crop&q=80"
     },
     {
         id: "95856005-0332-41b0-9f45-6677c7b2756d",
         name: "Aditi (Hindi Expressive Narrator)",
         tag: "Expressive • Clear • Confident Female",
-        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Aditi"
+        avatar: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=120&auto=format&fit=crop&q=80"
     },
     {
         id: "25608d0a-9d92-4f36-a192-35805adbeab7",
         name: "Kabir (Hindi Confident Male)",
         tag: "Confident • Deep • Male Voice",
-        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Kabir"
+        avatar: "https://images.unsplash.com/photo-1563089145-599997674d42?w=120&auto=format&fit=crop&q=80"
     },
     {
         id: "fb26447f-308b-471e-8b00-8d9f042846b8",
         name: "Rohan (Deep Executive Male)",
         tag: "Deep • Calm • Authoritative Male",
-        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Rohan"
+        avatar: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=120&auto=format&fit=crop&q=80"
     },
     {
         id: "a0e998e3-1827-4a51-93e8-e25c57707322",
         name: "Sarah (Natural English US)",
         tag: "Natural • Friendly • Clear Female",
-        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Sarah"
+        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&auto=format&fit=crop&q=80"
     }
 ];
 
@@ -1373,6 +1373,34 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 });
+</script>
+
+
+<script>
+// Direct slider and preset event binder for immediate UI & Audio response
+function activateSliders() {
+    const sliders = document.querySelectorAll('input[type="range"]');
+    sliders.forEach(s => {
+        s.style.pointerEvents = 'auto';
+        s.style.touchAction = 'none';
+        s.oninput = function() {
+            const v = parseFloat(this.value);
+            // Update labels
+            if (this.id === 'pan-slider' || this.min === '-1') {
+                const l = document.getElementById('pan-val') || this.parentElement.querySelector('span');
+                if (l) l.innerText = v === 0 ? 'Center' : (v < 0 ? 'Left ' + Math.abs(Math.round(v*100)) + '%' : 'Right ' + Math.round(v*100) + '%');
+            } else if (this.id === 'bass-slider' || this.min === '-10') {
+                const l = document.getElementById('bass-val') || this.parentElement.querySelector('span');
+                if (l) l.innerText = v + ' dB';
+            } else if (this.id === 'reverb-slider' || this.name === 'reverb') {
+                const l = document.getElementById('reverb-val') || this.parentElement.querySelector('span');
+                if (l) l.innerText = v === 0 ? 'Dry' : Math.round(v*100) + '%';
+            }
+        };
+    });
+}
+document.addEventListener('DOMContentLoaded', activateSliders);
+setTimeout(activateSliders, 1000);
 </script>
 
 </body>
