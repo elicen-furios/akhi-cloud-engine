@@ -1169,6 +1169,201 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+
+<script>
+// Voice Selection State
+let selectedVoice = "694f9389-aac1-45b6-b726-9d9369183238";
+
+function setVoice(id, element) {
+    selectedVoice = id;
+    document.querySelectorAll('.voice-select-card').forEach(el => {
+        el.style.borderColor = '#e2e8f0';
+        el.style.backgroundColor = '#ffffff';
+        const radio = el.querySelector('input[type="radio"]');
+        if (radio) radio.checked = false;
+    });
+    if (element) {
+        element.style.borderColor = '#2563eb';
+        element.style.backgroundColor = '#eff6ff';
+        const radio = element.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Replace unappealing dropdown with Custom Anime Voice Cards UI
+    const voiceSection = document.getElementById("voice-id") || document.getElementById("voice-picker-btn");
+    if (voiceSection && voiceSection.parentElement) {
+        const container = voiceSection.parentElement;
+        container.innerHTML = `
+            <label style="display: block; font-size: 0.84rem; font-weight: 700; color: #334155; margin-bottom: 8px;">Select Voice Profile</label>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div class="voice-select-card" onclick="setVoice('694f9389-aac1-45b6-b726-9d9369183238', this)" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1.5px solid #2563eb; border-radius: 10px; cursor: pointer; background: #eff6ff;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aanya" style="width: 36px; height: 36px; border-radius: 50%; background: #fee2e2;">
+                        <div>
+                            <div style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">P1. Aanya (Hindi Warm Dialogue)</div>
+                            <div style="font-size: 0.72rem; color: #64748b;">Warm • Friendly • Neural Female</div>
+                        </div>
+                    </div>
+                    <input type="radio" name="voice_radio" checked style="accent-color: #2563eb;">
+                </div>
+
+                <div class="voice-select-card" onclick="setVoice('95856005-0332-41b0-9f45-6677c7b2756d', this)" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #ffffff;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aditi" style="width: 36px; height: 36px; border-radius: 50%; background: #ede9fe;">
+                        <div>
+                            <div style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">P2. Aditi (Hindi Expressive Narrator)</div>
+                            <div style="font-size: 0.72rem; color: #64748b;">Expressive • Clear • Storyteller Female</div>
+                        </div>
+                    </div>
+                    <input type="radio" name="voice_radio" style="accent-color: #2563eb;">
+                </div>
+
+                <div class="voice-select-card" onclick="setVoice('25608d0a-9d92-4f36-a192-35805adbeab7', this)" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #ffffff;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Kabir" style="width: 36px; height: 36px; border-radius: 50%; background: #e0f2fe;">
+                        <div>
+                            <div style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">P3. Kabir (Hindi Confident Male)</div>
+                            <div style="font-size: 0.72rem; color: #64748b;">Confident • Deep • Male Voice</div>
+                        </div>
+                    </div>
+                    <input type="radio" name="voice_radio" style="accent-color: #2563eb;">
+                </div>
+
+                <div class="voice-select-card" onclick="setVoice('fb26447f-308b-471e-8b00-8d9f042846b8', this)" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #ffffff;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Rohan" style="width: 36px; height: 36px; border-radius: 50%; background: #f1f5f9;">
+                        <div>
+                            <div style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">P4. Rohan (Deep Executive Male)</div>
+                            <div style="font-size: 0.72rem; color: #64748b;">Deep • Calm • Authoritative Male</div>
+                        </div>
+                    </div>
+                    <input type="radio" name="voice_radio" style="accent-color: #2563eb;">
+                </div>
+            </div>
+        `;
+    }
+
+    // 2. Audio FX Nodes and Sliders Connection
+    let aCtx = null, srcN = null, panN = null, bassN = null;
+    function getAudioGraph() {
+        const audio = document.getElementById("audio-player");
+        if (!audio) return;
+        if (!aCtx) {
+            aCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (aCtx.state === 'suspended') aCtx.resume();
+        if (!srcN) {
+            try {
+                srcN = aCtx.createMediaElementSource(audio);
+                panN = aCtx.createStereoPanner ? aCtx.createStereoPanner() : null;
+                bassN = aCtx.createBiquadFilter();
+                bassN.type = 'lowshelf';
+                bassN.frequency.value = 220;
+                bassN.gain.value = 0;
+
+                if (panN) {
+                    srcN.connect(panN);
+                    panN.connect(bassN);
+                } else {
+                    srcN.connect(bassN);
+                }
+                bassN.connect(aCtx.destination);
+            } catch(e) {}
+        }
+    }
+
+    // Sliders Realtime Action
+    document.addEventListener("input", function(e) {
+        getAudioGraph();
+        const t = e.target;
+        const v = parseFloat(t.value);
+
+        if (t.id === "pan-slider" || t.min === "-1") {
+            if (panN) panN.pan.value = v;
+            const lbl = document.getElementById("pan-val");
+            if (lbl) lbl.innerText = v === 0 ? "Center" : (v < 0 ? "Left " + Math.abs(Math.round(v*100)) + "%" : "Right " + Math.round(v*100) + "%");
+        }
+        if (t.id === "bass-slider" || t.min === "-10") {
+            if (bassN) bassN.gain.value = v;
+            const lbl = document.getElementById("bass-val");
+            if (lbl) lbl.innerText = v + " dB";
+        }
+    });
+
+    // Preset Buttons Click Action
+    document.addEventListener("click", function(e) {
+        const b = e.target.closest('button');
+        if (!b) return;
+        const txt = b.innerText.trim();
+        getAudioGraph();
+
+        if (txt.includes("Studio Dry") || txt.includes("Normal")) {
+            if (panN) panN.pan.value = 0;
+            if (bassN) bassN.gain.value = 0;
+        } else if (txt.includes("Warm Bass") || txt.includes("Podcast")) {
+            if (bassN) bassN.gain.value = 8;
+        } else if (txt.includes("Left Ear 3D")) {
+            if (panN) panN.pan.value = -0.85;
+        } else if (txt.includes("Right Ear 3D")) {
+            if (panN) panN.pan.value = 0.85;
+        }
+    });
+
+    // Voice Generation with Exact Selected Voice
+    const btn = document.getElementById("btn-gen-voice");
+    if (btn) {
+        btn.onclick = async function(e) {
+            if (e) e.preventDefault();
+            const textInput = document.getElementById("voice-text");
+            const text = (textInput ? textInput.value : "").trim();
+            if (!text) {
+                alert("Please enter script text first");
+                return;
+            }
+
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = "<span>Synthesizing Voice...</span>";
+
+            try {
+                const res = await fetch("/api/tts-generate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        text: text,
+                        voice_id: selectedVoice
+                    })
+                });
+
+                if (!res.ok) throw new Error("HTTP " + res.status);
+
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const player = document.getElementById("audio-player");
+                const cont = document.getElementById("player-container");
+                const dl = document.getElementById("btn-download");
+
+                if (cont) cont.style.display = "block";
+                if (dl) dl.href = url;
+                if (player) {
+                    player.src = url;
+                    player.load();
+                    getAudioGraph();
+                    await player.play().catch(() => {});
+                }
+            } catch(err) {
+                alert("Generation error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        };
+    }
+});
+</script>
+
 </body>
 
 <script>

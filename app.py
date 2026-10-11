@@ -1,3 +1,16 @@
+
+VOICE_MAP = {
+    'aanya': 'hi-IN-SwaraNeural',
+    'aditi': 'hi-IN-MadhurNeural',
+    'kabir': 'hi-IN-MadhurNeural',
+    'rohan': 'en-IN-PrabhatNeural',
+    'sarah': 'en-US-JennyNeural',
+    '694f9389-aac1-45b6-b726-9d9369183238': 'hi-IN-SwaraNeural',
+    '95856005-0332-41b0-9f45-6677c7b2756d': 'hi-IN-MadhurNeural',
+    '25608d0a-9d92-4f36-a192-35805adbeab7': 'hi-IN-MadhurNeural',
+    'fb26447f-308b-471e-8b00-8d9f042846b8': 'en-IN-PrabhatNeural',
+    'a0e998e3-1827-4a51-93e8-e25c57707322': 'en-US-JennyNeural'
+}
 import os
 import sqlite3
 import secrets
