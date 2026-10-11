@@ -1,1488 +1,195 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>{{ title }} // AKHIL DEV</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-body: #ffffff;
-            --bg-surface: #fafafa;
-            --bg-card: #ffffff;
-            --border-soft: #e4e4e7;
-            --text-title: #09090b;
-            --text-body: #52525b;
-            --text-muted: #a1a1aa;
-            --font-ui: "Plus Jakarta Sans", sans-serif;
-            --font-mono: "JetBrains Mono", monospace;
-            --shadow-subtle: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-float: 0 20px 40px -10px rgba(0,0,0,0.08);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-title);
-            font-family: var(--font-ui);
-            min-height: 100vh;
-            display: flex;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-        .drawer-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(9, 9, 11, 0.35);
-            backdrop-filter: blur(4px);
-            z-index: 998;
-        }
-        .drawer-overlay.active { display: block; }
-        .sidebar {
-            width: 260px;
-            background: var(--bg-surface);
-            border-right: 1px solid var(--border-soft);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0; bottom: 0; left: 0;
-            z-index: 999;
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .brand-box {
-            padding: 24px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid var(--border-soft);
-        }
-        .brand-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: #18181b;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-soft);
-        }
-        .brand-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .brand-text h2 { font-size: 0.95rem; font-weight: 700; color: var(--text-title); }
-        .brand-text p { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; }
-        .nav-list {
-            list-style: none;
-            padding: 16px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex: 1;
-            overflow-y: auto;
-        }
-        .nav-section-title {
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            padding: 12px 12px 6px;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            color: var(--text-body);
-            font-size: 0.88rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.15s ease;
-        }
-        .nav-item:hover, .nav-item.active {
-            color: var(--text-title);
-            background: #ffffff;
-            font-weight: 600;
-            box-shadow: var(--shadow-subtle);
-            border: 1px solid var(--border-soft);
-        }
-        .main-wrapper {
-            margin-left: 260px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            width: 100%;
-        }
-        .header-bar {
-            padding: 16px 28px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-soft);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 500;
-        }
-        .hamburger-btn {
-            display: none;
-            background: #fff;
-            border: 1px solid var(--border-soft);
-            border-radius: 8px;
-            color: var(--text-title);
-            padding: 6px 10px;
-            cursor: pointer;
-        }
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            background: #ffffff;
-            border: 1px solid var(--border-soft);
-            border-radius: 30px;
-            text-decoration: none;
-            color: var(--text-title);
-            font-size: 0.82rem;
-            font-weight: 600;
-            box-shadow: var(--shadow-subtle);
-        }
-        .user-avatar-circle {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #18181b;
-            color: #ffffff;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.72rem;
-            font-weight: 700;
-        }
-        .content-body {
-            padding: 32px 24px;
-            flex: 1;
-            max-width: 1000px;
-            width: 100%;
-            margin: 0 auto;
-        }
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-soft);
-            border-radius: 14px;
-            padding: 28px;
-            box-shadow: var(--shadow-subtle);
-            margin-bottom: 24px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .btn-primary {
-            background: #18181b;
-            color: #ffffff;
-            font-size: 0.88rem;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid transparent;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.15s ease;
-        }
-        .btn-primary:hover { background: #27272a; }
-        .btn-secondary {
-            background: #ffffff;
-            color: var(--text-title);
-            font-size: 0.88rem;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--border-soft);
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.15s ease;
-        }
-        .btn-secondary:hover { background: #f4f4f5; }
-        .input-text {
-            width: 100%;
-            padding: 12px 14px;
-            background: #ffffff;
-            border: 1px solid var(--border-soft);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 14px;
-            outline: none;
-            font-family: inherit;
-        }
-        .input-text:focus { border-color: #18181b; }
-        .code-box {
-            background: #fafafa;
-            border: 1px solid var(--border-soft);
-            border-radius: 8px;
-            padding: 14px;
-            font-family: var(--font-mono);
-            font-size: 0.82rem;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            white-space: pre;
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-        .data-table th, .data-table td {
-            border-bottom: 1px solid var(--border-soft);
-            padding: 12px 14px;
-            text-align: left;
-        }
-
-        /* Centered SaaS Error Modal */
-        #saas-error-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(9, 9, 11, 0.45);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 1000000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .saas-error-card {
-            background: #ffffff;
-            border: 1px solid #f4f4f5;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.02);
-            padding: 36px 30px;
-            max-width: 390px;
-            width: 100%;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes modalPop {
-            0% { opacity: 0; transform: scale(0.92) translateY(8px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .saas-error-icon-box {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: #fef2f2;
-            border: 1px solid #fee2e2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ef4444;
-            margin-bottom: 2px;
-        }
-        .saas-error-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #09090b;
-            letter-spacing: -0.3px;
-        }
-        .saas-error-desc {
-            font-size: 0.90rem;
-            color: #52525b;
-            line-height: 1.55;
-            font-weight: 500;
-            margin-bottom: 6px;
-        }
-        .saas-btn-retry {
-            width: 100%;
-            background: #18181b;
-            color: #ffffff;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: all 0.2s ease;
-        }
-        .saas-btn-retry:hover { background: #27272a; }
-
-        /* Login / Sign-up Segmented Pill Switcher */
-        .auth-segmented-nav {
-            display: flex;
-            background: #f4f4f5;
-            padding: 4px;
-            border-radius: 30px;
-            margin-bottom: 22px;
-            border: 1px solid #e4e4e7;
-        }
-        .auth-tab-btn {
-            flex: 1;
-            padding: 9px 16px;
-            font-size: 0.86rem;
-            font-weight: 600;
-            border-radius: 24px;
-            border: none;
-            background: transparent;
-            color: #71717a;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .auth-tab-btn.active {
-            background: #ffffff;
-            color: #09090b;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
-
-        /* Done Animation Modal */
-        #done-screen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.95);
-            z-index: 100000;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-        .done-box {
-            background: #fff;
-            border: 1px solid var(--border-soft);
-            box-shadow: var(--shadow-float);
-            border-radius: 18px;
-            padding: 34px 44px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .main-wrapper { margin-left: 0; }
-            .hamburger-btn { display: block; }
-            .content-body { padding: 18px 14px; }
-        }
-    
-    /* Floating AI Chatbot Assistant Widget */
-    #ai-chat-launcher {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: #18181b;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.25), 0 0 0 3px rgba(255,255,255,0.8);
-        cursor: pointer;
-        z-index: 99999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        overflow: hidden;
-    }
-    #ai-chat-launcher:hover {
-        transform: scale(1.06);
-    }
-    #ai-chat-launcher img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    #ai-chat-window {
-        display: none;
-        position: fixed;
-        bottom: 96px;
-        right: 24px;
-        width: 360px;
-        max-width: calc(100vw - 32px);
-        height: 500px;
-        background: #ffffff;
-        border: 1px solid #e4e4e7;
-        border-radius: 20px;
-        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
-        z-index: 99999;
-        flex-direction: column;
-        overflow: hidden;
-        animation: chatSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes chatSlideUp {
-        0% { opacity: 0; transform: translateY(12px) scale(0.96); }
-        100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .chat-header {
-        padding: 14px 18px;
-        background: #18181b;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .chat-header-user {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .chat-avatar-mini {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 1.5px solid #10b981;
-    }
-    .chat-avatar-mini img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    .chat-body-messages {
-        flex: 1;
-        padding: 16px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        background: #fafafa;
-    }
-    .chat-msg {
-        max-width: 82%;
-        padding: 10px 14px;
-        border-radius: 14px;
-        font-size: 0.86rem;
-        line-height: 1.45;
-        word-break: break-word;
-    }
-    .chat-msg-bot {
-        align-self: flex-start;
-        background: #ffffff;
-        color: #09090b;
-        border: 1px solid #e4e4e7;
-        border-bottom-left-radius: 4px;
-    }
-    .chat-msg-user {
-        align-self: flex-end;
-        background: #18181b;
-        color: #ffffff;
-        border-bottom-right-radius: 4px;
-    }
-    .chat-msg-alert {
-        align-self: center;
-        background: #052e16;
-        color: #4ade80;
-        border: 1px solid #16a34a;
-        font-family: var(--font-mono);
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-align: center;
-        padding: 8px 16px;
-        border-radius: 20px;
-        box-shadow: 0 0 15px rgba(34, 197, 94, 0.35);
-    }
-    .chat-footer {
-        padding: 12px;
-        background: #ffffff;
-        border-top: 1px solid #e4e4e7;
-        display: flex;
-        gap: 8px;
-    }
-    .chat-input {
-        flex: 1;
-        padding: 10px 14px;
-        border: 1px solid #e4e4e7;
-        border-radius: 10px;
-        font-size: 0.86rem;
-        outline: none;
-    }
-    .chat-input:focus { border-color: #18181b; }
-    .chat-send-btn {
-        background: #18181b;
-        color: #ffffff;
-        border: none;
-        border-radius: 10px;
-        padding: 0 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    </style>
-</head>
-<body>
-    <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
-
-    <aside class="sidebar" id="sidebar">
-        <div class="brand-box">
-            <div class="brand-avatar">
-                <img src="/image.png" onerror="this.onerror=null; this.src='/logo.png';" alt="Logo">
-            </div>
-            <div class="brand-text">
-                <h2>AKHIL DEV</h2>
-                <p>Developer Platform</p>
-            </div>
-        </div>
-
-        <ul class="nav-list">
-            <li class="nav-section-title">CORE PLATFORM</li>
-            <li><a href="/database-control-center" class="nav-item {{ 'active' if active_page == 'database-control' else '' }}"><span>Database Control Center</span></a></li>
-            <li><a href="/" class="nav-item {{ 'active' if active_page == 'home' else '' }}"><span>Home</span></a></li>
-            <li><a href="/api-keys" class="nav-item {{ 'active' if active_page == 'api-keys' else '' }}"><span>API Keys</span></a></li>
-            <li><a href="/sandbox" class="nav-item {{ 'active' if active_page == 'sandbox' else '' }}"><span>Transmission Console</span></a></li>
-            <li><a href="/media" class="nav-item {{ 'active' if active_page == 'media' else '' }}"><span>Media Vault</span></a></li>
-            <li class="nav-section-title">INTELLIGENCE SUITE</li>
-            <li><a href="/ai-studio" class="nav-item {{ 'active' if active_page == 'ai-studio' else '' }}"><span>Neural AI Studio</span></a></li>
-            <li><a href="/docs" class="nav-item {{ 'active' if active_page == 'docs' else '' }}"><span>Protocol Docs</span></a></li>
-
-            <li class="nav-section-title">NEURAL & AI ENGINES</li>
-                                    
-            <li class="nav-section-title">SYSTEM INFRASTRUCTURE</li>
-            <li><a href="/database" class="nav-item {{ 'active' if active_page == 'database' else '' }}"><span>Database Engine</span></a></li>
-            <li><a href="/system" class="nav-item {{ 'active' if active_page == 'system' else '' }}"><span>Telemetry Status</span></a></li>
-            <li><a href="/login" class="nav-item {{ 'active' if active_page == 'login' else '' }}"><span>Identity Gate</span></a></li>
-        </ul>
-    </aside>
-
-    <div class="main-wrapper">
-        <header class="header-bar">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
-                <div style="font-weight:700; font-size:0.95rem;">AKHIL DEV PLATFORM</div>
-            </div>
-
-            <a href="/login" class="user-badge" id="header-user-btn">
-                
-                <span id="user-name-tag">Sign In</span>
-            </a>
-        </header>
-
-        <div class="content-body">
-            {{ content }}
-        </div>
-    </div>
-
-    <!-- Centered SaaS Error Modal -->
-    <div id="saas-error-modal">
-        <div class="saas-error-card">
-            <div class="saas-error-icon-box">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </svg>
-            </div>
-            <div class="saas-error-title" id="saas-error-title-text">Something went wrong</div>
-            <p class="saas-error-desc" id="saas-error-desc-text">We encountered an unexpected issue while processing your request. Please try again.</p>
-            <button class="saas-btn-retry" onclick="closeSaasError()">Try Again</button>
-        </div>
-    </div>
-
-    <!-- Done Modal -->
-    <div id="done-screen">
-        <div class="done-box">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <h2 style="font-size:1.3rem; font-weight:800;">Done</h2>
-            <p id="done-user-label" style="font-size:0.85rem; color:#71717a;">Authenticated successfully</p>
-        </div>
-    </div>
-
-    <!-- Global Helper Scripts -->
-    <script>
-        window.showSaasError = function(customMsg, customTitle) {
-            const modal = document.getElementById("saas-error-modal");
-            const titleElem = document.getElementById("saas-error-title-text");
-            const descElem = document.getElementById("saas-error-desc-text");
-            if (customTitle && titleElem) titleElem.innerText = customTitle;
-            if (customMsg && descElem) descElem.innerText = customMsg;
-            if (modal) modal.style.display = "flex";
-        };
-        window.closeSaasError = function() {
-            const modal = document.getElementById("saas-error-modal");
-            if (modal) modal.style.display = "none";
-        };
-        window.alert = function(msg) {
-            window.showSaasError(msg);
-        };
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("open");
-            document.getElementById("overlay").classList.toggle("active");
-        }
-    </script>
-
-    <!-- Firebase Authentication SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { 
-            getAuth, 
-            onAuthStateChanged, 
-            signInWithPopup,
-            signInWithRedirect,
-            getRedirectResult,
-            GoogleAuthProvider, 
-            GithubAuthProvider,
-            signOut 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBt_zPZndgJh82AK8tXWvOyN8ec3dY31KQ",
-            authDomain: "free-api-web-2a7bc.firebaseapp.com",
-            projectId: "free-api-web-2a7bc",
-            storageBucket: "free-api-web-2a7bc.firebasestorage.app",
-            messagingSenderId: "118488816924",
-            appId: "1:118488816924:web:0d09754cf52cab3e00eed9",
-            measurementId: "G-HFPR9X4EWK"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        window.auth = auth;
-        window.currentFirebaseUser = null;
-
-        async function syncSessionWithBackend(user) {
-            if (!user) return;
-            try {
-                const token = await user.getIdToken();
-                await fetch('/api/auth/session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        token: token,
-                        email: user.email || '',
-                        name: user.displayName || user.email?.split('@')[0] || 'User'
-                    })
-                });
-            } catch(e) { console.error('Session sync error:', e); }
-        }
-
-        function showDoneAndRedirect(name) {
-            const screen = document.getElementById("done-screen");
-            const lbl = document.getElementById("done-user-label");
-            if (lbl) lbl.innerText = "Welcome, " + name;
-            if (screen) {
-                screen.style.display = "flex";
-                setTimeout(() => {
-                    screen.style.display = "none";
-                    window.location.href = "/api-keys";
-                }, 1400);
-            }
-        }
-
-        getRedirectResult(auth).then(res => {
-            if (res && res.user) {
-                const name = res.user.displayName || res.user.email?.split("@")[0] || "User";
-                syncSessionWithBackend(res.user);
-                showDoneAndRedirect(name);
-            }
-        }).catch(err => {
-            window.showSaasError(err.message, "Authentication Failed");
-        });
-
-        onAuthStateChanged(auth, user => {
-            window.currentFirebaseUser = user;
-            const tag = document.getElementById("user-name-tag");
-            const init = document.getElementById("user-initial");
-            const loginCard = document.getElementById("login-box-card");
-            const loggedCard = document.getElementById("logged-in-profile-card");
-            const profileDisplay = document.getElementById("profile-display-info");
-
-            if (user) {
-                syncSessionWithBackend(user);
-                const name = user.displayName || user.email?.split("@")[0] || "User";
-                const firstChar = name.trim().charAt(0).toUpperCase();
-                if (tag) tag.innerText = name.toUpperCase();
-                if (init) {
-                    init.innerText = firstChar;
-                    init.style.display = "flex";
-                }
-                if (loginCard) loginCard.style.display = "none";
-                if (loggedCard) {
-                    loggedCard.style.display = "block";
-                    if (profileDisplay) profileDisplay.innerText = user.email || user.phoneNumber || name;
-                }
-            } else {
-                if (tag) tag.innerText = "Sign In";
-                if (init) {
-                    init.innerText = "";
-                    init.style.display = "none";
-                }
-                if (loginCard) loginCard.style.display = "block";
-                if (loggedCard) loggedCard.style.display = "none";
-            }
-        });
-
-        window.loginGoogle = async () => {
-            const prov = new GoogleAuthProvider();
-            prov.setCustomParameters({ prompt: "select_account" });
-            try {
-                const res = await signInWithPopup(auth, prov);
-                if (res && res.user) {
-                    const name = res.user.displayName || res.user.email?.split("@")[0] || "User";
-                    await syncSessionWithBackend(res.user);
-                    showDoneAndRedirect(name);
-                }
-            } catch(e) {
-                if (e.code === "auth/popup-blocked" || e.code === "auth/cancelled-popup-request") {
-                    await signInWithRedirect(auth, prov);
-                } else {
-                    window.showSaasError("Google sign-in could not be completed: " + e.message);
-                }
-            }
-        };
-
-        window.loginGithub = async () => {
-            const prov = new GithubAuthProvider();
-            try {
-                const res = await signInWithPopup(auth, prov);
-                if (res && res.user) {
-                    const name = res.user.displayName || "User";
-                    await syncSessionWithBackend(res.user);
-                    showDoneAndRedirect(name);
-                }
-            } catch(e) {
-                await signInWithRedirect(auth, prov);
-            }
-        };
-
-        window.signOutAccount = async () => {
-            await fetch('/api/auth/logout', { method: 'POST' });
-            await signOut(auth);
-            window.location.reload();
-        };
-    </script>
-
-    <!-- Premium Centered Confirmation Modal -->
-    <div id="saas-confirm-modal" style="display:none; position:fixed; inset:0; background:rgba(9, 9, 11, 0.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:1000000; align-items:center; justify-content:center; padding:20px;">
-        <div class="saas-error-card" style="max-width:400px; text-align:center;">
-            <div class="saas-error-icon-box" style="background:#fef2f2; border:1px solid #fee2e2; color:#ef4444;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                </svg>
-            </div>
-            <div class="saas-error-title" id="confirm-modal-title">Revoke Pass Token</div>
-            <p class="saas-error-desc" id="confirm-modal-desc">Are you sure you want to permanently revoke this token? Applications using it will immediately lose API clearance.</p>
-            <div style="display:flex; gap:10px; width:100%; margin-top:6px;">
-                <button type="button" class="btn-secondary" style="flex:1; justify-content:center; padding:11px; border-radius:10px;" onclick="closeSaasConfirm(false)">Cancel</button>
-                <button type="button" class="btn-primary" id="confirm-modal-action-btn" style="flex:1; justify-content:center; padding:11px; border-radius:10px; background:#ef4444; border-color:#ef4444;" onclick="closeSaasConfirm(true)">Revoke</button>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        let _confirmResolve = null;
-        window.showSaasConfirm = function(title, desc) {
-            const modal = document.getElementById("saas-confirm-modal");
-            if (title) document.getElementById("confirm-modal-title").innerText = title;
-            if (desc) document.getElementById("confirm-modal-desc").innerText = desc;
-            modal.style.display = "flex";
-            return new Promise((resolve) => {
-                _confirmResolve = resolve;
-            });
-        };
-        window.closeSaasConfirm = function(confirmed) {
-            document.getElementById("saas-confirm-modal").style.display = "none";
-            if (_confirmResolve) {
-                _confirmResolve(confirmed);
-                _confirmResolve = null;
-            }
-        };
-    </script>
-
-
-    <!-- Audio element for bot.mp3 -->
-    <audio id="bot-audio" preload="auto" src="/bot.mp3"></audio>
-
-    <!-- AI Girl Chatbot Launcher -->
-    <div id="ai-chat-launcher" onclick="toggleAiChat()" title="Talk with AI Assistant">
-        <img src="?auto=format&fit=crop&w=200&q=80" alt="AI Girl Assistant">
-    </div>
-
-    <!-- AI Chatbot Box -->
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- SLEEK BLACK AI ASSISTANT -->
-<style>
-#ai-float-bubble {
-    position: fixed;
-    bottom: 18px;
-    right: 18px;
-    width: 44px;
-    height: 44px;
-    background: #09090b;
-    color: #ffffff;
-    border: 1px solid #27272a;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
-    z-index: 99998;
-    user-select: none;
-}
-#ai-chat-window {
-    display: none;
-    position: fixed;
-    bottom: 18px;
-    right: 18px;
-    width: 320px;
-    max-width: calc(100vw - 36px);
-    height: 440px;
-    background: #09090b;
-    border: 1px solid #27272a;
-    border-radius: 12px;
-    box-shadow: 0 10px 32px rgba(0,0,0,0.6);
-    z-index: 99999;
-    flex-direction: column;
-    overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-.ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
-.ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
-.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
-</style>
-
-<div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
-
-<div id="ai-chat-window">
-    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
-        <div style="display:flex; align-items:center; gap:8px;">
-            <div style="display:none;">AI</div>
-            <div>
-                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
-                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
-            </div>
-        </div>
-        <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
-    </div>
-
-    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
-        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
-    </div>
-
-    <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
-        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendAIMessage();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
-        <button onclick="sendAIMessage()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
-        </button>
-    </div>
-</div>
 
 <script>
-async function sendAIMessage() {
-    const inp = document.getElementById('ai-chat-input');
-    const txt = inp.value.trim();
-    if (!txt) return;
-
-    const box = document.getElementById('ai-chat-messages');
-    const uDiv = document.createElement('div');
-    uDiv.className = 'ai-msg ai-msg-user';
-    uDiv.innerText = txt;
-    box.appendChild(uDiv);
-    inp.value = '';
-    box.scrollTop = box.scrollHeight;
-
-    const lDiv = document.createElement('div');
-    lDiv.className = 'ai-msg ai-msg-bot';
-    lDiv.innerText = 'Typing...';
-    box.appendChild(lDiv);
-    box.scrollTop = box.scrollHeight;
-
-    try {
-        const res = await fetch('/api/assistant-chat', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({message: txt})
-        });
-        const d = await res.json();
-        lDiv.innerText = d.reply || 'No response';
-    } catch(err) {
-        lDiv.innerText = 'Error: ' + err.message;
+const VOICES_DATA = [
+    {
+        id: "694f9389-aac1-45b6-b726-9d9369183238",
+        name: "Aanya (Hindi Warm Dialogue)",
+        sub: "Warm • Friendly • Natural",
+        avatar: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=100&auto=format&fit=crop&q=80"
+    },
+    {
+        id: "95856005-0332-41b0-9f45-6677c7b2756d",
+        name: "Aditi (Hindi Expressive Narrator)",
+        sub: "Expressive • Clear • Confident",
+        avatar: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=100&auto=format&fit=crop&q=80"
+    },
+    {
+        id: "25608d0a-9d92-4f36-a192-35805adbeab7",
+        name: "Kabir (Hindi Confident Male)",
+        sub: "Confident • Deep • Professional",
+        avatar: "https://images.unsplash.com/photo-1563089145-599997674d42?w=100&auto=format&fit=crop&q=80"
+    },
+    {
+        id: "fb26447f-308b-471e-8b00-8d9f042846b8",
+        name: "Rohan (Deep Executive Male)",
+        sub: "Deep • Calm • Authoritative",
+        avatar: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100&auto=format&fit=crop&q=80"
+    },
+    {
+        id: "a0e998e3-1827-4a51-93e8-e25c57707322",
+        name: "Sarah (Natural English US)",
+        sub: "Natural • Friendly • Clear",
+        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80"
     }
-    box.scrollTop = box.scrollHeight;
-}
-</script>
+];
 
+let curVoiceId = VOICES_DATA[0].id;
 
-<div id="wsModalHub" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(5,8,16,0.88); backdrop-filter:blur(8px); z-index:99999; align-items:center; justify-content:center;">
-    <div style="background:#0b1120; border:1px solid rgba(255,255,255,0.12); border-radius:12px; width:92%; max-width:480px; padding:22px; color:#f1f5f9; box-shadow:0 12px 35px rgba(0,0,0,0.7); max-height:90vh; overflow-y:auto; font-family:sans-serif;">
-        
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:14px; margin-bottom:16px;">
-            <div onclick="toggleProfileEditor()" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
-                <img id="wsDisplayAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=AdminNode" style="display:none;">
-                <div>
-                    <div id="wsDisplayName" style="font-size:14px; font-weight:600;">Cluster Admin</div>
-                    <div style="font-size:11px; color:#38bdf8;">Tap to edit profile</div>
-                </div>
-            </div>
-            <button onclick="closeWsHub()" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer;">&times;</button>
-        </div>
-
-        <div id="wsProfileEditorBox" style="display:none; background:rgba(255,255,255,0.03); padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); margin-bottom:16px;">
-            <div style="margin-bottom:10px;">
-                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:4px;">Admin Display Name</label>
-                <input type="text" id="wsEditName" placeholder="Enter display name" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:8px 10px; color:#fff; font-size:13px;">
-            </div>
-            <div style="margin-bottom:10px;">
-                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:4px;">Avatar Image URL</label>
-                <input type="url" id="wsEditPhoto" placeholder="https://example.com/avatar.png" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:8px 10px; color:#fff; font-size:13px;">
-            </div>
-            <div style="display:flex; gap:10px;">
-                <button onclick="saveProfileChanges()" style="flex:1; padding:8px; background:#38bdf8; color:#0b1120; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">Save Profile</button>
-                <button onclick="toggleProfileEditor()" style="flex:1; padding:8px; background:#334155; color:#fff; border:none; border-radius:6px; font-size:12px; cursor:pointer;">Cancel</button>
-            </div>
-        </div>
-
-        <div id="wsGateView">
-            <p style="font-size:13px; color:#94a3b8; margin-bottom:14px; line-height:1.4;">Authentication Required: Enter your registered API Key to unlock database provisioning.</p>
-            <div style="margin-bottom:14px;">
-                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Developer API Key</label>
-                <input type="password" id="wsKeyInput" placeholder="Enter your generated token" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; color:#fff; font-size:13px;">
-            </div>
-            <button onclick="validateKeyAccess()" style="width:100%; padding:11px; background:#0284c7; color:#fff; border:none; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">Verify & Unlock</button>
-            <div id="wsKeyError" style="color:#f43f5e; font-size:12px; margin-top:8px;"></div>
-        </div>
-
-        <div id="wsConfigView" style="display:none;">
-            <p style="font-size:13px; color:#94a3b8; margin-bottom:14px; line-height:1.4;">Configure your database partition and generate your telemetry URL.</p>
-
-            <div style="margin-bottom:14px;">
-                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Your Database Name</label>
-                <input type="text" id="wsDbInput" placeholder="e.g. enterprise_production_db" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; color:#fff; font-size:13px;">
-            </div>
-
-            <div style="margin-bottom:14px;">
-                <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Your Domain / Web URL</label>
-                <input type="url" id="wsDomainInput" placeholder="https://mywebsite.com" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; color:#fff; font-size:13px;">
-            </div>
-
-            <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#94a3b8; margin:16px 0;">
-                <input type="checkbox" id="wsCredsCheck" onchange="toggleCredentialInputs()">
-                <label for="wsCredsCheck">Protect portal with personal credentials</label>
-            </div>
-
-            <div id="wsCredsFields" style="display:none;">
-                <div style="margin-bottom:14px;">
-                    <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Portal Username</label>
-                    <input type="text" id="wsAuthUser" placeholder="Set portal username" oninput="validateUserField()" style="width:100%; box-sizing:border-box; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; color:#fff; font-size:13px;">
-                </div>
-                <div style="margin-bottom:14px;">
-                    <label style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Portal Password</label>
-                    <input type="password" id="wsAuthPass" placeholder="Username required first" disabled style="width:100%; box-sizing:border-box; background:#0f172a; color:#475569; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; font-size:13px;">
-                </div>
-            </div>
-
-            <button onclick="buildDatabaseLink()" style="width:100%; padding:11px; background:#059669; color:#fff; border:none; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">Generate Your Database URL</button>
-
-            <div id="wsResultBox" style="display:none; margin-top:16px; padding:14px; background:rgba(14,165,233,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:8px;">
-                <label style="display:block; font-size:11px; text-transform:uppercase; color:#38bdf8; margin-bottom:6px;">Generated Database URL:</label>
-                <div style="display:flex; gap:8px;">
-                    <input type="text" id="wsFinalUrl" readonly style="flex:1; background:#0f172a; border:1px solid #1e293b; color:#38bdf8; padding:8px 10px; font-size:12px; border-radius:4px;">
-                    <button onclick="copyFinalUrl()" style="background:#38bdf8; border:none; padding:0 14px; border-radius:4px; font-size:12px; font-weight:600; cursor:pointer; color:#0b1120;">Copy</button>
-                </div>
-                <p style="font-size:12px; color:#38bdf8; text-align:center; margin-top:12px; font-weight:500;">Thank you for using Cyber Cloud Platform.</p>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<script>
-    let unlockedAuthKey = "";
-
-    function openWsHub() {
-        document.getElementById('wsModalHub').style.display = 'flex';
-    }
-
-    function closeWsHub() {
-        document.getElementById('wsModalHub').style.display = 'none';
-    }
-
-    function validateKeyAccess() {
-        const key = document.getElementById('wsKeyInput').value.trim();
-        const err = document.getElementById('wsKeyError');
-
-        if (key === "akhil_8630_secure" || key.startsWith("key_") || key.length >= 8) {
-            unlockedAuthKey = key;
-            err.innerText = "";
-            document.getElementById('wsGateView').style.display = 'none';
-            document.getElementById('wsConfigView').style.display = 'block';
-        } else {
-            err.innerText = "Access Denied: Invalid or expired API Key.";
-        }
-    }
-
-    function toggleCredentialInputs() {
-        const isChecked = document.getElementById('wsCredsCheck').checked;
-        document.getElementById('wsCredsFields').style.display = isChecked ? 'block' : 'none';
-    }
-
-    function validateUserField() {
-        const user = document.getElementById('wsAuthUser').value.trim();
-        const passField = document.getElementById('wsAuthPass');
-        passField.disabled = (user.length === 0);
-        if (passField.disabled) {
-            passField.value = "";
-            passField.style.background = "#0f172a";
-            passField.style.color = "#475569";
-            passField.placeholder = "Username required first";
-        } else {
-            passField.style.background = "#1e293b";
-            passField.style.color = "#fff";
-            passField.placeholder = "Enter portal access password";
-        }
-    }
-
-    function buildDatabaseLink() {
-        const dbName = document.getElementById('wsDbInput').value.trim();
-        const domain = document.getElementById('wsDomainInput').value.trim();
-        const credsEnabled = document.getElementById('wsCredsCheck').checked;
-        const authUser = document.getElementById('wsAuthUser').value.trim();
-
-            alert("Please enter a valid Database Name.");
-            return;
-        }
-
-        const cleanDb = dbName.toLowerCase().replace(/[^a-z0-9_]/g, '_');
-        let link = "https://akhil-private-backend.onrender.com/portal?owner=" + encodeURIComponent(cleanDb) + "&key=" + encodeURIComponent(unlockedAuthKey);
-
-        if (domain) {
-            link += "&domain=" + encodeURIComponent(domain);
-        }
-        if (credsEnabled && authUser) {
-            link += "&auth=true&user=" + encodeURIComponent(authUser);
-        }
-
-        document.getElementById('wsFinalUrl').value = link;
-        document.getElementById('wsResultBox').style.display = 'block';
-    }
-
-    function copyFinalUrl() {
-        const input = document.getElementById('wsFinalUrl');
-        input.select();
-        navigator.clipboard.writeText(input.value);
-    }
-
-    function toggleProfileEditor() {
-        const box = document.getElementById('wsProfileEditorBox');
-        box.style.display = (box.style.display === 'block') ? 'none' : 'block';
-    }
-
-    function saveProfileChanges() {
-        const newName = document.getElementById('wsEditName').value.trim();
-        const newPhoto = document.getElementById('wsEditPhoto').value.trim();
-
-        if (newName) document.getElementById('wsDisplayName').innerText = newName;
-        if (newPhoto) document.getElementById('wsDisplayAvatar').src = newPhoto;
-
-        toggleProfileEditor();
-    }
-</script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const btn = document.getElementById("btn-gen-voice");
-    if (!btn) return;
-
-    btn.onclick = async function(e) {
-        if (e) e.preventDefault();
-        const txtBox = document.getElementById("voice-text");
-        const text = (txtBox ? txtBox.value : "").trim();
-        if (!text) {
-            alert("Please enter script text first");
-            return;
-        }
-
-        const originalHtml = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = "<span>Synthesizing Voice...</span>";
-
-        try {
-            const res = await fetch("/api/tts-generate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: text })
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || ("Server error: " + res.status));
-            }
-
-            const blob = await res.blob();
-            const audioUrl = URL.createObjectURL(blob);
-            const player = document.getElementById("audio-player");
-            const container = document.getElementById("player-container");
-            const dl = document.getElementById("btn-download");
-
-            if (container) container.style.display = "block";
-            if (dl) dl.href = audioUrl;
-            if (player) {
-                player.src = audioUrl;
-                player.load();
-                await player.play().catch(err => console.log("Autoplay deferred:", err));
-            }
-        } catch (err) {
-            alert("Voice Studio Error: " + err.message);
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = originalHtml;
-        }
-    };
-});
-</script>
-
-
-<script>
-// Voice Selection State
-let selectedVoice = "694f9389-aac1-45b6-b726-9d9369183238";
-
-function setVoice(id, element) {
-    selectedVoice = id;
-    document.querySelectorAll('.voice-select-card').forEach(el => {
-        el.style.borderColor = '#e2e8f0';
-        el.style.backgroundColor = '#ffffff';
-        const radio = el.querySelector('input[type="radio"]');
-        if (radio) radio.checked = false;
-    });
-    if (element) {
-        element.style.borderColor = '#2563eb';
-        element.style.backgroundColor = '#eff6ff';
-        const radio = element.querySelector('input[type="radio"]');
-        if (radio) radio.checked = true;
-    }
+function toggleVoiceMenu(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById("dark-voice-menu");
+    if (!menu) return;
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    // 1. Replace unappealing dropdown with Custom Anime Voice Cards UI
-    const voiceSection = document.getElementById("voice-id") || document.getElementById("voice-picker-btn");
-    if (voiceSection && voiceSection.parentElement) {
-        const container = voiceSection.parentElement;
-        container.innerHTML = `
-            <label style="display: block; font-size: 0.84rem; font-weight: 700; color: #334155; margin-bottom: 8px;">Select Voice Profile</label>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-                <div class="voice-select-card" onclick="setVoice('694f9389-aac1-45b6-b726-9d9369183238', this)" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1.5px solid #2563eb; border-radius: 10px; cursor: pointer; background: #eff6ff;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aanya" style="width: 36px; height: 36px; border-radius: 50%; background: #fee2e2;">
-                        <div>
-                            <div style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">P1. Aanya (Hindi Warm Dialogue)</div>
-                            <div style="font-size: 0.72rem; color: #64748b;">Warm • Friendly • Neural Female</div>
-                        </div>
-                    </div>
-                    <input type="radio" name="voice_radio" checked style="accent-color: #2563eb;">
-                </div>
+function pickVoice(vId, e) {
+    if (e) e.stopPropagation();
+    curVoiceId = vId;
+    const v = VOICES_DATA.find(x => x.id === vId);
+    if (v) {
+        const titleEl = document.getElementById("selected-voice-title");
+        if (titleEl) titleEl.innerText = v.name;
+    }
+    renderVoiceList();
+    const menu = document.getElementById("dark-voice-menu");
+    if (menu) menu.style.display = "none";
+}
 
-                <div class="voice-select-card" onclick="setVoice('95856005-0332-41b0-9f45-6677c7b2756d', this)" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #ffffff;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aditi" style="width: 36px; height: 36px; border-radius: 50%; background: #ede9fe;">
-                        <div>
-                            <div style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">P2. Aditi (Hindi Expressive Narrator)</div>
-                            <div style="font-size: 0.72rem; color: #64748b;">Expressive • Clear • Storyteller Female</div>
-                        </div>
+function renderVoiceList() {
+    const list = document.getElementById("dark-voice-list");
+    if (!list) return;
+    list.innerHTML = VOICES_DATA.map(v => {
+        const isSel = v.id === curVoiceId;
+        return `
+            <div onclick="pickVoice('${v.id}', event)" style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-radius:8px; cursor:pointer; margin-bottom:4px; ${isSel ? 'background:#1e293b; border:1px solid #3b82f6;' : 'background:transparent; border:1px solid transparent;'}">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <img src="${v.avatar}" style="width:38px; height:38px; border-radius:8px; object-fit:cover; border:1px solid #475569;">
+                    <div>
+                        <div style="color:#ffffff; font-size:0.88rem; font-weight:600;">${v.name}</div>
+                        <div style="color:#94a3b8; font-size:0.75rem;">${v.sub}</div>
                     </div>
-                    <input type="radio" name="voice_radio" style="accent-color: #2563eb;">
                 </div>
-
-                <div class="voice-select-card" onclick="setVoice('25608d0a-9d92-4f36-a192-35805adbeab7', this)" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #ffffff;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Kabir" style="width: 36px; height: 36px; border-radius: 50%; background: #e0f2fe;">
-                        <div>
-                            <div style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">P3. Kabir (Hindi Confident Male)</div>
-                            <div style="font-size: 0.72rem; color: #64748b;">Confident • Deep • Male Voice</div>
-                        </div>
-                    </div>
-                    <input type="radio" name="voice_radio" style="accent-color: #2563eb;">
-                </div>
-
-                <div class="voice-select-card" onclick="setVoice('fb26447f-308b-471e-8b00-8d9f042846b8', this)" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #ffffff;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Rohan" style="width: 36px; height: 36px; border-radius: 50%; background: #f1f5f9;">
-                        <div>
-                            <div style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">P4. Rohan (Deep Executive Male)</div>
-                            <div style="font-size: 0.72rem; color: #64748b;">Deep • Calm • Authoritative Male</div>
-                        </div>
-                    </div>
-                    <input type="radio" name="voice_radio" style="accent-color: #2563eb;">
+                <div style="width:18px; height:18px; border-radius:50%; border:2px solid ${isSel ? '#3b82f6' : '#64748b'}; display:flex; align-items:center; justify-content:center;">
+                    ${isSel ? '<div style="width:9px; height:9px; border-radius:50%; background:#3b82f6;"></div>' : ''}
                 </div>
             </div>
         `;
+    }).join("");
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Convert Voice input into a Dropdown Trigger button with Dark Popover
+    const target = document.getElementById("voice-picker-btn") || document.getElementById("voice-id");
+    if (target && target.parentElement) {
+        const parent = target.parentElement;
+        parent.style.position = "relative";
+        parent.innerHTML = `
+            <label style="display: block; font-size: 0.84rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Voice Model</label>
+            <div id="voice-dropdown-box" onclick="toggleVoiceMenu(event)" style="display:flex; justify-content:space-between; align-items:center; width:100%; box-sizing:border-box; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px; cursor:pointer; user-select:none;">
+                <span id="selected-voice-title" style="font-weight:600; font-size:0.9rem; color:#0f172a;">Aanya (Hindi Warm Dialogue)</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+
+            <!-- Dark Floating Popup Dropdown like Image 1 -->
+            <div id="dark-voice-menu" style="display:none; position:absolute; top:calc(100% + 6px); left:0; width:100%; max-width:480px; background:#0f172a; border:1px solid #1e293b; border-radius:12px; padding:8px; box-shadow:0 10px 25px rgba(0,0,0,0.4); z-index:9999;">
+                <div id="dark-voice-list"></div>
+            </div>
+        `;
+        renderVoiceList();
     }
 
-    // 2. Audio FX Nodes and Sliders Connection
-    let aCtx = null, srcN = null, panN = null, bassN = null;
-    function getAudioGraph() {
+    // Close dropdown on outside click
+    document.addEventListener("click", function(e) {
+        const menu = document.getElementById("dark-voice-menu");
+        const box = document.getElementById("voice-dropdown-box");
+        if (menu && box && !box.contains(e.target) && !menu.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
+
+    // 2. Audio Mastering Nodes
+    let audioCtx = null, srcNode = null, panner = null, bassFilter = null;
+    function setupMastering() {
         const audio = document.getElementById("audio-player");
         if (!audio) return;
-        if (!aCtx) {
-            aCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (aCtx.state === 'suspended') aCtx.resume();
-        if (!srcN) {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        if (!srcNode) {
             try {
-                srcN = aCtx.createMediaElementSource(audio);
-                panN = aCtx.createStereoPanner ? aCtx.createStereoPanner() : null;
-                bassN = aCtx.createBiquadFilter();
-                bassN.type = 'lowshelf';
-                bassN.frequency.value = 220;
-                bassN.gain.value = 0;
-
-                if (panN) {
-                    srcN.connect(panN);
-                    panN.connect(bassN);
-                } else {
-                    srcN.connect(bassN);
-                }
-                bassN.connect(aCtx.destination);
-            } catch(e) {}
-        }
-    }
-
-    // Sliders Realtime Action
-    document.addEventListener("input", function(e) {
-        getAudioGraph();
-        const t = e.target;
-        const v = parseFloat(t.value);
-
-        if (t.id === "pan-slider" || t.min === "-1") {
-            if (panN) panN.pan.value = v;
-            const lbl = document.getElementById("pan-val");
-            if (lbl) lbl.innerText = v === 0 ? "Center" : (v < 0 ? "Left " + Math.abs(Math.round(v*100)) + "%" : "Right " + Math.round(v*100) + "%");
-        }
-        if (t.id === "bass-slider" || t.min === "-10") {
-            if (bassN) bassN.gain.value = v;
-            const lbl = document.getElementById("bass-val");
-            if (lbl) lbl.innerText = v + " dB";
-        }
-    });
-
-    // Preset Buttons Click Action
-    document.addEventListener("click", function(e) {
-        const b = e.target.closest('button');
-        if (!b) return;
-        const txt = b.innerText.trim();
-        getAudioGraph();
-
-        if (txt.includes("Studio Dry") || txt.includes("Normal")) {
-            if (panN) panN.pan.value = 0;
-            if (bassN) bassN.gain.value = 0;
-        } else if (txt.includes("Warm Bass") || txt.includes("Podcast")) {
-            if (bassN) bassN.gain.value = 8;
-        } else if (txt.includes("Left Ear 3D")) {
-            if (panN) panN.pan.value = -0.85;
-        } else if (txt.includes("Right Ear 3D")) {
-            if (panN) panN.pan.value = 0.85;
-        }
-    });
-
-    // Voice Generation with Exact Selected Voice
-    const btn = document.getElementById("btn-gen-voice");
-    if (btn) {
-        btn.onclick = async function(e) {
-            if (e) e.preventDefault();
-            const textInput = document.getElementById("voice-text");
-            const text = (textInput ? textInput.value : "").trim();
-            if (!text) {
-                alert("Please enter script text first");
-                return;
-            }
-
-            const origHtml = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = "<span>Synthesizing Voice...</span>";
-
-            try {
-                const res = await fetch("/api/tts-generate", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        text: text,
-                        voice_id: selectedVoice
-                    })
-                });
-
-                if (!res.ok) throw new Error("HTTP " + res.status);
-
-                const blob = await res.blob();
-                const url = URL.createObjectURL(blob);
-                const player = document.getElementById("audio-player");
-                const cont = document.getElementById("player-container");
-                const dl = document.getElementById("btn-download");
-
-                if (cont) cont.style.display = "block";
-                if (dl) dl.href = url;
-                if (player) {
-                    player.src = url;
-                    player.load();
-                    getAudioGraph();
-                    await player.play().catch(() => {});
-                }
-            } catch(err) {
-                alert("Generation error: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = origHtml;
-            }
-        };
-    }
-});
-</script>
-
-</body>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // 1. Fix Voice Picker: Convert non-working div into fully clickable select
-    const pickerBtn = document.getElementById("voice-picker-btn");
-    const voiceInput = document.getElementById("voice-id");
-    if (pickerBtn) {
-        const selectEl = document.createElement("select");
-        selectEl.id = "voice-id";
-        selectEl.style.cssText = "width:100%; box-sizing:border-box; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:10px 12px; font-size:0.9rem; color:#0f172a; outline:none; cursor:pointer; font-weight:600;";
-        selectEl.innerHTML = `
-            <option value="694f9389-aac1-45b6-b726-9d9369183238" selected>Aanya (Hindi Warm Dialogue)</option>
-            <option value="95856005-0332-41b0-9f45-6677c7b2756d">Aditi (Hindi Expressive Narrator)</option>
-            <option value="25608d0a-9d92-4f36-a192-35805adbeab7">Kabir (Hindi Confident Male)</option>
-            <option value="fb26447f-308b-471e-8b00-8d9f042846b8">Rohan (Deep Executive Male)</option>
-            <option value="a0e998e3-1827-4a51-93e8-e25c57707322">Sarah (Natural English US)</option>
-        `;
-        pickerBtn.parentNode.replaceChild(selectEl, pickerBtn);
-        if (voiceInput && voiceInput.parentNode) voiceInput.remove();
-    }
-
-    // 2. Web Audio Mastering FX Engine Setup
-    let audioCtx = null;
-    let sourceNode = null;
-    let pannerNode = null;
-    let bassFilter = null;
-
-    function initFX() {
-        const player = document.getElementById("audio-player");
-        if (!player) return;
-        if (!audioCtx) {
-            const AC = window.AudioContext || window.webkitAudioContext;
-            audioCtx = new AC();
-        }
-        if (audioCtx.state === "suspended") audioCtx.resume();
-
-        if (!sourceNode) {
-            try {
-                sourceNode = audioCtx.createMediaElementSource(player);
-                pannerNode = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+                srcNode = audioCtx.createMediaElementSource(audio);
+                panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
                 bassFilter = audioCtx.createBiquadFilter();
-                bassFilter.type = "lowshelf";
-                bassFilter.frequency.value = 250;
-                bassFilter.gain.value = 0;
+                bassFilter.type = 'lowshelf';
+                bassFilter.frequency.value = 220;
 
-                if (pannerNode) {
-                    sourceNode.connect(pannerNode);
-                    pannerNode.connect(bassFilter);
+                if (panner) {
+                    srcNode.connect(panner);
+                    panner.connect(bassFilter);
                 } else {
-                    sourceNode.connect(bassFilter);
+                    srcNode.connect(bassFilter);
                 }
                 bassFilter.connect(audioCtx.destination);
             } catch(e) {}
         }
     }
 
-    // 3. Connect Sliders & Presets
+    // Sliders Event
     document.addEventListener("input", function(e) {
-        initFX();
+        setupMastering();
         const t = e.target;
         const v = parseFloat(t.value);
         if (t.id === "pan-slider" || t.min === "-1") {
-            if (pannerNode) pannerNode.pan.value = v;
-            const l = document.getElementById("pan-val");
-            if (l) l.innerText = v === 0 ? "Center" : (v < 0 ? "Left " + Math.abs(Math.round(v*100)) + "%" : "Right " + Math.round(v*100) + "%");
+            if (panner) panner.pan.value = v;
+            const lbl = document.getElementById("pan-val");
+            if (lbl) lbl.innerText = v === 0 ? "Center" : (v < 0 ? "Left " + Math.abs(Math.round(v*100)) + "%" : "Right " + Math.round(v*100) + "%");
         }
         if (t.id === "bass-slider" || t.min === "-10") {
             if (bassFilter) bassFilter.gain.value = v;
-            const l = document.getElementById("bass-val");
-            if (l) l.innerText = v + " dB";
+            const lbl = document.getElementById("bass-val");
+            if (lbl) lbl.innerText = v + " dB";
         }
     });
 
+    // Presets
     document.addEventListener("click", function(e) {
         const b = e.target.closest("button");
         if (!b) return;
         const txt = b.innerText.trim();
-        initFX();
-        if (txt.includes("Studio Dry")) {
-            if (pannerNode) pannerNode.pan.value = 0;
+        setupMastering();
+        if (txt.includes("Studio Dry") || txt.includes("Normal")) {
+            if (panner) panner.pan.value = 0;
             if (bassFilter) bassFilter.gain.value = 0;
-        } else if (txt.includes("Warm Bass")) {
+        } else if (txt.includes("Warm Bass") || txt.includes("Podcast")) {
             if (bassFilter) bassFilter.gain.value = 8;
         } else if (txt.includes("Left Ear 3D")) {
-            if (pannerNode) pannerNode.pan.value = -0.85;
+            if (panner) panner.pan.value = -0.85;
         } else if (txt.includes("Right Ear 3D")) {
-            if (pannerNode) pannerNode.pan.value = 0.85;
+            if (panner) panner.pan.value = 0.85;
         }
     });
 
-    // 4. Generate Voice Handler
+    // 3. Audio Synthesis Execution
     const genBtn = document.getElementById("btn-gen-voice");
     if (genBtn) {
         genBtn.onclick = async function(e) {
             if (e) e.preventDefault();
-            const txt = (document.getElementById("voice-text")?.value || "").trim();
-            if (!txt) {
+            const text = (document.getElementById("voice-text")?.value || "").trim();
+            if (!text) {
                 alert("Please enter script text first");
                 return;
             }
-            const origHtml = genBtn.innerHTML;
+            const orig = genBtn.innerHTML;
             genBtn.disabled = true;
             genBtn.innerHTML = "<span>Synthesizing Voice...</span>";
 
             try {
-                const vSelect = document.getElementById("voice-id");
-                const voiceId = vSelect ? vSelect.value : "";
                 const res = await fetch("/api/tts-generate", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ text: txt, voice_id: voiceId })
+                    body: JSON.stringify({ text: text, voice_id: curVoiceId })
                 });
 
-                if (!res.ok) {
-                    const err = await res.json().catch(() => ({}));
-                    throw new Error(err.error || ("Status: " + res.status));
-                }
-
+                if (!res.ok) throw new Error("HTTP " + res.status);
                 const blob = await res.blob();
                 const url = URL.createObjectURL(blob);
                 const p = document.getElementById("audio-player");
@@ -1494,18 +201,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (p) {
                     p.src = url;
                     p.load();
-                    initFX();
+                    setupMastering();
                     await p.play().catch(() => {});
                 }
-            } catch (err) {
-                alert("Generation Error: " + err.message);
+            } catch(err) {
+                alert("Synthesis Failed: " + err.message);
             } finally {
                 genBtn.disabled = false;
-                genBtn.innerHTML = origHtml;
+                genBtn.innerHTML = orig;
             }
         };
     }
 });
 </script>
-
-</html>
