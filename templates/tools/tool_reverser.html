@@ -1,51 +1,51 @@
-{% extends "base.html" %}
-{% block content %}
-<div style="position: relative; z-index: 20; max-width: 960px; margin: 30px auto 80px; padding: 0 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-
-    <!-- Back to Hub -->
-    <div style="margin-bottom: 18px;">
-        <a href="/projects" style="color: #94a3b8; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-            &larr; Return to Developer Projects Hub
-        </a>
-    </div>
-
-    <!-- Active Control Card -->
-    <div style="background: rgba(13, 19, 33, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 20px; padding: 28px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); margin-bottom: 22px;">
-        <div style="display:inline-block; padding: 4px 12px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">
-            Reverse Engineering
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Request Reverser — Akhil Platform</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #090d16; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px 16px; min-height: 100vh; }
+        .container { max-width: 850px; margin: 0 auto; }
+        .back-nav a { color: #a855f7; text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-block; margin-bottom: 20px; }
+        .card { background: #111827; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .badge { display: inline-block; background: rgba(168, 85, 247, 0.15); color: #c084fc; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; margin-bottom: 10px; }
+        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #fff; }
+        p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; }
+        textarea { width: 100%; height: 100px; padding: 14px 16px; background: #030712; border: 1px solid #374151; border-radius: 10px; color: #fff; font-family: monospace; font-size: 0.9rem; outline: none; margin-bottom: 12px; }
+        button { padding: 14px 24px; background: #a855f7; color: #fff; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; }
+        .terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; min-height: 250px; }
+        pre { color: #c084fc; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-nav"><a href="/">&larr; Back to Platform Home</a></div>
+        <div class="card">
+            <span class="badge">Reverse Engineering Suite</span>
+            <h1>API Request Reverser</h1>
+            <p>Paste any browser cURL network snippet to convert into a working Python script.</p>
+            <textarea id="curlInput">curl -X GET "https://jsonplaceholder.typicode.com/posts/1" -H "Accept: application/json"</textarea>
+            <button onclick="reverseCmd()">Reverse to Python Client</button>
         </div>
-        <h1 style="font-size: 2rem; font-weight: 800; color: #ffffff; margin: 0 0 8px;">cURL to Python Client Reverser</h1>
-        <p style="color: #94a3b8; font-size: 0.94rem; margin: 0 0 22px; line-height: 1.5;">Paste any raw cURL command to reverse-engineer clean, executable Python client code.</p>
-        
-        <textarea id="curlInput" placeholder="curl -X GET 'https://api.example.com/v1' -H 'Authorization: Bearer token'" style="width:100%; height:90px; padding:12px; border-radius:12px; background:rgba(8,12,22,0.9); border:1px solid rgba(255,255,255,0.18); color:#fff; font-size:0.9rem; box-sizing:border-box; margin-bottom:12px; outline:none;"></textarea><button onclick="runReverse()" style="padding:13px 24px; background:#a855f7; border:none; border-radius:12px; color:#ffffff; font-weight:700; font-size:0.9rem; cursor:pointer;">Reverse to Python Code</button>
-    </div>
-
-    <!-- Output Terminal Console -->
-    <div style="background: rgba(13, 19, 33, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 20px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-            <h3 style="color: #ffffff; font-size: 1.05rem; margin: 0; font-weight: 700;">Live Execution Output</h3>
-            <span id="toolStatusBadge" style="font-size: 0.78rem; color: #64748b; font-weight: 600;">System Ready</span>
-        </div>
-        <div style="background: rgba(5, 9, 17, 0.95); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 18px; min-height: 220px; max-height: 480px; overflow-y: auto;">
-            <pre id="outputLog" style="margin: 0; color: #38bdf8; font-family: monospace; font-size: 0.88rem; white-space: pre-wrap; word-break: break-all;">// Ready. Submit input above to trigger direct backend execution...</pre>
+        <div class="card">
+            <h3 style="color:#fff; font-size:1.1rem; margin-bottom:10px;">Generated Python Code</h3>
+            <div class="terminal-box"><pre id="outputLog">// Generated code will appear here...</pre></div>
         </div>
     </div>
-</div>
-
-<script>
-    async function runReverse() {
-        const c = document.getElementById('curlInput').value.trim();
-        const log = document.getElementById('outputLog');
-        const badge = document.getElementById('toolStatusBadge');
-        if(!c) return alert('Please enter a cURL command');
-        const res = await fetch('/tools/request-reverser', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({curl: c})
-        });
-        const data = await res.json();
-        log.innerText = data.generated_python || JSON.stringify(data, null, 2);
-        badge.innerText = 'Reversed Successfully'; badge.style.color = '#4ade80';
-    }
+    <script>
+        async function reverseCmd() {
+            const c = document.getElementById('curlInput').value.trim();
+            if(!c) return alert("cURL required");
+            const res = await fetch('/tools/request-reverser', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({curl: c})
+            });
+            const data = await res.json();
+            document.getElementById('outputLog').innerText = data.executable_python || JSON.stringify(data, null, 2);
+        }
     </script>
-{% endblock %}
+</body>
+</html>
