@@ -1,20 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
-<div style="max-width: 920px; margin: 30px auto; padding: 0 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-    <div class="card" style="padding: 28px; border-radius: 20px; margin-bottom: 22px;">
-        <span style="font-size: 0.74rem; font-weight: 700; color: #0ea5e9; background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12);">
-            RECON-NG MODULAR ENGINE
-        </span>
-        <h1 style="font-size: 2rem; font-weight: 800; color: #ffffff; margin: 12px 0 6px;">Domain & Security Header Recon</h1>
-        <p style="color: #94a3b8; font-size: 0.92rem; margin: 0 0 20px;">Discover IP resolution, SSL headers, and defensive server tags.</p>
-        <div style="display:flex; gap:10px;"><input id="domainInput" type="text" placeholder="example.com" style="flex:1; padding:12px; border-radius:10px; background:#0b1120; border:1px solid #334155; color:#fff;"><button onclick="execute()" style="padding:12px 24px; background:#0ea5e9; border:none; border-radius:10px; font-weight:700; cursor:pointer; color:#fff;">Recon Domain</button></div>
+<div style="position: relative; z-index: 20; max-width: 960px; margin: 30px auto 80px; padding: 0 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <!-- Back to Hub -->
+    <div style="margin-bottom: 18px;">
+        <a href="/projects" style="color: #94a3b8; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+            &larr; Return to Developer Projects Hub
+        </a>
     </div>
-    <div class="card" style="padding: 24px; border-radius: 20px;">
-        <h3 style="color: #ffffff; font-size: 1.05rem; margin: 0 0 12px;">Live Operational Output</h3>
-        <div style="background: rgba(5, 9, 17, 0.95); border: 1px solid rgba(255,255,255,0.14); border-radius: 12px; padding: 16px; min-height: 180px;">
-            <pre id="outputConsole" style="margin: 0; color: #0ea5e9; font-family: monospace; font-size: 0.88rem; white-space: pre-wrap; overflow-x: auto;">// Awaiting execution trigger...</pre>
+
+    <!-- Active Control Card -->
+    <div style="background: rgba(13, 19, 33, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 20px; padding: 28px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); margin-bottom: 22px;">
+        <div style="display:inline-block; padding: 4px 12px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">
+            Recon-ng Framework
+        </div>
+        <h1 style="font-size: 2rem; font-weight: 800; color: #ffffff; margin: 0 0 8px;">Domain DNS & Security Header Recon</h1>
+        <p style="color: #94a3b8; font-size: 0.94rem; margin: 0 0 22px; line-height: 1.5;">Discover IP resolutions, server signatures, CSP, and defensive HTTP headers.</p>
+        
+        <div style="display:flex; gap:10px;"><input id="domainInput" type="text" placeholder="example.com" style="flex:1; padding:13px 16px; border-radius:12px; background:rgba(8,12,22,0.9); border:1px solid rgba(255,255,255,0.18); color:#fff; font-size:0.92rem; outline:none;"><button onclick="runDomainRecon()" id="actionBtn" style="padding:13px 24px; background:#0ea5e9; border:none; border-radius:12px; color:#ffffff; font-weight:700; font-size:0.9rem; cursor:pointer;">Recon Target</button></div>
+    </div>
+
+    <!-- Output Terminal Console -->
+    <div style="background: rgba(13, 19, 33, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 20px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3 style="color: #ffffff; font-size: 1.05rem; margin: 0; font-weight: 700;">Live Execution Output</h3>
+            <span id="toolStatusBadge" style="font-size: 0.78rem; color: #64748b; font-weight: 600;">System Ready</span>
+        </div>
+        <div style="background: rgba(5, 9, 17, 0.95); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 18px; min-height: 220px; max-height: 480px; overflow-y: auto;">
+            <pre id="outputLog" style="margin: 0; color: #38bdf8; font-family: monospace; font-size: 0.88rem; white-space: pre-wrap; word-break: break-all;">// Ready. Submit input above to trigger direct backend execution...</pre>
         </div>
     </div>
 </div>
-<script>async function execute(){ const d = document.getElementById("domainInput").value; const r = await fetch("/tools/domain-recon", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({domain:d})}); document.getElementById("outputConsole").innerText = JSON.stringify(await r.json(), null, 2); }</script>
+
+<script>
+    async function runDomainRecon() {
+        const d = document.getElementById('domainInput').value.trim();
+        const log = document.getElementById('outputLog');
+        const badge = document.getElementById('toolStatusBadge');
+        const btn = document.getElementById('actionBtn');
+        if(!d) return alert('Enter domain name');
+        badge.innerText = 'Resolving DNS...'; badge.style.color = '#fb923c'; btn.disabled = true;
+        try {
+            const res = await fetch('/tools/domain-recon', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({domain: d})
+            });
+            const data = await res.json();
+            log.innerText = JSON.stringify(data, null, 2);
+            badge.innerText = 'Target Resolved'; badge.style.color = '#4ade80';
+        } catch(e) {
+            log.innerText = '// Recon error: ' + e.message;
+            badge.innerText = 'Error'; badge.style.color = '#f43f5e';
+        } finally { btn.disabled = false; }
+    }
+    </script>
 {% endblock %}
