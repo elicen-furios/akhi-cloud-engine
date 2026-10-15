@@ -780,6 +780,94 @@
   }
 </style>
 
+
+<style id="akhil-clean-elements-fix">
+  /* 1. Sidebar Active/Selected Item Clean Styling (No whiteout) */
+  aside .active, aside [class*="active"], 
+  [class*="sidebar"] .active, [class*="sidebar"] [class*="active"],
+  a:has(span:contains("Telemetry Status")), a:contains("Telemetry Status"),
+  div[class*="bg-white"]:has(> span), .bg-white:not(button) {
+    background: rgba(56, 189, 248, 0.15) !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    border-radius: 12px !important;
+  }
+  aside .active *, [class*="sidebar"] .active *,
+  aside [class*="active"] *, [class*="sidebar"] [class*="active"] * {
+    color: #38bdf8 !important;
+    font-weight: 600 !important;
+  }
+
+  /* 2. Login / Sign up Segmented Switch Controller */
+  div:has(> button:contains("Login")), 
+  div:has(> button:contains("Sign up")),
+  div[class*="grid-cols-2"], div[class*="flex"][class*="rounded-full"] {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    padding: 4px !important;
+    border-radius: 9999px !important;
+  }
+  
+  /* Toggle buttons text & active highlight */
+  button:contains("Login"), button:contains("Sign up"),
+  button:contains("Sign In"), a:contains("Login"), a:contains("Sign up") {
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 8px 16px !important;
+    box-shadow: none !important;
+  }
+  /* Active tab button */
+  button[class*="active"], button[aria-selected="true"],
+  button[class*="bg-white"], button:focus {
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  }
+  /* Inactive tab button */
+  button:not([class*="active"]):not([aria-selected="true"]) {
+    background: transparent !important;
+    color: #94a3b8 !important;
+    border: none !important;
+  }
+
+  /* 3. Password Input Wrapper & Eye Icon (Remove white patch) */
+  div:has(> input[type="password"]),
+  div:has(> input[name*="password"]) {
+    background: rgba(18, 24, 38, 0.65) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+  }
+  div:has(> input[type="password"]) input,
+  div:has(> input[name*="password"]) input {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+  }
+  div:has(> input[type="password"]) button,
+  div:has(> input[name*="password"]) button,
+  div:has(> input[type="password"]) span,
+  div:has(> input[name*="password"]) span {
+    background: transparent !important;
+    border: none !important;
+    color: #94a3b8 !important;
+  }
+
+  /* 4. Bottom Right Black Circle eradicate */
+  div[style*="border-radius: 50%"],
+  div[class*="bottom-"][class*="right-"],
+  div[style*="z-index: 9999"], div[style*="z-index:9999"],
+  #ai-chat-btn, .ai-floating-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
