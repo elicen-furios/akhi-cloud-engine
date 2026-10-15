@@ -738,6 +738,38 @@ main, #main-content, .content-wrapper, .container {
 }
 </style>
 
+
+<style>
+  /* Fixed Background Layer */
+  body {
+    background-color: #0b0f19 !important;
+    color: #f1f5f9;
+  }
+  .bg-layer, .wallpaper, [class*="wallpaper"], [class*="bg-"] {
+    position: fixed !important;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0 !important;
+    pointer-events: none !important;
+    opacity: 0.25 !important;
+  }
+  /* Front Content Container */
+  main, #main-content, .content-container, .main-body {
+    position: relative !important;
+    z-index: 10 !important;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    display: block !important;
+    visibility: visible !important;
+  }
+  .card, .glass-panel {
+    background: rgba(15, 23, 42, 0.88) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 16px !important;
+    color: #ffffff !important;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
