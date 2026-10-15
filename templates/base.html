@@ -565,6 +565,45 @@
   }
 </style>
 
+
+<style id="akhil-frosted-glass-theme">
+  /* Cards ko Flat White se Smoked Dark Acrylic Glass me badle */
+  .bg-white, div[class*="bg-white"], .card {
+    background: rgba(17, 24, 39, 0.65) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45) !important;
+    border-radius: 18px !important;
+  }
+
+  /* Headings aur Card Titles 100% Crisp White */
+  .bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4,
+  h1, h2, h3, h4, h5, h6, strong,
+  .text-gray-900, .text-slate-900, .text-black {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+
+  /* Paragraphs aur Subtitles readable Slate */
+  .bg-white p, .bg-white span, .bg-white label,
+  p, span, label {
+    color: #cbd5e1 !important;
+  }
+
+  /* Floating bubble ko complete disable rakhe */
+  #ai-chat-launcher, [onclick*="toggleAiChat"],
+  img[alt*="Assistant"], div[title*="AI Assistant"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -853,9 +892,7 @@
     <audio id="bot-audio" preload="auto" src="/bot.mp3"></audio>
 
     <!-- AI Girl Chatbot Launcher -->
-    <div id="ai-chat-launcher" onclick="toggleAiChat()" title="Talk with AI Assistant">
-        <img src="?auto=format&fit=crop&w=200&q=80" alt="AI Girl Assistant">
-    </div>
+    
 
     <!-- AI Chatbot Box -->
     
