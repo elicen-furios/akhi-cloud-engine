@@ -705,6 +705,88 @@
   }
 </style>
 
+
+<style id="akhil-sidebar-perfect-glass">
+  /* 1. SIDEBAR CONTAINER - DEEP FROSTED GLASS */
+  aside.sidebar, #sidebar, .sidebar {
+    background: rgba(10, 16, 28, 0.96) !important;
+    background-color: rgba(10, 16, 28, 0.96) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  /* 2. BRAND BOX & LOGO */
+  .brand-box {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: transparent !important;
+  }
+  .brand-text h2 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px !important;
+  }
+  .brand-text p {
+    color: #38bdf8 !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* 3. SECTION TITLES (CORE PLATFORM, INTELLIGENCE SUITE, etc.) */
+  .nav-section-title, li.nav-section-title {
+    color: #64748b !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    padding-top: 14px !important;
+  }
+
+  /* 4. NAV ITEMS & LINKS (100% VISIBLE & SHARP) */
+  .nav-list, ul.nav-list {
+    background: transparent !important;
+  }
+  .nav-item, a.nav-item {
+    background: transparent !important;
+    color: #cbd5e1 !important;
+    border-radius: 10px !important;
+    transition: all 0.2s ease !important;
+    border: 1px solid transparent !important;
+    font-weight: 500 !important;
+  }
+  .nav-item span, a.nav-item span {
+    color: #cbd5e1 !important;
+  }
+  .nav-item:hover, a.nav-item:hover {
+    background: rgba(56, 189, 248, 0.12) !important;
+    color: #38bdf8 !important;
+    border: 1px solid rgba(56, 189, 248, 0.25) !important;
+    transform: translateX(4px) !important;
+  }
+  .nav-item:hover span, a.nav-item:hover span {
+    color: #38bdf8 !important;
+  }
+
+  /* ACTIVE TAB HIGHLIGHT (e.g. Home, Identity Gate) */
+  .nav-item.active, a.nav-item.active {
+    background: rgba(56, 189, 248, 0.18) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  }
+  .nav-item.active span, a.nav-item.active span {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+  }
+
+  /* OVERLAY DARKENING */
+  .drawer-overlay {
+    background: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
