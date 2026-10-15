@@ -200,94 +200,100 @@
 
 
 
-<style id="glassmorphism-full-theme">
-  /* Background styling */
+
+
+
+<style id="akhil-exact-glassmorphism">
+  /* Dark Ambient Background */
   html, body {
-    min-height: 100vh !important;
-    background-color: #080c14 !important;
+    background-color: #0b0f19 !important;
     background-image: 
-      radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-      linear-gradient(rgba(10, 15, 26, 0.75), rgba(10, 15, 26, 0.85)),
+      radial-gradient(circle at 15% 20%, rgba(30, 41, 59, 0.8) 0%, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(15, 23, 42, 0.9) 0%, transparent 40%),
+      linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.85)),
       url('/static/main-bg.jpg') !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
-    color: #f8fafc !important;
+    color: #f1f5f9 !important;
+    min-height: 100vh !important;
   }
 
-  /* Frosted Glass Cards, Containers & Sections */
+  /* Smoked Frosted Glass Cards (Image reference style) */
   .card, 
   div[class*="bg-white"], 
-  div[class*="rounded-"], 
+  div[class*="rounded"], 
   table, 
   section > div, 
-  .shadow-sm, .shadow-md, .shadow-lg {
-    background: rgba(255, 255, 255, 0.06) !important;
-    backdrop-filter: blur(16px) saturate(190%) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(190%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    border-radius: 20px !important;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35) !important;
+  .container > div {
+    background: rgba(18, 24, 38, 0.55) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
     color: #ffffff !important;
   }
 
-  /* Frosted Glass Header / Navbar */
+  /* Frosted Glass Floating Navbar */
   header, nav, .navbar {
-    background: rgba(13, 18, 30, 0.6) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
+    background: rgba(11, 15, 25, 0.6) !important;
+    backdrop-filter: blur(20px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
   header *, nav * {
     color: #ffffff !important;
   }
 
-  /* Glassmorphism Buttons with Glow Effect */
+  /* Glass Inner-Pill Buttons (Reflected Light on Top) */
   button, 
   .btn, 
   a[class*="btn"], 
-  input[type="submit"], 
-  button[type="submit"] {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.22) !important;
-    border-radius: 12px !important;
+  input[type="submit"] {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 9999px !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
-    transition: all 0.25s ease-in-out !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    font-weight: 500 !important;
+    transition: all 0.25s ease !important;
   }
 
   button:hover, 
   .btn:hover, 
   a[class*="btn"]:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.45) !important;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2) !important;
-    transform: translateY(-2px) !important;
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 6px 22px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+    transform: translateY(-2px);
   }
 
-  /* Inputs, Textareas & Select Boxes */
-  input, textarea, select {
-    background: rgba(15, 23, 42, 0.55) !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    border-radius: 12px !important;
+  /* Frosted Dark Inputs */
+  input, select, textarea {
+    background: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(14px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 14px !important;
     color: #ffffff !important;
-    padding: 10px 14px !important;
   }
 
-  input:focus, textarea:focus, select:focus {
-    border-color: rgba(56, 189, 248, 0.6) !important;
-    outline: none !important;
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3) !important;
+  /* Text & Badges Accent */
+  h1, h2, h3, h4, p, span, th, td {
+    color: #f1f5f9 !important;
   }
-
-  /* Table styling */
+  
+  /* Tables */
+  table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
   th, td {
-    color: #e2e8f0 !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
   }
 </style>
 
