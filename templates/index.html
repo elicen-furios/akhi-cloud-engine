@@ -170,6 +170,32 @@
             margin-top: 12px; font-weight: 500;
         }
     </style>
+
+<style id="theme-and-hide-widget">
+  /* Background Image Clean Fix */
+  body {
+    background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.85)), url('/static/main-bg.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+  }
+
+  /* Black floating button / AI Assistant icon remove */
+  div[class*="assistant"], button[class*="assistant"],
+  div[id*="assistant"], button[id*="assistant"],
+  img[alt*="Assistant"], [class*="ai-btn"], [id*="ai-btn"],
+  .chat-widget, #chat-widget, div[style*="border-radius: 50%"],
+  div[style*="z-index: 9999"], div[style*="z-index:9999"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+</style>
+
 </head>
 <body>
 
