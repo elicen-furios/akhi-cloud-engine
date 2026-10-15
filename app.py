@@ -2474,3 +2474,7 @@ def page_project_detail(slug):
 
 from tools_engine import tools_bp
 app.register_blueprint(tools_bp)
+
+
+from all_tools_engine import interactive_bp
+app.register_blueprint(interactive_bp)

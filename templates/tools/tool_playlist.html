@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 920px; margin: 30px auto; padding: 0 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <div class="card" style="padding: 28px; border-radius: 20px; margin-bottom: 22px;">
+        <span style="font-size: 0.74rem; font-weight: 700; color: #e11d48; background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12);">
+            PLAYLIST SYNCHRONIZER
+        </span>
+        <h1 style="font-size: 2rem; font-weight: 800; color: #ffffff; margin: 12px 0 6px;">Playlist Tag & Metadata Synthesizer</h1>
+        <p style="color: #94a3b8; font-size: 0.92rem; margin: 0 0 20px;">Batch clean track titles, generate cues, and standardize audio metadata.</p>
+        <div style="margin-bottom:10px;"><input id="plName" type="text" placeholder="Playlist Name" style="width:100%; padding:10px; border-radius:10px; background:#0b1120; border:1px solid #334155; color:#fff; box-sizing:border-box; margin-bottom:8px;"><textarea id="plTracks" placeholder="Comma separated tracks (e.g. Midnight City, Resonance, Starboy)" style="width:100%; height:80px; padding:10px; border-radius:10px; background:#0b1120; border:1px solid #334155; color:#fff; box-sizing:border-box;"></textarea></div><button onclick="execute()" style="padding:12px 24px; background:#e11d48; border:none; border-radius:10px; font-weight:700; color:#fff; cursor:pointer;">Generate Schema</button>
+    </div>
+    <div class="card" style="padding: 24px; border-radius: 20px;">
+        <h3 style="color: #ffffff; font-size: 1.05rem; margin: 0 0 12px;">Live Operational Output</h3>
+        <div style="background: rgba(5, 9, 17, 0.95); border: 1px solid rgba(255,255,255,0.14); border-radius: 12px; padding: 16px; min-height: 180px;">
+            <pre id="outputConsole" style="margin: 0; color: #e11d48; font-family: monospace; font-size: 0.88rem; white-space: pre-wrap; overflow-x: auto;">// Awaiting execution trigger...</pre>
+        </div>
+    </div>
+</div>
+<script>async function execute(){ const t = document.getElementById("plName").value; const tracks = document.getElementById("plTracks").value; const r = await fetch("/tools/playlist-generator", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({title:t, tracks:tracks})}); document.getElementById("outputConsole").innerText = JSON.stringify(await r.json(), null, 2); }</script>
+{% endblock %}
