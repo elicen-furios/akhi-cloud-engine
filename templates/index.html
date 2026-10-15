@@ -212,183 +212,105 @@
 
 
 
-<style id="akhil-master-glass-theme">
-  /* 1. Global Dark Background with Ambient Glow */
-  html, body {
-    min-height: 100vh !important;
-    background-color: #080c14 !important;
-    background-image: 
-      radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.12) 0%, transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-      linear-gradient(rgba(8, 12, 20, 0.8), rgba(8, 12, 20, 0.9)),
-      url('/static/main-bg.jpg') !important;
+
+
+
+
+
+
+<style id="akhil-glass-master-lock">
+  /* Global Uniform Theme */
+  body {
+    background: #080c14 url('/static/main-bg.jpg') no-repeat center center fixed !important;
     background-size: cover !important;
-    background-position: center !important;
-    background-attachment: fixed !important;
-    background-repeat: no-repeat !important;
-    color: #f8fafc !important;
-    font-family: inherit !important;
+    color: #f1f5f9 !important;
   }
 
-  /* 2. UNIVERSAL CARD FIX: Saare white boxes ko Dark Smoked Glass banao */
-  div[class*="bg-white"], .bg-white, .card, 
-  section > div, main > div, div[class*="rounded-xl"], div[class*="rounded-2xl"],
-  div[class*="shadow"], div[class*="border"] {
-    background: rgba(15, 23, 42, 0.65) !important;
-    backdrop-filter: blur(24px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  /* Har tarah ke cards, boxes, Voice Studio, aur containers */
+  .bg-white, div[class*="bg-white"], .card, 
+  div[class*="shadow-sm"][class*="rounded"],
+  div[class*="border"][class*="rounded"] {
+    background: rgba(15, 23, 42, 0.68) !important;
+    backdrop-filter: blur(24px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45) !important;
+    color: #f1f5f9 !important;
   }
 
-  /* 3. UNIVERSAL TEXT VISIBILITY: Saare text ka contrast 100% sharp karo */
-  h1, h2, h3, h4, h5, h6, .text-xl, .text-2xl, .text-lg, strong, b {
+  /* Token Box, Code blocks, Protocol documentation snippet (Images 1 & 3 fix) */
+  code, pre, .font-mono, 
+  div:has(> [class*="font-mono"]),
+  div:has(> span:contains("akhi_live")),
+  div:has(> code), div[class*="bg-gray-"],
+  div:has(> p:contains("Authorization: Bearer")) {
+    background: rgba(8, 14, 26, 0.9) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    color: #38bdf8 !important;
+    border-radius: 12px !important;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6) !important;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4) !important;
+  }
+  code *, pre *, .font-mono * {
+    color: #38bdf8 !important;
+  }
+
+  /* Headings, text labels aur body text contrast */
+  h1, h2, h3, h4, h5, h6, strong, b {
     color: #ffffff !important;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
   }
-  p, span, label, small, div {
-    color: #e2e8f0;
+  p, span, label, small {
+    color: #cbd5e1 !important;
   }
-  .text-gray-500, .text-gray-400, .text-slate-400, [class*="text-muted"] {
-    color: #94a3b8 !important;
+  .text-emerald-500, .text-green-500, span:contains("Ready") {
+    color: #34d399 !important;
+    background: rgba(16, 185, 129, 0.15) !important;
+    padding: 2px 8px !important;
+    border-radius: 9999px !important;
   }
 
-  /* 4. FORM ELEMENTS: Inputs, Textareas & Dropdowns (Select) */
+  /* Inputs, Textareas & Select dropdowns */
   input, textarea, select {
-    background: rgba(8, 14, 26, 0.75) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
     border-radius: 12px !important;
     color: #ffffff !important;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
-    outline: none !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4) !important;
   }
   select option {
     background-color: #0f172a !important;
     color: #ffffff !important;
   }
-  input::placeholder, textarea::placeholder {
-    color: #64748b !important;
-  }
 
-  /* 5. BUTTONS: Glow & Glass Buttons */
-  button, .btn, a[class*="btn"], input[type="submit"] {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(139, 92, 246, 0.25)) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
+  /* All Action Buttons (Generate, Copy Token, etc.) */
+  button, .btn, a[class*="btn"] {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.28), rgba(99, 102, 241, 0.28)) !important;
     border: 1px solid rgba(255, 255, 255, 0.25) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.45) !important;
-    border-radius: 12px !important;
     color: #ffffff !important;
+    border-radius: 12px !important;
     font-weight: 600 !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.2s ease !important;
   }
   button:hover, .btn:hover {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.4), rgba(139, 92, 246, 0.4)) !important;
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.3) !important;
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.45), rgba(99, 102, 241, 0.45)) !important;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.35) !important;
   }
 
-  /* 6. SIDEBAR & DRAWERS */
-  aside, [class*="sidebar"], [class*="nav-drawer"] {
-    background: rgba(10, 15, 26, 0.95) !important;
-    backdrop-filter: blur(28px) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
-  }
-  aside a, [class*="sidebar"] a {
-    color: #cbd5e1 !important;
-  }
-  aside a:hover, [class*="sidebar"] a:hover {
-    background: rgba(56, 189, 248, 0.15) !important;
-    color: #38bdf8 !important;
-  }
-
-  /* 7. REMOVE BLACK FLOATING BUTTON / WIDGET ENTIRELY */
+  /* Black floating button permanent eradication */
   div[style*="border-radius: 50%"],
-  div[class*="bottom-"][class*="right-"],
   div[style*="z-index: 9999"], div[style*="z-index:9999"],
-  #ai-chat-btn, .ai-floating-btn, [class*="assistant-bubble"] {
+  div[style*="z-index: 50"][style*="bottom:"],
+  [class*="bottom-"][class*="right-"] > div:has(button),
+  #ai-chat-btn, .ai-floating-btn {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
     width: 0 !important;
     height: 0 !important;
-  }
-</style>
-
-
-<style id="akhil-clean-final-fix">
-  /* 1. TOP HEADER / NAVBAR KO DARK FROSTED GLASS BANAO (NO WHITE BAR) */
-  header, nav, .navbar, [class*="sticky top-0"], [class*="fixed top-0"],
-  header > div, nav > div {
-    background: rgba(11, 15, 25, 0.85) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
-  }
-  header span, header a, header button, header div,
-  nav span, nav a, nav button, nav div {
-    color: #ffffff !important;
-  }
-
-  /* Hamburger & Sign In button in header */
-  header button, nav button, header a[href*="login"], nav a[href*="login"],
-  header .btn, nav .btn {
-    background: rgba(255, 255, 255, 0.12) !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important;
-    color: #ffffff !important;
-    border-radius: 9999px !important;
-  }
-
-  /* 2. VOICE STUDIO & ALL WHITE CARDS -> DARK GLASS */
-  .bg-white, div[class*="bg-white"],
-  div[class*="shadow-sm"][class*="rounded"],
-  div[class*="border"][class*="rounded-2xl"],
-  div[class*="border"][class*="rounded-xl"] {
-    background: rgba(18, 24, 38, 0.65) !important;
-    backdrop-filter: blur(24px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45) !important;
-  }
-
-  /* 3. TEXT VISIBILITY (Voice Studio Headings, Ready badge, Labels) */
-  .bg-white *, div[class*="bg-white"] * {
-    color: #f1f5f9 !important;
-  }
-  .bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4,
-  div[class*="bg-white"] h1, div[class*="bg-white"] h2, div[class*="bg-white"] h3 {
-    color: #ffffff !important;
-    font-weight: 700 !important;
-  }
-  .bg-white p, div[class*="bg-white"] p,
-  .bg-white span, div[class*="bg-white"] span {
-    color: #cbd5e1 !important;
-  }
-  /* Voice Studio Ready badge */
-  span:contains("Ready"), div:contains("Ready") {
-    color: #34d399 !important;
-    background: rgba(16, 185, 129, 0.15) !important;
-    border: 1px solid rgba(16, 185, 129, 0.3) !important;
-  }
-
-  /* 4. BUTTON "Generate Natural Voice" Glow Styling */
-  button:has(svg), button[type="submit"], button:contains("Generate") {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.8), rgba(99, 102, 241, 0.8)) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    font-weight: 600 !important;
-    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35) !important;
-  }
-
-  /* 5. HIDE FLOATING BLACK CIRCLE IN BOTTOM RIGHT */
-  div[style*="border-radius: 50%"],
-  div[style*="z-index: 9999"], div[style*="z-index:9999"],
-  div[class*="bottom-"][class*="right-"] > div:has(button),
-  #ai-chat-btn, .ai-floating-btn {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
   }
 </style>
 
