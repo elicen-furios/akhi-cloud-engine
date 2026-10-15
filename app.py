@@ -251,7 +251,7 @@ def render_page(title, active_page, inner_content):
 }
 .ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
 .ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
-.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
+.ai-msg-user { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: #09090b; align-self: flex-end; font-weight: 500; }
 </style>
 
 <div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
@@ -380,7 +380,7 @@ def page_login():
                 <input type="text" id="login-identifier" class="input-text" placeholder="Enter username or email">
                 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">PASSWORD</label>
-                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 8px;">
+                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid #e4e4e7; border-radius: 8px;">
                     <input type="password" id="login-password" style="width: 100%; border: none; outline: none; padding: 12px 14px; font-size: 0.9rem; background: transparent;" placeholder="Enter password">
                     <button type="button" onclick="togglePassVisibility('login-password', this)" style="background: transparent; border: none; padding: 10px 14px; cursor: pointer; color: #71717a; display: flex; align-items: center; justify-content: center; outline: none;">
                         <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -400,7 +400,7 @@ def page_login():
                 <input type="email" id="reg-email" class="input-text" placeholder="Enter email address">
                 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">PASSWORD</label>
-                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 8px;">
+                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid #e4e4e7; border-radius: 8px;">
                     <input type="password" id="reg-pass" style="width: 100%; border: none; outline: none; padding: 12px 14px; font-size: 0.9rem; background: transparent;" placeholder="Create password">
                     <button type="button" onclick="togglePassVisibility('reg-pass', this)" style="background: transparent; border: none; padding: 10px 14px; cursor: pointer; color: #71717a; display: flex; align-items: center; justify-content: center; outline: none;">
                         <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -409,7 +409,7 @@ def page_login():
                 </div>
 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">CONFIRM PASSWORD</label>
-                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 8px;">
+                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid #e4e4e7; border-radius: 8px;">
                     <input type="password" id="reg-confirm" style="width: 100%; border: none; outline: none; padding: 12px 14px; font-size: 0.9rem; background: transparent;" placeholder="Confirm password">
                     <button type="button" onclick="togglePassVisibility('reg-confirm', this)" style="background: transparent; border: none; padding: 10px 14px; cursor: pointer; color: #71717a; display: flex; align-items: center; justify-content: center; outline: none;">
                         <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -1923,37 +1923,37 @@ def page_ai_studio():
     <div style="max-width: 820px; margin: 20px auto; padding: 0 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
         
         <!-- Header -->
-        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 24px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+        <div style="background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 12px; padding: 20px 24px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); display: flex; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
                             <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
                             <line x1="12" y1="19" x2="12" y2="22"></line>
                         </svg>
                     </div>
                     <div>
-                        <h2 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;">Voice Synthesis Studio</h2>
+                        <h2 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #ffffff;">Voice Synthesis Studio</h2>
                         <p style="margin: 2px 0 0; color: #64748b; font-size: 0.88rem;">Generate natural voice from text</p>
                     </div>
                 </div>
-                <span style="font-size: 0.78rem; font-weight: 600; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 5px 12px; border-radius: 20px;">Ready</span>
+                <span style="font-size: 0.78rem; font-weight: 600; color: #059669; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); padding: 5px 12px; border-radius: 20px;">Ready</span>
             </div>
         </div>
 
         <!-- Main Form -->
-        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-bottom: 18px;">
+        <div style="background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-bottom: 18px;">
             <div style="margin-bottom: 18px;">
-                <label style="display: block; font-size: 0.84rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Script Input</label>
-                <textarea id="voice-text" rows="4" style="width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font-size: 0.95rem; color: #0f172a; outline: none; font-family: inherit; resize: vertical;"></textarea>
+                <label style="display: block; font-size: 0.84rem; font-weight: 600; color: #e2e8f0; margin-bottom: 6px;">Script Input</label>
+                <textarea id="voice-text" rows="4" style="width: 100%; box-sizing: border-box; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 8px; padding: 12px; font-size: 0.95rem; color: #ffffff; outline: none; font-family: inherit; resize: vertical;"></textarea>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px;">
                 <!-- Custom ElevenLabs Style Voice Selector Trigger -->
                 <div>
-                    <label style="display: block; font-size: 0.84rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Voice Model</label>
-                    <div id="voice-picker-btn" onclick="openVoiceModal()" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 0.9rem; color: #0f172a; cursor: pointer; user-select: none;">
+                    <label style="display: block; font-size: 0.84rem; font-weight: 600; color: #e2e8f0; margin-bottom: 6px;">Voice Model</label>
+                    <div id="voice-picker-btn" onclick="openVoiceModal()" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 8px; padding: 10px 14px; font-size: 0.9rem; color: #ffffff; cursor: pointer; user-select: none;">
                         <span id="selected-voice-title" style="font-weight: 600;">Aanya (Hindi Warm Dialogue)</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </div>
@@ -1961,8 +1961,8 @@ def page_ai_studio():
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 0.84rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Speaking Cadence</label>
-                    <select id="voice-speed" style="width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; color: #0f172a; outline: none;">
+                    <label style="display: block; font-size: 0.84rem; font-weight: 600; color: #e2e8f0; margin-bottom: 6px;">Speaking Cadence</label>
+                    <select id="voice-speed" style="width: 100%; box-sizing: border-box; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; color: #ffffff; outline: none;">
                         <option value="0.9">0.9x (Deliberate & Calm)</option>
                         <option value="1.0" selected>1.0x (Natural Human Standard)</option>
                         <option value="1.15">1.15x (Conversational Dynamic)</option>
@@ -1983,13 +1983,13 @@ def page_ai_studio():
         </div>
 
         <!-- Audio Output & Live Audio Studio Console -->
-        <div id="player-container" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+        <div id="player-container" style="display: none; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <div style="display:none;"></div>
-                    <span style="font-size: 0.88rem; font-weight: 700; color: #0f172a;">Master Generated Audio Track</span>
+                    <span style="font-size: 0.88rem; font-weight: 700; color: #ffffff;">Master Generated Audio Track</span>
                 </div>
-                <a id="btn-download" href="#" download="master_voice.wav" style="background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px;">
+                <a id="btn-download" href="#" download="master_voice.wav" style="background: rgba(255, 255, 255, 0.05); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.16); padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                     Download .WAV
                 </a>
@@ -2004,45 +2004,45 @@ def page_ai_studio():
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px;">
                     <div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                            <label style="font-size: 0.78rem; font-weight: 600; color: #334155;">3D Ear Balance</label>
-                            <span id="pan-val" style="font-size: 0.78rem; font-family: monospace; color: #0f172a; font-weight: 600;">Center</span>
+                            <label style="font-size: 0.78rem; font-weight: 600; color: #e2e8f0;">3D Ear Balance</label>
+                            <span id="pan-val" style="font-size: 0.78rem; font-family: monospace; color: #ffffff; font-weight: 600;">Center</span>
                         </div>
                         <input type="range" id="voice-pan" min="-1" max="1" step="0.1" value="0" style="width: 100%; cursor: pointer;">
                     </div>
 
                     <div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                            <label style="font-size: 0.78rem; font-weight: 600; color: #334155;">Vocal Warmth / Bass</label>
-                            <span id="eq-val" style="font-size: 0.78rem; font-family: monospace; color: #0f172a; font-weight: 600;">0 dB</span>
+                            <label style="font-size: 0.78rem; font-weight: 600; color: #e2e8f0;">Vocal Warmth / Bass</label>
+                            <span id="eq-val" style="font-size: 0.78rem; font-family: monospace; color: #ffffff; font-weight: 600;">0 dB</span>
                         </div>
                         <input type="range" id="voice-eq" min="-10" max="12" step="1" value="0" style="width: 100%; cursor: pointer;">
                     </div>
 
                     <div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                            <label style="font-size: 0.78rem; font-weight: 600; color: #334155;">Spring Ambience</label>
-                            <span id="reverb-val" style="font-size: 0.78rem; font-family: monospace; color: #0f172a; font-weight: 600;">Dry</span>
+                            <label style="font-size: 0.78rem; font-weight: 600; color: #e2e8f0;">Spring Ambience</label>
+                            <span id="reverb-val" style="font-size: 0.78rem; font-family: monospace; color: #ffffff; font-weight: 600;">Dry</span>
                         </div>
                         <input type="range" id="voice-reverb" min="0" max="1" step="0.1" value="0" style="width: 100%; cursor: pointer;">
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button type="button" onclick="setPreset('clean')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; color: #334155;">Studio Dry</button>
-                    <button type="button" onclick="setPreset('spring')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; color: #334155;">Spring Reverb</button>
-                    <button type="button" onclick="setPreset('deep')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; color: #334155;">Warm Bass</button>
-                    <button type="button" onclick="setPreset('left3d')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; color: #334155;">Left Ear 3D</button>
-                    <button type="button" onclick="setPreset('right3d')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; color: #334155;">Right Ear 3D</button>
+                    <button type="button" onclick="setPreset('clean')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(255, 255, 255, 0.05); border-radius: 6px; cursor: pointer; color: #e2e8f0;">Studio Dry</button>
+                    <button type="button" onclick="setPreset('spring')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(255, 255, 255, 0.05); border-radius: 6px; cursor: pointer; color: #e2e8f0;">Spring Reverb</button>
+                    <button type="button" onclick="setPreset('deep')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(255, 255, 255, 0.05); border-radius: 6px; cursor: pointer; color: #e2e8f0;">Warm Bass</button>
+                    <button type="button" onclick="setPreset('left3d')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(255, 255, 255, 0.05); border-radius: 6px; cursor: pointer; color: #e2e8f0;">Left Ear 3D</button>
+                    <button type="button" onclick="setPreset('right3d')" style="flex:1; min-width: 80px; padding: 8px 10px; font-size: 0.78rem; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(255, 255, 255, 0.05); border-radius: 6px; cursor: pointer; color: #e2e8f0;">Right Ear 3D</button>
                 </div>
             </div>
         </div>
 
         <!-- Custom ElevenLabs Style White Voice Modal -->
         <div id="voice-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.4); z-index: 99999; backdrop-filter: blur(2px); align-items: center; justify-content: center;">
-            <div style="background: #ffffff; width: 92%; max-width: 520px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
+            <div style="background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); width: 92%; max-width: 520px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
                 <div style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #0f172a;">Select Voice Model</h3>
+                        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #ffffff;">Select Voice Model</h3>
                         <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">Select a voice model</p>
                     </div>
                     <button onclick="closeVoiceModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b; padding: 4px;">✕</button>
@@ -2052,71 +2052,71 @@ def page_ai_studio():
                     <!-- Category: Hindi / Indian Real Voices -->
                     <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin: 4px 6px;">REGIONAL STUDIO PROFILES</div>
                     
-                    <div class="voice-card active" onclick="selectVoice('694f9389-aac1-45b6-b726-9d9369183238', 'Aanya (Hindi Warm Dialogue)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
+                    <div class="voice-card active" onclick="selectVoice('694f9389-aac1-45b6-b726-9d9369183238', 'Aanya (Hindi Warm Dialogue)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 8px; cursor: pointer; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Aanya</div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #ffffff;">Aanya</div>
                             <div style="font-size: 0.78rem; color: #64748b;">Female • Hindi Conversational & Dialogue • Warm</div>
                         </div>
-                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #0f172a; padding: 3px 8px; border-radius: 4px;">Storyteller</span>
+                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #ffffff; padding: 3px 8px; border-radius: 4px;">Storyteller</span>
                     </div>
 
-                    <div class="voice-card" onclick="selectVoice('42e3994e-7b70-4ccb-8c83-0599c2775a61', 'Kabir (Hindi Natural Storyteller)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
+                    <div class="voice-card" onclick="selectVoice('42e3994e-7b70-4ccb-8c83-0599c2775a61', 'Kabir (Hindi Natural Storyteller)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 8px; cursor: pointer; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Kabir</div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #ffffff;">Kabir</div>
                             <div style="font-size: 0.78rem; color: #64748b;">Male • Hindi Conversational Boy • Grounded</div>
                         </div>
-                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #0f172a; padding: 3px 8px; border-radius: 4px;">Natural Boy</span>
+                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #ffffff; padding: 3px 8px; border-radius: 4px;">Natural Boy</span>
                     </div>
 
-                    <div class="voice-card" onclick="selectVoice('79a125e8-cd45-4c13-8a67-188112f4dd22', 'Priya (Indian Accent Female)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
+                    <div class="voice-card" onclick="selectVoice('79a125e8-cd45-4c13-8a67-188112f4dd22', 'Priya (Indian Accent Female)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 8px; cursor: pointer; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Priya</div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #ffffff;">Priya</div>
                             <div style="font-size: 0.78rem; color: #64748b;">Female • Indian English & Hinglish • Soft</div>
                         </div>
-                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #0f172a; padding: 3px 8px; border-radius: 4px;">Soft Tone</span>
+                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #ffffff; padding: 3px 8px; border-radius: 4px;">Soft Tone</span>
                     </div>
 
-                    <div class="voice-card" onclick="selectVoice('a0e99841-438c-4a64-b679-ae501e7d6091', 'Rohan (Indian Conversational Male)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
+                    <div class="voice-card" onclick="selectVoice('a0e99841-438c-4a64-b679-ae501e7d6091', 'Rohan (Indian Conversational Male)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 8px; cursor: pointer; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Rohan</div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #ffffff;">Rohan</div>
                             <div style="font-size: 0.78rem; color: #64748b;">Male • Indian English / Casual • Friendly</div>
                         </div>
-                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #0f172a; padding: 3px 8px; border-radius: 4px;">Conversational</span>
+                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #ffffff; padding: 3px 8px; border-radius: 4px;">Conversational</span>
                     </div>
 
                     <!-- Category: ElevenLabs Verified Clones -->
                     <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin: 10px 6px 4px;">Studio Voice Models</div>
 
-                    <div class="voice-card" onclick="selectVoice('69267136-1bdc-4103-a11a-7a0676499b66', 'Adam (Deep Narration Studio)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
+                    <div class="voice-card" onclick="selectVoice('69267136-1bdc-4103-a11a-7a0676499b66', 'Adam (Deep Narration Studio)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 8px; cursor: pointer; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Adam</div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #ffffff;">Adam</div>
                             <div style="font-size: 0.78rem; color: #64748b;">Male • American • Deep Resonance & Audiobooks</div>
                         </div>
-                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #0f172a; padding: 3px 8px; border-radius: 4px;">Deep Bass</span>
+                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #ffffff; padding: 3px 8px; border-radius: 4px;">Deep Bass</span>
                     </div>
 
-                    <div class="voice-card" onclick="selectVoice('21b81c14-f857-4359-aa54-26de70819eb4', 'Rachel (Warm Expressive Female)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
+                    <div class="voice-card" onclick="selectVoice('21b81c14-f857-4359-aa54-26de70819eb4', 'Rachel (Warm Expressive Female)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 8px; cursor: pointer; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Rachel</div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #ffffff;">Rachel</div>
                             <div style="font-size: 0.78rem; color: #64748b;">Female • American • Calm & Emotional Flow</div>
                         </div>
-                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #0f172a; padding: 3px 8px; border-radius: 4px;">Conversational</span>
+                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #ffffff; padding: 3px 8px; border-radius: 4px;">Conversational</span>
                     </div>
 
-                    <div class="voice-card" onclick="selectVoice('fb26447f-308b-471e-8b00-8e9f04284eb5', 'Antoni (Executive British Male)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
+                    <div class="voice-card" onclick="selectVoice('fb26447f-308b-471e-8b00-8e9f04284eb5', 'Antoni (Executive British Male)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 8px; cursor: pointer; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Antoni</div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #ffffff;">Antoni</div>
                             <div style="font-size: 0.78rem; color: #64748b;">Male • British • Crisp Executive & Documentary</div>
                         </div>
-                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #0f172a; padding: 3px 8px; border-radius: 4px;">Broadcast</span>
+                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #ffffff; padding: 3px 8px; border-radius: 4px;">Broadcast</span>
                     </div>
 
-                    <div class="voice-card" onclick="selectVoice('b7d50908-b17c-442d-ad8d-810c63997ed9', 'Elli (Studio Broadcast Female)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: #ffffff;">
+                    <div class="voice-card" onclick="selectVoice('b7d50908-b17c-442d-ad8d-810c63997ed9', 'Elli (Studio Broadcast Female)')" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.22); border-radius: 8px; cursor: pointer; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Elli</div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #ffffff;">Elli</div>
                             <div style="font-size: 0.78rem; color: #64748b;">Female • British • Articulate & Storytelling</div>
                         </div>
-                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #0f172a; padding: 3px 8px; border-radius: 4px;">Studio</span>
+                        <span style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #ffffff; padding: 3px 8px; border-radius: 4px;">Studio</span>
                     </div>
                 </div>
             </div>
