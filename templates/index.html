@@ -192,166 +192,111 @@
 
 
 
-<style id="akhil-universal-dark-glass-engine">
-  /* Global Background Match */
-  html, body {
-    background-color: #080c14 !important;
-    background-image: 
-      radial-gradient(circle at 10% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
-      radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
-      linear-gradient(rgba(8, 12, 20, 0.85), rgba(8, 12, 20, 0.95)),
-      url('/static/main-bg.jpg') !important;
-    background-size: cover !important;
-    background-position: center !important;
-    background-attachment: fixed !important;
-    background-repeat: no-repeat !important;
-    color: #f1f5f9 !important;
-    width: 100% !important;
-    overflow-x: hidden !important;
-  }
 
-  /* TOP NAVBAR / HEADER (Signs, Drawer Toggles) */
-  header, nav, .navbar,
-  header div, nav div,
-  div[class*="border-b"]:has(button:has(svg)) {
-    background: rgba(10, 16, 28, 0.82) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
+
+
+<style id="akhil-zero-white-final-lock">
+  /* 1. TOP NAVBAR / HEADER & HAMBURGER (Screenshots 2 & 3) */
+  header, nav, .navbar, .topbar,
+  div[class*="top-0"], header > div, nav > div {
+    background: rgba(10, 16, 28, 0.85) !important;
+    background-color: rgba(10, 16, 28, 0.85) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
   }
-  header *, nav *, .navbar * {
+  header *, nav *, .navbar *, .topbar * {
+    color: #ffffff !important;
+  }
+  header button, nav button, header a, nav a,
+  .topbar button, .topbar a {
+    background: rgba(255, 255, 255, 0.08) !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
     color: #ffffff !important;
   }
 
-  /* ALL WHITE CARDS, CONTAINERS, MODALS (Login, Voice, Identity) */
-  .card, div.bg-white, .bg-white,
-  div[class*="rounded-3xl"], div[class*="rounded-2xl"], div[class*="rounded-xl"],
-  div[class*="shadow"]:not(button):not(input) {
-    background: rgba(17, 24, 39, 0.65) !important;
-    backdrop-filter: blur(24px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
-  }
-
-  /* LOGIN / SIGN UP SWITCHER & PILLS */
-  div[class*="rounded-full"]:has(> button),
+  /* 2. LOGIN / SIGNUP SWITCHER (Screenshot 2) */
+  div[class*="rounded-full"]:has(button),
   div[class*="grid-cols-2"]:has(button),
-  div:has(> a[href*="login"]) {
-    background: rgba(10, 15, 28, 0.85) !important;
+  div:has(> button:contains("Login")),
+  div:has(> a:contains("Login")) {
+    background: rgba(8, 12, 22, 0.85) !important;
+    background-color: rgba(8, 12, 22, 0.85) !important;
     border: 1px solid rgba(255, 255, 255, 0.14) !important;
     border-radius: 9999px !important;
   }
   div[class*="rounded-full"] button,
-  div[class*="rounded-full"] a {
+  div[class*="rounded-full"] a,
+  div[class*="grid-cols-2"] button,
+  div[class*="grid-cols-2"] a {
     background: transparent !important;
+    background-color: transparent !important;
     color: #94a3b8 !important;
-  }
-  div[class*="rounded-full"] button.active,
-  div[class*="rounded-full"] button[class*="bg-white"],
-  div[class*="rounded-full"] button[class*="shadow"] {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-    border-radius: 9999px !important;
-    backdrop-filter: blur(10px) !important;
-  }
-
-  /* ALL BUTTONS (Google, GitHub, Sign In, Verify, Execute, Voice) */
-  button, input[type="submit"], input[type="button"],
-  a[href*="login"], a[href*="sign"], .sign-in-btn,
-  button:has(svg), a:has(svg), button:has(> img) {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
-    transition: all 0.2s ease !important;
-  }
-  button:hover, a:hover {
-    background: rgba(255, 255, 255, 0.16) !important;
-    border-color: rgba(255, 255, 255, 0.35) !important;
-    transform: translateY(-1px);
-  }
-
-  /* INPUTS & TEXTAREAS (Password Eye Container Fix) */
-  input, textarea, select {
-    background: rgba(11, 16, 28, 0.75) !important;
-    border: 1px solid rgba(255, 255, 255, 0.16) !important;
-    color: #ffffff !important;
-    border-radius: 12px !important;
-  }
-  input::placeholder, textarea::placeholder {
-    color: #64748b !important;
-  }
-  div:has(> input[type="password"]) div,
-  div:has(> input[type="password"]) span,
-  div:has(> input[type="password"]) button {
-    background: transparent !important;
-    border: none !important;
     box-shadow: none !important;
   }
-
-  /* PROTOCOL DOCS, CONSOLE, TOKENS & CODE BLOCKS */
-  pre, code, [class*="font-mono"],
-  div:has(> * :contains("Ready")),
-  div:has(> * :contains("Bearer")),
-  div:has(> * :contains("akhi_live")) {
-    background: rgba(8, 12, 22, 0.9) !important;
-    border: 1px solid rgba(56, 189, 248, 0.3) !important;
-    border-radius: 12px !important;
-    color: #38bdf8 !important;
-  }
-  pre *, code *, [class*="font-mono"] * {
-    color: #38bdf8 !important;
-  }
-
-  /* TEXT VISIBILITY RULES */
-  h1, h2, h3, h4, h5, h6, strong, b,
-  .text-slate-900, .text-gray-900, .text-black {
+  div[class*="rounded-full"] button.active,
+  div[class*="rounded-full"] a.active,
+  div[class*="rounded-full"] button[class*="bg-white"],
+  div[class*="rounded-full"] a[class*="bg-white"],
+  div[class*="grid-cols-2"] button[class*="bg-white"] {
+    background: rgba(255, 255, 255, 0.18) !important;
+    background-color: rgba(255, 255, 255, 0.18) !important;
+    backdrop-filter: blur(12px) !important;
     color: #ffffff !important;
-    font-weight: 700 !important;
+    border-radius: 9999px !important;
   }
-  p, span, label, td, th {
+
+  /* 3. UNAUTHORIZED ACCESS MODAL & POPUPS (Screenshot 1) */
+  div:has(> h2:contains("Unauthorized")),
+  div:has(> * :contains("Unauthorized Access")),
+  div[id*="modal"], div[class*="modal"],
+  .modal-content, [role="dialog"] {
+    background: rgba(15, 23, 42, 0.85) !important;
+    background-color: rgba(15, 23, 42, 0.85) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.28) !important;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6) !important;
+    border-radius: 20px !important;
+  }
+  div:has(> * :contains("Unauthorized Access")) * {
+    color: #f1f5f9 !important;
+  }
+  div:has(> * :contains("Unauthorized Access")) p,
+  div:has(> * :contains("Unauthorized Access")) span {
     color: #cbd5e1 !important;
   }
-  .text-gray-500, .text-slate-500, .text-gray-400 {
-    color: #94a3b8 !important;
-  }
-
-  /* SIDEBAR REINFORCEMENT */
-  aside.sidebar, #sidebar, .sidebar {
-    background: rgba(10, 16, 28, 0.96) !important;
-    backdrop-filter: blur(28px) !important;
-    -webkit-backdrop-filter: blur(28px) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
-  }
-  aside.sidebar *, #sidebar *, .sidebar * {
-    color: #e2e8f0 !important;
-  }
-  .nav-section-title {
-    color: #64748b !important;
-  }
-  .nav-item.active {
-    background: rgba(56, 189, 248, 0.18) !important;
+  div:has(> * :contains("Unauthorized Access")) button,
+  div:has(> * :contains("Unauthorized Access")) a {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    border-radius: 12px !important;
   }
 
-  /* COMPLETE REMOVAL: AI Assistant Float Launcher */
-  #ai-chat-launcher, #ai-float-bubble, #ai-chat-window,
-  div[onclick*="toggleAiChat"], div[onclick*="toggleAIChat"],
-  img[alt*="Assistant"], div[title*="AI Assistant"],
-  div[style*="border-radius: 50%"][class*="bottom-"],
-  div[style*="border-radius:50%"][class*="bottom-"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
+  /* 4. VOICE MODEL PICKER BUTTON (Screenshot 3) */
+  #voice-picker-btn, [onclick*="openVoiceModal"] {
+    background: rgba(15, 23, 42, 0.8) !important;
+    background-color: rgba(15, 23, 42, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    color: #ffffff !important;
+  }
+  #voice-picker-btn *, [onclick*="openVoiceModal"] * {
+    color: #ffffff !important;
+  }
+
+  /* 5. UNIVERSAL SWEEP FOR ANY REMAINING WHITE */
+  .bg-white, [class*="bg-white"],
+  div[style*="background: #ffffff"], div[style*="background:#ffffff"],
+  div[style*="background: white"], div[style*="background:white"] {
+    background: rgba(17, 24, 39, 0.72) !important;
+    background-color: rgba(17, 24, 39, 0.72) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
   }
 </style>
 

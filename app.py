@@ -1697,7 +1697,7 @@ def api_tts_engine():
 def page_neural_studio():
     body = """
     <div style="max-width:920px; margin:24px auto;">
-        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:28px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+        <div style="background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px);; border:1px solid #e2e8f0; border-radius:12px; padding:28px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:16px; margin-bottom:20px;">
                 <div>
                     <h2 style="margin:0; font-size:1.35rem; color:#0f172a; font-weight:700;">Akhil Neural Studio</h2>
@@ -1757,7 +1757,7 @@ def page_neural_studio():
 def page_voice_studio():
     body = """
     <div style="max-width:920px; margin:24px auto;">
-        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:28px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+        <div style="background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px);; border:1px solid #e2e8f0; border-radius:12px; padding:28px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:16px; margin-bottom:20px;">
                 <div>
                     <h2 style="margin:0; font-size:1.35rem; color:#0f172a; font-weight:700;">Voice Studio (Sonic)</h2>
@@ -1856,7 +1856,7 @@ def page_voice_studio():
 def page_vision_studio():
     body = """
     <div style="max-width:920px; margin:24px auto;">
-        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:28px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+        <div style="background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px);; border:1px solid #e2e8f0; border-radius:12px; padding:28px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; padding-bottom:16px; margin-bottom:20px;">
                 <div>
                     <h2 style="margin:0; font-size:1.35rem; color:#0f172a; font-weight:700;">Vision & Image Lab</h2>
