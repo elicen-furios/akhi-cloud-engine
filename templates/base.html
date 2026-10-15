@@ -622,6 +622,49 @@
   }
 </style>
 
+
+<style id="clean-layout-fix">
+  html, body {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #0b0f19 !important;
+    color: #f1f5f9 !important;
+  }
+  /* Floating icons aur stray widgets completely eradicate */
+  #chat-container, .chat-box, .ai-widget, [class*="chat"], [id*="chat"], [class*="assistant"], .ai-btn, #ai-btn {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
+  }
+  /* Center & stretch main containers */
+  main, .container, .max-w-7xl, .max-w-6xl, .max-w-4xl {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    box-sizing: border-box !important;
+  }
+  /* Modern clean glass style for voice card */
+  .card, .bg-white, div[class*="bg-white"] {
+    background: rgba(17, 24, 39, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border-radius: 16px !important;
+  }
+  input, textarea, select {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    border: 1px solid #334155 !important;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
