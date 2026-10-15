@@ -598,267 +598,110 @@
 
 
 
-<style id="akhil-exact-glassmorphism">
-  /* Dark Ambient Background */
+
+
+
+
+
+
+
+
+
+<style id="akhil-master-glass-theme">
+  /* 1. Global Dark Background with Ambient Glow */
   html, body {
-    background-color: #0b0f19 !important;
+    min-height: 100vh !important;
+    background-color: #080c14 !important;
     background-image: 
-      radial-gradient(circle at 15% 20%, rgba(30, 41, 59, 0.8) 0%, transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(15, 23, 42, 0.9) 0%, transparent 40%),
-      linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.85)),
+      radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.12) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+      linear-gradient(rgba(8, 12, 20, 0.8), rgba(8, 12, 20, 0.9)),
       url('/static/main-bg.jpg') !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
-    color: #f1f5f9 !important;
-    min-height: 100vh !important;
+    background-repeat: no-repeat !important;
+    color: #f8fafc !important;
+    font-family: inherit !important;
   }
 
-  /* Smoked Frosted Glass Cards (Image reference style) */
-  .card, 
-  div[class*="bg-white"], 
-  div[class*="rounded"], 
-  table, 
-  section > div, 
-  .container > div {
-    background: rgba(18, 24, 38, 0.55) !important;
-    backdrop-filter: blur(28px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
-    border-radius: 24px !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-  }
-
-  /* Frosted Glass Floating Navbar */
-  header, nav, .navbar {
-    background: rgba(11, 15, 25, 0.6) !important;
-    backdrop-filter: blur(20px) saturate(160%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-  }
-  header *, nav * {
-    color: #ffffff !important;
-  }
-
-  /* Glass Inner-Pill Buttons (Reflected Light on Top) */
-  button, 
-  .btn, 
-  a[class*="btn"], 
-  input[type="submit"] {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 9999px !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-    font-weight: 500 !important;
-    transition: all 0.25s ease !important;
-  }
-
-  button:hover, 
-  .btn:hover, 
-  a[class*="btn"]:hover {
-    background: rgba(255, 255, 255, 0.16) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    box-shadow: 0 6px 22px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
-    transform: translateY(-2px);
-  }
-
-  /* Frosted Dark Inputs */
-  input, select, textarea {
-    background: rgba(15, 23, 42, 0.6) !important;
-    backdrop-filter: blur(14px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    border-radius: 14px !important;
-    color: #ffffff !important;
-  }
-
-  /* Text & Badges Accent */
-  h1, h2, h3, h4, p, span, th, td {
-    color: #f1f5f9 !important;
-  }
-  
-  /* Tables */
-  table {
-    border-collapse: separate !important;
-    border-spacing: 0 !important;
-  }
-  th, td {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
-  }
-</style>
-
-
-<style id="akhil-text-contrast-fix">
-  /* 1. Left Drawer / Sidebar ko Dark Frosted Glass banao taaki text clear dikhe */
-  aside, [class*="sidebar"], [id*="sidebar"], [class*="nav-drawer"], [id*="nav-drawer"],
-  div[class*="drawer"]:not([class*="right"]), div[class*="offcanvas"] {
-    background: rgba(13, 18, 30, 0.94) !important;
+  /* 2. UNIVERSAL CARD FIX: Saare white boxes ko Dark Smoked Glass banao */
+  div[class*="bg-white"], .bg-white, .card, 
+  section > div, main > div, div[class*="rounded-xl"], div[class*="rounded-2xl"],
+  div[class*="shadow"], div[class*="border"] {
+    background: rgba(15, 23, 42, 0.65) !important;
     backdrop-filter: blur(24px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
-    color: #f8fafc !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
   }
 
-  /* Drawer ke saare links, text aur headings sharp white/bright grey */
-  aside *, [class*="sidebar"] *, [id*="sidebar"] *, [class*="nav-drawer"] * {
-    color: #f1f5f9 !important;
+  /* 3. UNIVERSAL TEXT VISIBILITY: Saare text ka contrast 100% sharp karo */
+  h1, h2, h3, h4, h5, h6, .text-xl, .text-2xl, .text-lg, strong, b {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
   }
-  aside a, [class*="sidebar"] a, [class*="nav-drawer"] a {
+  p, span, label, small, div {
+    color: #e2e8f0;
+  }
+  .text-gray-500, .text-gray-400, .text-slate-400, [class*="text-muted"] {
+    color: #94a3b8 !important;
+  }
+
+  /* 4. FORM ELEMENTS: Inputs, Textareas & Dropdowns (Select) */
+  input, textarea, select {
+    background: rgba(8, 14, 26, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+    outline: none !important;
+  }
+  select option {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748b !important;
+  }
+
+  /* 5. BUTTONS: Glow & Glass Buttons */
+  button, .btn, a[class*="btn"], input[type="submit"] {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(139, 92, 246, 0.25)) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.45) !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  }
+  button:hover, .btn:hover {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.4), rgba(139, 92, 246, 0.4)) !important;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.3) !important;
+  }
+
+  /* 6. SIDEBAR & DRAWERS */
+  aside, [class*="sidebar"], [class*="nav-drawer"] {
+    background: rgba(10, 15, 26, 0.95) !important;
+    backdrop-filter: blur(28px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  aside a, [class*="sidebar"] a {
     color: #cbd5e1 !important;
   }
-  aside a:hover, [class*="sidebar"] a:hover, [class*="nav-drawer"] a:hover {
-    color: #38bdf8 !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-  }
-  aside h1, aside h2, aside h3, aside h4, aside h5, aside h6,
-  [class*="sidebar"] h4, [class*="sidebar"] span[class*="text-xs"] {
-    color: #94a3b8 !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.05em !important;
-  }
-
-  /* 2. Login / Sign Up Toggle Switch pill text visible karo */
-  .tabs, [role="tablist"], div:has(> button:contains("Login")), div[class*="toggle"] {
-    background: rgba(255, 255, 255, 0.08) !important;
-  }
-  /* Active aur inactive toggle tabs */
-  button, .btn, [role="tab"] {
-    color: #ffffff !important;
-  }
-  /* Agar tab background light/white ho, tab text strictly dark/contrast rahe */
-  button[class*="bg-white"], .bg-white button, .bg-white,
-  div[style*="background: white"], div[style*="background-color: white"],
-  div[style*="background: #fff"], div[style*="background-color: #fff"],
-  div[style*="background:#fff"], div[style*="background:#ffffff"] {
-    color: #0f172a !important;
-  }
-  div[class*="bg-white"] span, div[class*="bg-white"] p, div[class*="bg-white"] a {
-    color: #0f172a !important;
-  }
-
-  /* Sign in top header button fix */
-  header button, header a, nav button, nav a {
-    background: rgba(255, 255, 255, 0.12) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  }
-
-  /* 3. Inputs & Password Box Fix (No white patches on right) */
-  input, input[type="text"], input[type="password"], input[type="email"] {
-    background: rgba(18, 24, 38, 0.7) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.16) !important;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
-  }
-  input::placeholder {
-    color: #64748b !important;
-    opacity: 1 !important;
-  }
-  /* Password toggle icon button / suffix wrapper */
-  input + button, input ~ button, div:has(> input[type="password"]) button {
-    background: transparent !important;
-    border: none !important;
-    color: #94a3b8 !important;
-    box-shadow: none !important;
-  }
-
-  /* 4. Bottom Right Floating Black Circle permanently delete */
-  div[style*="border-radius: 50%"],
-  div[class*="bottom-"][class*="right-"],
-  div[style*="z-index: 9999"], div[style*="z-index:9999"],
-  div[style*="z-index: 50"][style*="bottom:"],
-  #ai-chat-btn, .ai-floating-btn, [class*="assistant-bubble"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-</style>
-
-
-<style id="akhil-clean-elements-fix">
-  /* 1. Sidebar Active/Selected Item Clean Styling (No whiteout) */
-  aside .active, aside [class*="active"], 
-  [class*="sidebar"] .active, [class*="sidebar"] [class*="active"],
-  a:has(span:contains("Telemetry Status")), a:contains("Telemetry Status"),
-  div[class*="bg-white"]:has(> span), .bg-white:not(button) {
+  aside a:hover, [class*="sidebar"] a:hover {
     background: rgba(56, 189, 248, 0.15) !important;
-    border: 1px solid rgba(56, 189, 248, 0.4) !important;
-    border-radius: 12px !important;
-  }
-  aside .active *, [class*="sidebar"] .active *,
-  aside [class*="active"] *, [class*="sidebar"] [class*="active"] * {
     color: #38bdf8 !important;
-    font-weight: 600 !important;
   }
 
-  /* 2. Login / Sign up Segmented Switch Controller */
-  div:has(> button:contains("Login")), 
-  div:has(> button:contains("Sign up")),
-  div[class*="grid-cols-2"], div[class*="flex"][class*="rounded-full"] {
-    background: rgba(15, 23, 42, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    padding: 4px !important;
-    border-radius: 9999px !important;
-  }
-  
-  /* Toggle buttons text & active highlight */
-  button:contains("Login"), button:contains("Sign up"),
-  button:contains("Sign In"), a:contains("Login"), a:contains("Sign up") {
-    border-radius: 9999px !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    padding: 8px 16px !important;
-    box-shadow: none !important;
-  }
-  /* Active tab button */
-  button[class*="active"], button[aria-selected="true"],
-  button[class*="bg-white"], button:focus {
-    background: rgba(255, 255, 255, 0.22) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  }
-  /* Inactive tab button */
-  button:not([class*="active"]):not([aria-selected="true"]) {
-    background: transparent !important;
-    color: #94a3b8 !important;
-    border: none !important;
-  }
-
-  /* 3. Password Input Wrapper & Eye Icon (Remove white patch) */
-  div:has(> input[type="password"]),
-  div:has(> input[name*="password"]) {
-    background: rgba(18, 24, 38, 0.65) !important;
-    border: 1px solid rgba(255, 255, 255, 0.16) !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-  }
-  div:has(> input[type="password"]) input,
-  div:has(> input[name*="password"]) input {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    color: #ffffff !important;
-  }
-  div:has(> input[type="password"]) button,
-  div:has(> input[name*="password"]) button,
-  div:has(> input[type="password"]) span,
-  div:has(> input[name*="password"]) span {
-    background: transparent !important;
-    border: none !important;
-    color: #94a3b8 !important;
-  }
-
-  /* 4. Bottom Right Black Circle eradicate */
+  /* 7. REMOVE BLACK FLOATING BUTTON / WIDGET ENTIRELY */
   div[style*="border-radius: 50%"],
   div[class*="bottom-"][class*="right-"],
   div[style*="z-index: 9999"], div[style*="z-index:9999"],
-  #ai-chat-btn, .ai-floating-btn {
+  #ai-chat-btn, .ai-floating-btn, [class*="assistant-bubble"] {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
