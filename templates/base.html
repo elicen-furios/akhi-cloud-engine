@@ -518,6 +518,53 @@
     }
 
     </style>
+
+<style id="anime-theme-styles">
+  body {
+    background: linear-gradient(rgba(10, 15, 29, 0.88), rgba(10, 15, 29, 0.92)),
+                url("{{ url_for('static', filename='images/main-bg.jpg') }}") no-repeat center center fixed !important;
+    background-size: cover !important;
+  }
+  .anime-hero-card {
+    width: 100%;
+    max-width: 440px;
+    margin: 14px auto 22px auto;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    border: 3px solid rgba(255, 255, 255, 0.85);
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .anime-hero-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  /* Login Video Styling */
+  .login-video-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+  }
+  .login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 15, 29, 0.75);
+    z-index: -1;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
