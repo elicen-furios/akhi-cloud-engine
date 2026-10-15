@@ -2380,3 +2380,33 @@ def generate_script():
             return jsonify({"script": generated_text})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/ai-chat", methods=["POST"])
+@app.route("/api/generate-script", methods=["POST"])
+def ai_assistant_route():
+    import urllib.request, json
+    key = os.environ.get("GEMINI_API_KEY", "")
+    if not key:
+        return jsonify({"error": "GEMINI_API_KEY render me missing hai"}), 400
+    
+    body = request.get_json(silent=True) or {}
+    user_prompt = body.get("prompt") or body.get("message") or "Hello"
+    
+    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
+    payload = {
+        "contents": [{"parts": [{"text": user_prompt}]}]
+    }
+    
+    try:
+        req = urllib.request.Request(
+            endpoint, 
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            reply = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+            return jsonify({"reply": reply, "script": reply, "success": True})
+    except Exception as e:
+        return jsonify({"error": str(e), "success": False}), 500

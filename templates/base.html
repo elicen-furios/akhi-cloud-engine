@@ -565,6 +565,33 @@
   }
 </style>
 
+
+<style id="cleanup-overrides">
+  [class*="chat-widget"], [id*="chat-widget"], 
+  [class*="ai-assistant"], [id*="ai-assistant"],
+  button[class*="fixed"], div[class*="fixed"][style*="bottom"] {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  /* Force dark theme & show background image */
+  html, body {
+    background: linear-gradient(rgba(10, 15, 29, 0.85), rgba(10, 15, 29, 0.90)),
+                url("/static/images/main-bg.jpg") no-repeat center center fixed !important;
+    background-size: cover !important;
+    color: #f1f5f9 !important;
+  }
+  /* Remove blinding white containers */
+  .bg-white, .bg-gray-50, .bg-slate-50, [class*="bg-white"] {
+    background-color: rgba(15, 23, 42, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #f8fafc !important;
+    backdrop-filter: blur(12px) !important;
+  }
+  h1, h2, h3, h4, p, span, div {
+    color: inherit;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
