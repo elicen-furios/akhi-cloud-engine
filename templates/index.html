@@ -171,30 +171,6 @@
         }
     </style>
 
-<style id="theme-and-hide-widget">
-  /* Background Image Clean Fix */
-  body {
-    background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.85)), url('/static/main-bg.jpg') !important;
-    background-size: cover !important;
-    background-position: center !important;
-    background-attachment: fixed !important;
-    background-repeat: no-repeat !important;
-  }
-
-  /* Black floating button / AI Assistant icon remove */
-  div[class*="assistant"], button[class*="assistant"],
-  div[id*="assistant"], button[id*="assistant"],
-  img[alt*="Assistant"], [class*="ai-btn"], [id*="ai-btn"],
-  .chat-widget, #chat-widget, div[style*="border-radius: 50%"],
-  div[style*="z-index: 9999"], div[style*="z-index:9999"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-  }
-</style>
 
 
 
@@ -221,59 +197,29 @@
 
 
 
-<style id="akhil-permanent-fix">
-  /* Force 100% viewport width, zero side squeeze */
+
+
+
+
+<style id="layout-restore-lock">
   html, body {
-    width: 100% !important;
+    width: 100vw !important;
     max-width: 100vw !important;
     overflow-x: hidden !important;
     margin: 0 !important;
     padding: 0 !important;
-    background: #080c14 url('/static/main-bg.jpg') no-repeat center center fixed !important;
-    background-size: cover !important;
+    position: relative !important;
   }
-
-  /* Right-side AI Drawer / Panel ko completely hide karo */
-  [class*="drawer"], [id*="drawer"],
-  [class*="assistant"], [id*="assistant"],
-  div[class*="fixed"][class*="right-0"],
-  div:has(> [placeholder*="Type pro"]),
-  div:has(> * :contains("AI Assistant")),
-  .ai-btn, #ai-btn, [class*="chat-"] {
+  
+  /* Har tarah ka floating widget ya drawer hide */
+  [id*="ai-"], [class*="ai-"], div:has(> button[onclick*="sendAIMessage"]),
+  div[style*="z-index: 99999"], div[style*="z-index:99999"],
+  div[style*="border-radius: 50%"][class*="bottom-"] {
     display: none !important;
     visibility: hidden !important;
+    pointer-events: none !important;
     width: 0 !important;
     height: 0 !important;
-    position: absolute !important;
-    left: -99999px !important;
-    pointer-events: none !important;
-  }
-
-  /* Top Navbar / Header fix (No white patch) */
-  header, nav, [class*="sticky top-0"], [class*="fixed top-0"] {
-    background: rgba(11, 15, 25, 0.85) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    width: 100% !important;
-  }
-  header div, nav div, header span, nav span, header button, nav button {
-    background: transparent !important;
-    color: #ffffff !important;
-  }
-  header a, nav a, header button, nav button {
-    background: rgba(255, 255, 255, 0.12) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 9999px !important;
-    color: #ffffff !important;
-  }
-
-  /* Main container full center */
-  main, .container, section {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    box-sizing: border-box !important;
   }
 </style>
 

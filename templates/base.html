@@ -1,3 +1,26 @@
+
+<style id="layout-restore-lock">
+  html, body {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+  }
+  
+  /* Har tarah ka floating widget ya drawer hide */
+  [id*="ai-"], [class*="ai-"], div:has(> button[onclick*="sendAIMessage"]),
+  div[style*="z-index: 99999"], div[style*="z-index:99999"],
+  div[style*="border-radius: 50%"][class*="bottom-"] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+</style>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -406,9 +429,7 @@
 
 
 
-            <div>
-                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
-            </div>
+            
         </div>
         <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
     </div>
@@ -417,11 +438,7 @@
     </div>
 
     <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
-        <button onclick="sendAIMessage()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
-        </button>
+        
     </div>
 </div>
 
