@@ -170,59 +170,6 @@
             margin-top: 12px; font-weight: 500;
         }
     </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<style id="layout-restore-lock">
-  html, body {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative !important;
-  }
-  
-  /* Har tarah ka floating widget ya drawer hide */
-  [id*="ai-"], [class*="ai-"], div:has(> button[onclick*="sendAIMessage"]),
-  div[style*="z-index: 99999"], div[style*="z-index:99999"],
-  div[style*="border-radius: 50%"][class*="bottom-"] {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-  }
-</style>
-
 </head>
 <body>
 
@@ -231,7 +178,7 @@
         <p>Private telemetry services and multi-tenant database router online.</p>
     </div>
 
-    
+    <!-- Floating Workspace Icon Button -->
     <button id="wsFloatingLauncher" onclick="openWsHub()" title="Open Cloud Workspace">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
@@ -241,7 +188,7 @@
         </svg>
     </button>
 
-    
+    <!-- Workspace Modal -->
     <div id="wsModalHub" class="ws-modal-backdrop">
         <div class="ws-card">
             
@@ -256,7 +203,7 @@
                 <button class="ws-close-icon" onclick="closeWsHub()">&times;</button>
             </div>
 
-            
+            <!-- Profile Edit Sub-Panel -->
             <div id="wsProfileEditorBox" class="ws-edit-pane" style="display: none;">
                 <div class="ws-input-field">
                     <label>Admin Display Name</label>
@@ -272,7 +219,7 @@
                 </div>
             </div>
 
-            
+            <!-- STAGE 1: API Security Access Gate -->
             <div id="wsGateView">
                 <p class="ws-desc">Authentication Required: Enter your registered API Key to unlock database provisioning.</p>
                 <div class="ws-input-field">
@@ -283,7 +230,7 @@
                 <div id="wsKeyError" class="ws-error-text"></div>
             </div>
 
-            
+            <!-- STAGE 2: Database Configuration & URL Generator -->
             <div id="wsConfigView" style="display: none;">
                 <p class="ws-desc">Manage your workspace configuration and generate your isolated telemetry URL.</p>
 
@@ -297,7 +244,7 @@
                     <input type="url" id="wsDomainInput" placeholder="https://mywebsite.com">
                 </div>
 
-                
+                <!-- Optional Credentials Lock -->
                 <div class="ws-checkbox-wrapper">
                     <input type="checkbox" id="wsCredsCheck" onchange="toggleCredentialInputs()">
                     <label for="wsCredsCheck">Protect portal with personal credentials (Username / Password)</label>
@@ -316,7 +263,7 @@
 
                 <button class="ws-btn ws-btn-generate" onclick="buildDatabaseLink()">Generate Your Database URL</button>
 
-                
+                <!-- Output Box -->
                 <div id="wsResultBox" class="ws-result-pane" style="display: none;">
                     <label>Generated Workspace Portal Link:</label>
                     <div class="ws-link-box">

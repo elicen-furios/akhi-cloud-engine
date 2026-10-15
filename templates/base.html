@@ -1,26 +1,3 @@
-
-<style id="layout-restore-lock">
-  html, body {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative !important;
-  }
-  
-  /* Har tarah ka floating widget ya drawer hide */
-  [id*="ai-"], [class*="ai-"], div:has(> button[onclick*="sendAIMessage"]),
-  div[style*="z-index: 99999"], div[style*="z-index:99999"],
-  div[style*="border-radius: 50%"][class*="bottom-"] {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
-  }
-</style>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -423,26 +400,591 @@
         height: 100%;
         object-fit: cover;
     }
-    
+    #ai-chat-window {
+        display: none;
+        position: fixed;
+        bottom: 96px;
+        right: 24px;
+        width: 360px;
+        max-width: calc(100vw - 32px);
+        height: 500px;
+        background: #ffffff;
+        border: 1px solid #e4e4e7;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+        z-index: 99999;
+        flex-direction: column;
+        overflow: hidden;
+        animation: chatSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes chatSlideUp {
+        0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .chat-header {
+        padding: 14px 18px;
+        background: #18181b;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .chat-header-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .chat-avatar-mini {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 1.5px solid #10b981;
+    }
+    .chat-avatar-mini img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .chat-body-messages {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: #fafafa;
+    }
+    .chat-msg {
+        max-width: 82%;
+        padding: 10px 14px;
+        border-radius: 14px;
+        font-size: 0.86rem;
+        line-height: 1.45;
+        word-break: break-word;
+    }
+    .chat-msg-bot {
+        align-self: flex-start;
+        background: #ffffff;
+        color: #09090b;
+        border: 1px solid #e4e4e7;
+        border-bottom-left-radius: 4px;
+    }
+    .chat-msg-user {
+        align-self: flex-end;
+        background: #18181b;
+        color: #ffffff;
+        border-bottom-right-radius: 4px;
+    }
+    .chat-msg-alert {
+        align-self: center;
+        background: #052e16;
+        color: #4ade80;
+        border: 1px solid #16a34a;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-align: center;
+        padding: 8px 16px;
+        border-radius: 20px;
+        box-shadow: 0 0 15px rgba(34, 197, 94, 0.35);
+    }
+    .chat-footer {
+        padding: 12px;
+        background: #ffffff;
+        border-top: 1px solid #e4e4e7;
+        display: flex;
+        gap: 8px;
+    }
+    .chat-input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1px solid #e4e4e7;
+        border-radius: 10px;
+        font-size: 0.86rem;
+        outline: none;
+    }
+    .chat-input:focus { border-color: #18181b; }
+    .chat-send-btn {
+        background: #18181b;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 0 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    </style>
+
+<style id="anime-theme-styles">
+  body {
+    background: linear-gradient(rgba(10, 15, 29, 0.88), rgba(10, 15, 29, 0.92)),
+                url("{{ url_for('static', filename='images/main-bg.jpg') }}") no-repeat center center fixed !important;
+    background-size: cover !important;
+  }
+  .anime-hero-card {
+    width: 100%;
+    max-width: 440px;
+    margin: 14px auto 22px auto;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    border: 3px solid rgba(255, 255, 255, 0.85);
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .anime-hero-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  /* Login Video Styling */
+  .login-video-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+  }
+  .login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 15, 29, 0.75);
+    z-index: -1;
+  }
 </style>
 
+</head>
+<body>
+    <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <div class="brand-avatar">
+                <img src="/image.png" onerror="this.onerror=null; this.src='/logo.png';" alt="Logo">
+            </div>
+            <div class="brand-text">
+                <h2>AKHIL DEV</h2>
+                <p>Developer Platform</p>
+            </div>
+        </div>
+
+        <ul class="nav-list">
+            <li class="nav-section-title">CORE PLATFORM</li>
+            <li><a href="/database-control-center" class="nav-item {{ 'active' if active_page == 'database-control' else '' }}"><span>Database Control Center</span></a></li>
+            <li><a href="/" class="nav-item {{ 'active' if active_page == 'home' else '' }}"><span>Home</span></a></li>
+            <li><a href="/api-keys" class="nav-item {{ 'active' if active_page == 'api-keys' else '' }}"><span>API Keys</span></a></li>
+            <li><a href="/sandbox" class="nav-item {{ 'active' if active_page == 'sandbox' else '' }}"><span>Transmission Console</span></a></li>
+            <li><a href="/media" class="nav-item {{ 'active' if active_page == 'media' else '' }}"><span>Media Vault</span></a></li>
+            <li class="nav-section-title">INTELLIGENCE SUITE</li>
+            <li><a href="/ai-studio" class="nav-item {{ 'active' if active_page == 'ai-studio' else '' }}"><span>Neural AI Studio</span></a></li>
+            <li><a href="/docs" class="nav-item {{ 'active' if active_page == 'docs' else '' }}"><span>Protocol Docs</span></a></li>
+
+            <li class="nav-section-title">NEURAL & AI ENGINES</li>
+                                    
+            <li class="nav-section-title">SYSTEM INFRASTRUCTURE</li>
+            <li><a href="/database" class="nav-item {{ 'active' if active_page == 'database' else '' }}"><span>Database Engine</span></a></li>
+            <li><a href="/system" class="nav-item {{ 'active' if active_page == 'system' else '' }}"><span>Telemetry Status</span></a></li>
+            <li><a href="/login" class="nav-item {{ 'active' if active_page == 'login' else '' }}"><span>Identity Gate</span></a></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="header-bar">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+                <div style="font-weight:700; font-size:0.95rem;">AKHIL DEV PLATFORM</div>
+            </div>
+
+            <a href="/login" class="user-badge" id="header-user-btn">
+                
+                <span id="user-name-tag">Sign In</span>
+            </a>
+        </header>
+
+        <div class="content-body">
+            {{ content }}
+        </div>
+    </div>
+
+    <!-- Centered SaaS Error Modal -->
+    <div id="saas-error-modal">
+        <div class="saas-error-card">
+            <div class="saas-error-icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <div class="saas-error-title" id="saas-error-title-text">Something went wrong</div>
+            <p class="saas-error-desc" id="saas-error-desc-text">We encountered an unexpected issue while processing your request. Please try again.</p>
+            <button class="saas-btn-retry" onclick="closeSaasError()">Try Again</button>
+        </div>
+    </div>
+
+    <!-- Done Modal -->
+    <div id="done-screen">
+        <div class="done-box">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <h2 style="font-size:1.3rem; font-weight:800;">Done</h2>
+            <p id="done-user-label" style="font-size:0.85rem; color:#71717a;">Authenticated successfully</p>
+        </div>
+    </div>
+
+    <!-- Global Helper Scripts -->
+    <script>
+        window.showSaasError = function(customMsg, customTitle) {
+            const modal = document.getElementById("saas-error-modal");
+            const titleElem = document.getElementById("saas-error-title-text");
+            const descElem = document.getElementById("saas-error-desc-text");
+            if (customTitle && titleElem) titleElem.innerText = customTitle;
+            if (customMsg && descElem) descElem.innerText = customMsg;
+            if (modal) modal.style.display = "flex";
+        };
+        window.closeSaasError = function() {
+            const modal = document.getElementById("saas-error-modal");
+            if (modal) modal.style.display = "none";
+        };
+        window.alert = function(msg) {
+            window.showSaasError(msg);
+        };
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("overlay").classList.toggle("active");
+        }
+    </script>
+
+    <!-- Firebase Authentication SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signInWithPopup,
+            signInWithRedirect,
+            getRedirectResult,
+            GoogleAuthProvider, 
+            GithubAuthProvider,
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBt_zPZndgJh82AK8tXWvOyN8ec3dY31KQ",
+            authDomain: "free-api-web-2a7bc.firebaseapp.com",
+            projectId: "free-api-web-2a7bc",
+            storageBucket: "free-api-web-2a7bc.firebasestorage.app",
+            messagingSenderId: "118488816924",
+            appId: "1:118488816924:web:0d09754cf52cab3e00eed9",
+            measurementId: "G-HFPR9X4EWK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        window.auth = auth;
+        window.currentFirebaseUser = null;
+
+        async function syncSessionWithBackend(user) {
+            if (!user) return;
+            try {
+                const token = await user.getIdToken();
+                await fetch('/api/auth/session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: token,
+                        email: user.email || '',
+                        name: user.displayName || user.email?.split('@')[0] || 'User'
+                    })
+                });
+            } catch(e) { console.error('Session sync error:', e); }
+        }
+
+        function showDoneAndRedirect(name) {
+            const screen = document.getElementById("done-screen");
+            const lbl = document.getElementById("done-user-label");
+            if (lbl) lbl.innerText = "Welcome, " + name;
+            if (screen) {
+                screen.style.display = "flex";
+                setTimeout(() => {
+                    screen.style.display = "none";
+                    window.location.href = "/api-keys";
+                }, 1400);
+            }
+        }
+
+        getRedirectResult(auth).then(res => {
+            if (res && res.user) {
+                const name = res.user.displayName || res.user.email?.split("@")[0] || "User";
+                syncSessionWithBackend(res.user);
+                showDoneAndRedirect(name);
+            }
+        }).catch(err => {
+            window.showSaasError(err.message, "Authentication Failed");
+        });
+
+        onAuthStateChanged(auth, user => {
+            window.currentFirebaseUser = user;
+            const tag = document.getElementById("user-name-tag");
+            const init = document.getElementById("user-initial");
+            const loginCard = document.getElementById("login-box-card");
+            const loggedCard = document.getElementById("logged-in-profile-card");
+            const profileDisplay = document.getElementById("profile-display-info");
+
+            if (user) {
+                syncSessionWithBackend(user);
+                const name = user.displayName || user.email?.split("@")[0] || "User";
+                const firstChar = name.trim().charAt(0).toUpperCase();
+                if (tag) tag.innerText = name.toUpperCase();
+                if (init) {
+                    init.innerText = firstChar;
+                    init.style.display = "flex";
+                }
+                if (loginCard) loginCard.style.display = "none";
+                if (loggedCard) {
+                    loggedCard.style.display = "block";
+                    if (profileDisplay) profileDisplay.innerText = user.email || user.phoneNumber || name;
+                }
+            } else {
+                if (tag) tag.innerText = "Sign In";
+                if (init) {
+                    init.innerText = "";
+                    init.style.display = "none";
+                }
+                if (loginCard) loginCard.style.display = "block";
+                if (loggedCard) loggedCard.style.display = "none";
+            }
+        });
+
+        window.loginGoogle = async () => {
+            const prov = new GoogleAuthProvider();
+            prov.setCustomParameters({ prompt: "select_account" });
+            try {
+                const res = await signInWithPopup(auth, prov);
+                if (res && res.user) {
+                    const name = res.user.displayName || res.user.email?.split("@")[0] || "User";
+                    await syncSessionWithBackend(res.user);
+                    showDoneAndRedirect(name);
+                }
+            } catch(e) {
+                if (e.code === "auth/popup-blocked" || e.code === "auth/cancelled-popup-request") {
+                    await signInWithRedirect(auth, prov);
+                } else {
+                    window.showSaasError("Google sign-in could not be completed: " + e.message);
+                }
+            }
+        };
+
+        window.loginGithub = async () => {
+            const prov = new GithubAuthProvider();
+            try {
+                const res = await signInWithPopup(auth, prov);
+                if (res && res.user) {
+                    const name = res.user.displayName || "User";
+                    await syncSessionWithBackend(res.user);
+                    showDoneAndRedirect(name);
+                }
+            } catch(e) {
+                await signInWithRedirect(auth, prov);
+            }
+        };
+
+        window.signOutAccount = async () => {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            await signOut(auth);
+            window.location.reload();
+        };
+    </script>
+
+    <!-- Premium Centered Confirmation Modal -->
+    <div id="saas-confirm-modal" style="display:none; position:fixed; inset:0; background:rgba(9, 9, 11, 0.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:1000000; align-items:center; justify-content:center; padding:20px;">
+        <div class="saas-error-card" style="max-width:400px; text-align:center;">
+            <div class="saas-error-icon-box" style="background:#fef2f2; border:1px solid #fee2e2; color:#ef4444;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+            </div>
+            <div class="saas-error-title" id="confirm-modal-title">Revoke Pass Token</div>
+            <p class="saas-error-desc" id="confirm-modal-desc">Are you sure you want to permanently revoke this token? Applications using it will immediately lose API clearance.</p>
+            <div style="display:flex; gap:10px; width:100%; margin-top:6px;">
+                <button type="button" class="btn-secondary" style="flex:1; justify-content:center; padding:11px; border-radius:10px;" onclick="closeSaasConfirm(false)">Cancel</button>
+                <button type="button" class="btn-primary" id="confirm-modal-action-btn" style="flex:1; justify-content:center; padding:11px; border-radius:10px; background:#ef4444; border-color:#ef4444;" onclick="closeSaasConfirm(true)">Revoke</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let _confirmResolve = null;
+        window.showSaasConfirm = function(title, desc) {
+            const modal = document.getElementById("saas-confirm-modal");
+            if (title) document.getElementById("confirm-modal-title").innerText = title;
+            if (desc) document.getElementById("confirm-modal-desc").innerText = desc;
+            modal.style.display = "flex";
+            return new Promise((resolve) => {
+                _confirmResolve = resolve;
+            });
+        };
+        window.closeSaasConfirm = function(confirmed) {
+            document.getElementById("saas-confirm-modal").style.display = "none";
+            if (_confirmResolve) {
+                _confirmResolve(confirmed);
+                _confirmResolve = null;
+            }
+        };
+    </script>
+
+
+    <!-- Audio element for bot.mp3 -->
+    <audio id="bot-audio" preload="auto" src="/bot.mp3"></audio>
+
+    <!-- AI Girl Chatbot Launcher -->
+    <div id="ai-chat-launcher" onclick="toggleAiChat()" title="Talk with AI Assistant">
+        <img src="?auto=format&fit=crop&w=200&q=80" alt="AI Girl Assistant">
+    </div>
+
+    <!-- AI Chatbot Box -->
+    
 
 
 
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- SLEEK BLACK AI ASSISTANT -->
+<style>
+#ai-float-bubble {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    background: #09090b;
+    color: #ffffff;
+    border: 1px solid #27272a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    z-index: 99998;
+    user-select: none;
+}
+#ai-chat-window {
+    display: none;
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    width: 320px;
+    max-width: calc(100vw - 36px);
+    height: 440px;
+    background: #09090b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    box-shadow: 0 10px 32px rgba(0,0,0,0.6);
+    z-index: 99999;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
+.ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
+.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
+</style>
+
+<div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
+
+<div id="ai-chat-window">
+    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:none;">AI</div>
+            <div>
+                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
+                <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
+            </div>
         </div>
         <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
     </div>
 
-    
+    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
+        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
     </div>
 
     <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
-        
+        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendAIMessage();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
+        <button onclick="sendAIMessage()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+        </button>
     </div>
 </div>
 
+<script>
+async function sendAIMessage() {
+    const inp = document.getElementById('ai-chat-input');
+    const txt = inp.value.trim();
+    if (!txt) return;
 
+    const box = document.getElementById('ai-chat-messages');
+    const uDiv = document.createElement('div');
+    uDiv.className = 'ai-msg ai-msg-user';
+    uDiv.innerText = txt;
+    box.appendChild(uDiv);
+    inp.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    const lDiv = document.createElement('div');
+    lDiv.className = 'ai-msg ai-msg-bot';
+    lDiv.innerText = 'Typing...';
+    box.appendChild(lDiv);
+    box.scrollTop = box.scrollHeight;
+
+    try {
+        const res = await fetch('/api/assistant-chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: txt})
+        });
+        const d = await res.json();
+        lDiv.innerText = d.reply || 'No response';
+    } catch(err) {
+        lDiv.innerText = 'Error: ' + err.message;
+    }
+    box.scrollTop = box.scrollHeight;
+}
+</script>
 
 
 <div id="wsModalHub" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(5,8,16,0.88); backdrop-filter:blur(8px); z-index:99999; align-items:center; justify-content:center;">
@@ -621,7 +1163,7 @@
 </script>
 
 
-
+<!-- Dark Floating Anime Voice Dropdown like Photo 1 -->
 <style>
 #dark-voice-popover {
     display: none;
