@@ -128,7 +128,7 @@ def page_home():
         <h1 style="font-size: clamp(2rem, 5vw, 3.2rem); font-weight:800; letter-spacing:-1px; line-height:1.2; margin-bottom:16px;">
             High-Performance API Infrastructure
         </h1>
-        <p style="font-size:1.05rem; color:#52525b; max-width:600px; margin: 0 auto 30px; line-height:1.6;">
+        <p style="font-size:1.05rem; color:#cbd5e1; max-width:600px; margin: 0 auto 30px; line-height:1.6;">
             Cryptographic access management, persistent SQLite storage, and production-ready telemetry.
         </p>
         <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
@@ -140,15 +140,15 @@ def page_home():
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
         <div class="card" style="margin-bottom:0;">
             <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:8px;">Instant Access Tokens</h3>
-            <p style="color:#71717a; font-size:0.85rem; line-height:1.5;">Authenticate external backend services with cryptographically unique tokens.</p>
+            <p style="color:#94a3b8; font-size:0.85rem; line-height:1.5;">Authenticate external backend services with cryptographically unique tokens.</p>
         </div>
         <div class="card" style="margin-bottom:0;">
             <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:8px;">Live Telemetry & Logs</h3>
-            <p style="color:#71717a; font-size:0.85rem; line-height:1.5;">Continuous health monitoring and persistent ACID-compliant SQLite records.</p>
+            <p style="color:#94a3b8; font-size:0.85rem; line-height:1.5;">Continuous health monitoring and persistent ACID-compliant SQLite records.</p>
         </div>
         <div class="card" style="margin-bottom:0;">
             <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:8px;">Strict Identity Gate</h3>
-            <p style="color:#71717a; font-size:0.85rem; line-height:1.5;">Zero unauthorized pass generation without verified Firebase authentication.</p>
+            <p style="color:#94a3b8; font-size:0.85rem; line-height:1.5;">Zero unauthorized pass generation without verified Firebase authentication.</p>
         </div>
     </div>
     """
@@ -162,7 +162,7 @@ def page_login():
             
             <!-- Brand Logo at top -->
             <div style="text-align:center; margin-bottom: 20px;">
-                <div style="width: 58px; height: 58px; border-radius: 16px; margin: 0 auto 14px; overflow: hidden; border: 1px solid #e4e4e7; background: #fafafa; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 58px; height: 58px; border-radius: 16px; margin: 0 auto 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
                     <img src="/logo.png" onerror="this.onerror=null; this.src='/image.png';" alt="Logo" style="width: 100%; height: 100%; object-fit: cover; display: block;">
                 </div>
                 <h2 style="font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; color:#09090b; margin-bottom: 4px;">Developer Gate</h2>
@@ -181,7 +181,7 @@ def page_login():
                 <input type="text" id="login-identifier" class="input-text" placeholder="Enter username or email">
                 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">PASSWORD</label>
-                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 8px;">
+                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;">
                     <input type="password" id="login-password" style="width: 100%; border: none; outline: none; padding: 12px 14px; font-size: 0.9rem; background: transparent;" placeholder="Enter password">
                     <button type="button" onclick="togglePassVisibility('login-password', this)" style="background: transparent; border: none; padding: 10px 14px; cursor: pointer; color: #71717a; display: flex; align-items: center; justify-content: center; outline: none;">
                         <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -201,7 +201,7 @@ def page_login():
                 <input type="email" id="reg-email" class="input-text" placeholder="Enter email address">
                 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">PASSWORD</label>
-                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 8px;">
+                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;">
                     <input type="password" id="reg-pass" style="width: 100%; border: none; outline: none; padding: 12px 14px; font-size: 0.9rem; background: transparent;" placeholder="Create password">
                     <button type="button" onclick="togglePassVisibility('reg-pass', this)" style="background: transparent; border: none; padding: 10px 14px; cursor: pointer; color: #71717a; display: flex; align-items: center; justify-content: center; outline: none;">
                         <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -210,7 +210,7 @@ def page_login():
                 </div>
 
                 <label style="font-size: 0.76rem; font-weight: 600; color: #52525b; display: block; margin-bottom: 6px;">CONFIRM PASSWORD</label>
-                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 8px;">
+                <div style="display: flex; align-items: center; position: relative; margin-bottom: 14px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;">
                     <input type="password" id="reg-confirm" style="width: 100%; border: none; outline: none; padding: 12px 14px; font-size: 0.9rem; background: transparent;" placeholder="Confirm password">
                     <button type="button" onclick="togglePassVisibility('reg-confirm', this)" style="background: transparent; border: none; padding: 10px 14px; cursor: pointer; color: #71717a; display: flex; align-items: center; justify-content: center; outline: none;">
                         <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -246,7 +246,7 @@ def page_login():
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <h2 style="font-size:1.35rem; font-weight:700; margin-bottom:6px;">Active Developer Session</h2>
-            <p id="profile-display-info" style="font-family:var(--font-mono); font-size:0.86rem; color:#52525b; margin-bottom:24px;"></p>
+            <p id="profile-display-info" style="font-family:var(--font-mono); font-size:0.86rem; color:#cbd5e1; margin-bottom:24px;"></p>
             <div style="display:flex; gap:12px; justify-content:center;">
                 <a href="/api-keys" class="btn-primary">Access Vault</a>
                 <button class="btn-secondary" onclick="signOutAccount()">Sign Out</button>
@@ -299,10 +299,10 @@ def page_api_keys():
     content = """
     <div class="card">
         <h2 style="font-size:1.3rem; font-weight:700; margin-bottom:8px;">API Access Vault</h2>
-        <p style="color:#71717a; font-size:0.88rem; margin-bottom:24px;">Issue and manage production authorization tokens for client applications.</p>
+        <p style="color:#94a3b8; font-size:0.88rem; margin-bottom:24px;">Issue and manage production authorization tokens for client applications.</p>
 
         <div style="max-width:500px;">
-            <label style="font-size:0.75rem; font-weight:600; color:#52525b; display:block; margin-bottom:6px;">APPLICATION IDENTIFIER</label>
+            <label style="font-size:0.75rem; font-weight:600; color:#cbd5e1; display:block; margin-bottom:6px;">APPLICATION IDENTIFIER</label>
             <input type="text" id="app-key-name" class="input-text" value="production_service">
             <button class="btn-primary" id="btn-forge-key" onclick="issueDevKey()">Generate Pass Token</button>
 
@@ -319,7 +319,7 @@ def page_api_keys():
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <div>
                 <h3 style="font-size:1.1rem; font-weight:700;">Active Tokens</h3>
-                <p style="font-size:0.82rem; color:#71717a;">Tokens currently authorized to interact with your services.</p>
+                <p style="font-size:0.82rem; color:#94a3b8;">Tokens currently authorized to interact with your services.</p>
             </div>
             <button class="btn-secondary" style="padding:6px 12px; font-size:0.8rem;" onclick="loadUserKeys()">Refresh</button>
         </div>
@@ -346,7 +346,7 @@ def page_api_keys():
             try {
                 const res = await fetch("/api/admin/keys/list");
                 if (res.status === 403) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#71717a; padding:18px;">Sign in at Identity Gate to view active keys.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:18px;">Sign in at Identity Gate to view active keys.</td></tr>';
                     return;
                 }
                 const data = await res.json();
@@ -355,7 +355,7 @@ def page_api_keys():
                         <tr>
                             <td style="font-weight:600;">${k.app_name}</td>
                             <td><code style="font-family:var(--font-mono); font-size:0.8rem; background:#f4f4f5; padding:3px 6px; border-radius:4px;">${k.key.substring(0, 14)}...</code></td>
-                            <td style="color:#71717a; font-size:0.8rem;">${k.created_at}</td>
+                            <td style="color:#94a3b8; font-size:0.8rem;">${k.created_at}</td>
                             <td>
                                 <button class="btn-secondary" style="padding:4px 8px; font-size:0.75rem; color:#ef4444; border-color:#fecaca;" onclick="revokeKey(${k.id})">Revoke</button>
                             </td>
@@ -487,7 +487,7 @@ def page_docs():
     content = """
     <div class="card">
         <h2 style="font-size:1.3rem; font-weight:700; margin-bottom:10px;">Protocol Documentation</h2>
-        <p style="color:#52525b; font-size:0.88rem; line-height:1.6;">Include your pass token in the Bearer authorization header:</p>
+        <p style="color:#cbd5e1; font-size:0.88rem; line-height:1.6;">Include your pass token in the Bearer authorization header:</p>
         <pre class="code-box">Authorization: Bearer akhi_live_YOUR_TOKEN_HERE</pre>
     </div>
     """
@@ -709,7 +709,7 @@ div[style*="border-radius: 50%"][style*="position: fixed"] {
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </div>
             <h2 style="font-size:1.45rem; font-weight:800; letter-spacing:-0.5px;">ADMIN PANEL</h2>
-            <p style="font-size:0.82rem; color:#71717a; margin-top:4px;">Restricted Clearance Required</p>
+            <p style="font-size:0.82rem; color:#94a3b8; margin-top:4px;">Restricted Clearance Required</p>
         </div>
 
         <div id="error-box" class="error-banner"></div>
@@ -888,24 +888,24 @@ div[style*="border-radius: 50%"][style*="position: fixed"] {
                 <h1 style="font-size:1.8rem; font-weight:800; margin-top:4px;">Master Control Center</h1>
             </div>
             <div style="display:flex; gap:12px; align-items:center;">
-                <span style="font-size:0.85rem; color:#71717a;">Logged in: <b style="color:#fff;">AKHIL</b></span>
+                <span style="font-size:0.85rem; color:#94a3b8;">Logged in: <b style="color:#fff;">AKHIL</b></span>
                 <button class="btn-exit" onclick="adminLogout()">Sign Out</button>
             </div>
         </div>
 
         <div class="metrics-grid">
             <div class="metric-box">
-                <div style="font-size:0.72rem; color:#71717a; text-transform:uppercase; font-weight:700;">Engine Storage</div>
+                <div style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; font-weight:700;">Engine Storage</div>
                 <div style="font-size:1.6rem; font-weight:800; color:#10b981; margin-top:4px;">SQLite3</div>
-                <div style="font-size:0.75rem; color:#71717a;">ACID Compliant</div>
+                <div style="font-size:0.75rem; color:#94a3b8;">ACID Compliant</div>
             </div>
             <div class="metric-box">
-                <div style="font-size:0.72rem; color:#71717a; text-transform:uppercase; font-weight:700;">Rate Limiter</div>
+                <div style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; font-weight:700;">Rate Limiter</div>
                 <div style="font-size:1.6rem; font-weight:800; color:#38bdf8; margin-top:4px;">Active</div>
-                <div style="font-size:0.75rem; color:#71717a;">Anti-Spam Armed</div>
+                <div style="font-size:0.75rem; color:#94a3b8;">Anti-Spam Armed</div>
             </div>
             <div class="metric-box">
-                <div style="font-size:0.72rem; color:#71717a; text-transform:uppercase; font-weight:700;">Status</div>
+                <div style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; font-weight:700;">Status</div>
                 <div style="font-size:1.6rem; font-weight:800; color:#ffffff; margin-top:4px;">Operational</div>
                 <div style="font-size:0.75rem; color:#10b981;">Render Cloud Live</div>
             </div>
@@ -919,7 +919,7 @@ div[style*="border-radius: 50%"][style*="position: fixed"] {
                         <tr><th>ID</th><th>Owner</th><th>App Scope</th><th>Pass Token</th><th>Created</th></tr>
                     </thead>
                     <tbody id="keys-body">
-                        <tr><td colspan="5" style="text-align:center; padding:18px; color:#71717a;">Loading tokens...</td></tr>
+                        <tr><td colspan="5" style="text-align:center; padding:18px; color:#94a3b8;">Loading tokens...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -935,15 +935,15 @@ div[style*="border-radius: 50%"][style*="position: fixed"] {
                 if (d.status === "success" && d.keys.length > 0) {
                     tbody.innerHTML = d.keys.map(k => `
                         <tr>
-                            <td style="font-family:'JetBrains Mono'; color:#71717a;">#${k.id}</td>
+                            <td style="font-family:'JetBrains Mono'; color:#94a3b8;">#${k.id}</td>
                             <td style="font-weight:600; color:#fff;">${k.email || 'N/A'}</td>
                             <td>${k.app_name}</td>
                             <td><code style="font-family:'JetBrains Mono'; font-size:0.8rem; background:#181822; padding:3px 6px; border-radius:4px; border:1px solid #272735;">${k.key}</code></td>
-                            <td style="color:#71717a; font-size:0.8rem;">${k.created_at}</td>
+                            <td style="color:#94a3b8; font-size:0.8rem;">${k.created_at}</td>
                         </tr>
                     `).join("");
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:18px; color:#71717a;">No keys issued yet.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:18px; color:#94a3b8;">No keys issued yet.</td></tr>';
                 }
             } catch(e) {}
         }

@@ -596,10 +596,27 @@
 
 
 
-<style id="akhil-zero-white-final-lock">
-  /* 1. TOP NAVBAR / HEADER & HAMBURGER (Screenshots 2 & 3) */
-  header, nav, .navbar, .topbar,
-  div[class*="top-0"], header > div, nav > div {
+
+
+
+<style id="akhil-complete-glass-lock">
+  /* 1. Universal Body Background */
+  html, body {
+    background-color: #080c14 !important;
+    background-image: 
+      radial-gradient(circle at 10% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+      radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
+      linear-gradient(rgba(8, 12, 20, 0.82), rgba(8, 12, 20, 0.92)),
+      url('/static/main-bg.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* 2. Top Header / Navbar */
+  header, nav, .navbar, .topbar {
     background: rgba(10, 16, 28, 0.85) !important;
     background-color: rgba(10, 16, 28, 0.85) !important;
     backdrop-filter: blur(24px) !important;
@@ -609,95 +626,84 @@
   header *, nav *, .navbar *, .topbar * {
     color: #ffffff !important;
   }
-  header button, nav button, header a, nav a,
-  .topbar button, .topbar a {
+  header button, nav button, header a, nav a, .topbar button, .topbar a {
     background: rgba(255, 255, 255, 0.08) !important;
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
     color: #ffffff !important;
   }
 
-  /* 2. LOGIN / SIGNUP SWITCHER (Screenshot 2) */
-  div[class*="rounded-full"]:has(button),
-  div[class*="grid-cols-2"]:has(button),
-  div:has(> button:contains("Login")),
-  div:has(> a:contains("Login")) {
-    background: rgba(8, 12, 22, 0.85) !important;
-    background-color: rgba(8, 12, 22, 0.85) !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    border-radius: 9999px !important;
+  /* 3. HOME CARDS, LOGIN BOX & ALL CONTAINER PANELS */
+  .card, div.card, #login-box-card,
+  div[class*="rounded-3xl"], div[class*="rounded-2xl"], div[class*="rounded-xl"] {
+    background: rgba(15, 23, 42, 0.68) !important;
+    background-color: rgba(15, 23, 42, 0.68) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+    border-radius: 18px !important;
   }
-  div[class*="rounded-full"] button,
-  div[class*="rounded-full"] a,
-  div[class*="grid-cols-2"] button,
-  div[class*="grid-cols-2"] a {
-    background: transparent !important;
-    background-color: transparent !important;
-    color: #94a3b8 !important;
-    box-shadow: none !important;
-  }
-  div[class*="rounded-full"] button.active,
-  div[class*="rounded-full"] a.active,
-  div[class*="rounded-full"] button[class*="bg-white"],
-  div[class*="rounded-full"] a[class*="bg-white"],
-  div[class*="grid-cols-2"] button[class*="bg-white"] {
-    background: rgba(255, 255, 255, 0.18) !important;
-    background-color: rgba(255, 255, 255, 0.18) !important;
-    backdrop-filter: blur(12px) !important;
+  .card h3, .card h2, .card h1, .card strong {
     color: #ffffff !important;
-    border-radius: 9999px !important;
+    font-weight: 700 !important;
   }
-
-  /* 3. UNAUTHORIZED ACCESS MODAL & POPUPS (Screenshot 1) */
-  div:has(> h2:contains("Unauthorized")),
-  div:has(> * :contains("Unauthorized Access")),
-  div[id*="modal"], div[class*="modal"],
-  .modal-content, [role="dialog"] {
-    background: rgba(15, 23, 42, 0.85) !important;
-    background-color: rgba(15, 23, 42, 0.85) !important;
-    backdrop-filter: blur(28px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.28) !important;
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6) !important;
-    border-radius: 20px !important;
-  }
-  div:has(> * :contains("Unauthorized Access")) * {
-    color: #f1f5f9 !important;
-  }
-  div:has(> * :contains("Unauthorized Access")) p,
-  div:has(> * :contains("Unauthorized Access")) span {
+  .card p, .card span {
     color: #cbd5e1 !important;
   }
-  div:has(> * :contains("Unauthorized Access")) button,
-  div:has(> * :contains("Unauthorized Access")) a {
-    background: rgba(255, 255, 255, 0.12) !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+
+  /* 4. LEFT SIDEBAR DRAWER (100% Dark Acrylic + Visible Bright Text) */
+  aside.sidebar, #sidebar, .sidebar {
+    background: rgba(10, 16, 28, 0.96) !important;
+    background-color: rgba(10, 16, 28, 0.96) !important;
+    backdrop-filter: blur(28px) !important;
+    -webkit-backdrop-filter: blur(28px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.7) !important;
+  }
+  .brand-text h2 {
     color: #ffffff !important;
-    border-radius: 12px !important;
+  }
+  .brand-text p {
+    color: #38bdf8 !important;
+  }
+  .nav-section-title, li.nav-section-title {
+    color: #64748b !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+  }
+  .nav-item, a.nav-item {
+    color: #cbd5e1 !important;
+    background: transparent !important;
+  }
+  .nav-item span, a.nav-item span {
+    color: #cbd5e1 !important;
+  }
+  .nav-item:hover, a.nav-item:hover {
+    background: rgba(56, 189, 248, 0.15) !important;
+    color: #38bdf8 !important;
+  }
+  .nav-item.active, a.nav-item.active {
+    background: rgba(56, 189, 248, 0.2) !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  }
+  .nav-item.active span, a.nav-item.active span {
+    color: #ffffff !important;
+    font-weight: 600 !important;
   }
 
-  /* 4. VOICE MODEL PICKER BUTTON (Screenshot 3) */
-  #voice-picker-btn, [onclick*="openVoiceModal"] {
-    background: rgba(15, 23, 42, 0.8) !important;
-    background-color: rgba(15, 23, 42, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.16) !important;
-    color: #ffffff !important;
-  }
-  #voice-picker-btn *, [onclick*="openVoiceModal"] * {
-    color: #ffffff !important;
-  }
-
-  /* 5. UNIVERSAL SWEEP FOR ANY REMAINING WHITE */
-  .bg-white, [class*="bg-white"],
-  div[style*="background: #ffffff"], div[style*="background:#ffffff"],
-  div[style*="background: white"], div[style*="background:white"] {
-    background: rgba(17, 24, 39, 0.72) !important;
-    background-color: rgba(17, 24, 39, 0.72) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  /* 5. Floating AI Launcher Button Cleanout */
+  #ai-chat-launcher, #ai-float-bubble, #ai-chat-window,
+  div[onclick*="toggleAiChat"], div[onclick*="toggleAIChat"],
+  img[alt*="Assistant"], div[title*="AI Assistant"],
+  div[style*="border-radius: 50%"][class*="bottom-"],
+  div[style*="border-radius:50%"][class*="bottom-"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 </style>
 
