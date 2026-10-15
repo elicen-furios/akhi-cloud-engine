@@ -569,97 +569,112 @@
 
 
 
-<style id="akhil-master-glass-lock">
-  /* Background fix with local static image */
-  html, body {
-    background-color: #080c14 !important;
-    background-image: 
-      radial-gradient(circle at 10% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
-      radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
-      linear-gradient(rgba(8, 12, 20, 0.82), rgba(8, 12, 20, 0.92)),
-      url('/static/main-bg.jpg') !important;
-    background-size: cover !important;
-    background-position: center !important;
-    background-attachment: fixed !important;
-    background-repeat: no-repeat !important;
+
+
+
+<style id="akhil-master-frosted-glass">
+  /* 1. TOP NAVBAR / HEADER (Images 1, 2, 3, 4, 6) */
+  header, nav, .navbar, div:has(> button:has(svg)), div:has(> a[href*="login"]) {
+    background: rgba(11, 17, 32, 0.75) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  header *, nav *, .navbar * {
     color: #f1f5f9 !important;
   }
-
-  /* SIDEBAR MENU (Pure Dark Frosted Glass + Readable text) */
-  aside, [class*="sidebar"], [id*="sidebar"],
-  div[class*="fixed"][class*="left-0"] {
-    background: rgba(11, 15, 25, 0.96) !important;
-    backdrop-filter: blur(24px) !important;
-    -webkit-backdrop-filter: blur(24px) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
-  }
-  aside *, [class*="sidebar"] *, [id*="sidebar"] *, div[class*="fixed"][class*="left-0"] * {
-    color: #f1f5f9 !important;
-  }
-  aside a, [class*="sidebar"] a {
-    color: #cbd5e1 !important;
-  }
-  aside a:hover, [class*="sidebar"] a:hover {
-    background: rgba(56, 189, 248, 0.15) !important;
-    color: #38bdf8 !important;
+  a[href*="login"], a[href*="sign"], button:has(> span:contains("Sign In")), .sign-in-btn {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 9999px !important;
   }
 
-  /* DEVELOPER GATE & LOGIN CARDS (No white boxes) */
-  .card, div[class*="rounded-2xl"], div[class*="rounded-xl"], div[class*="rounded-3xl"] {
-    background: rgba(15, 23, 42, 0.65) !important;
+  /* 2. ALL WHITE CARDS, MODALS & DIALOGS (Images 3 & 5) */
+  .bg-white, div.bg-white, .card,
+  div[class*="rounded-3xl"], div[class*="rounded-2xl"], div[class*="rounded-xl"],
+  div[class*="shadow"]:not(button):not(input) {
+    background: rgba(15, 23, 42, 0.72) !important;
     backdrop-filter: blur(24px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
   }
 
-  /* Login / Sign up switcher button & Inputs */
-  div:has(> button:contains("Login")),
-  div:has(> a:contains("Login")),
-  div[class*="grid-cols-2"][class*="p-1"] {
-    background: rgba(2, 6, 23, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  /* 3. CONSOLE, CODE & BEARER TOKEN BOXES (Images 2 & 4) */
+  pre, code,
+  div:has(> * :contains("Ready")),
+  div:has(> * :contains("Bearer")),
+  div:has(> * :contains("akhi_live")),
+  div[class*="font-mono"] {
+    background: rgba(8, 12, 22, 0.88) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    border-radius: 12px !important;
+    color: #38bdf8 !important;
+  }
+  pre *, code *, div[class*="font-mono"] * {
+    color: #38bdf8 !important;
+  }
+
+  /* 4. LOGIN / SOCIAL BUTTONS & SWITCHERS (Image 6) */
+  /* Google & GitHub Buttons */
+  button:has(svg), a:has(svg),
+  div:has(> svg):not(nav):not(header),
+  button:has(> [src*="google"]), button:has(> [src*="github"]) {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.28) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+  }
+  /* Login/Sign up Toggle Switch */
+  div[class*="rounded-full"]:has(> button),
+  div[class*="grid-cols-2"]:has(button) {
+    background: rgba(10, 15, 28, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
     border-radius: 9999px !important;
   }
-  input, textarea, select {
-    background: rgba(15, 23, 42, 0.75) !important;
-    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  div[class*="rounded-full"] button.bg-white,
+  div[class*="rounded-full"] button[class*="shadow"] {
+    background: rgba(255, 255, 255, 0.2) !important;
     color: #ffffff !important;
-  }
-  input::placeholder {
-    color: #64748b !important;
+    border-radius: 9999px !important;
+    backdrop-filter: blur(8px) !important;
   }
 
-  /* Logo container fix (remove white patch behind logo) */
-  img[src*="logo"], img[src*="image"], div:has(> img[alt*="logo"]) {
+  /* Password field eye button container */
+  div:has(> input[type="password"]) div,
+  div:has(> input[type="password"]) button,
+  div:has(> input[type="password"]) span {
     background: transparent !important;
+    border: none !important;
   }
 
-  /* HEADINGS & TEXT */
-  h1, h2, h3, h4, h5, h6, strong {
+  /* 5. TEXT CONTRAST & READABILITY */
+  h1, h2, h3, h4, h5, h6, strong,
+  .text-slate-900, .text-gray-900, .text-black {
     color: #ffffff !important;
+    font-weight: 700 !important;
   }
-  p, span, label {
+  p, span, label, td, th {
     color: #cbd5e1 !important;
   }
+  .text-gray-500, .text-slate-500, .text-gray-400 {
+    color: #94a3b8 !important;
+  }
 
-  /* PERMANENT REMOVAL: Bottom right circular button */
-  #ai-chat-launcher,
-  #ai-float-bubble,
-  #ai-chat-window,
-  div[onclick*="toggleAiChat"],
-  div[onclick*="toggleAIChat"],
-  div[title*="AI Assistant"],
-  img[alt*="AI Assistant"],
-  div[style*="border-radius: 50%"][class*="bottom-"],
-  div[style*="border-radius:50%"][class*="bottom-"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    width: 0 !important;
-    height: 0 !important;
+  /* 6. INPUTS & TEXTAREAS */
+  input, textarea, select {
+    background: rgba(10, 16, 28, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748b !important;
   }
 </style>
 
