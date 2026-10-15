@@ -613,105 +613,68 @@
 
 
 
-<style id="akhil-glass-master-lock">
-  /* Global Uniform Theme */
-  body {
+
+
+
+<style id="akhil-permanent-fix">
+  /* Force 100% viewport width, zero side squeeze */
+  html, body {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #080c14 url('/static/main-bg.jpg') no-repeat center center fixed !important;
     background-size: cover !important;
-    color: #f1f5f9 !important;
   }
 
-  /* Har tarah ke cards, boxes, Voice Studio, aur containers */
-  .bg-white, div[class*="bg-white"], .card, 
-  div[class*="shadow-sm"][class*="rounded"],
-  div[class*="border"][class*="rounded"] {
-    background: rgba(15, 23, 42, 0.68) !important;
-    backdrop-filter: blur(24px) saturate(190%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45) !important;
-    color: #f1f5f9 !important;
-  }
-
-  /* Token Box, Code blocks, Protocol documentation snippet (Images 1 & 3 fix) */
-  code, pre, .font-mono, 
-  div:has(> [class*="font-mono"]),
-  div:has(> span:contains("akhi_live")),
-  div:has(> code), div[class*="bg-gray-"],
-  div:has(> p:contains("Authorization: Bearer")) {
-    background: rgba(8, 14, 26, 0.9) !important;
-    border: 1px solid rgba(56, 189, 248, 0.3) !important;
-    color: #38bdf8 !important;
-    border-radius: 12px !important;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6) !important;
-    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4) !important;
-  }
-  code *, pre *, .font-mono * {
-    color: #38bdf8 !important;
-  }
-
-  /* Headings, text labels aur body text contrast */
-  h1, h2, h3, h4, h5, h6, strong, b {
-    color: #ffffff !important;
-  }
-  p, span, label, small {
-    color: #cbd5e1 !important;
-  }
-  .text-emerald-500, .text-green-500, span:contains("Ready") {
-    color: #34d399 !important;
-    background: rgba(16, 185, 129, 0.15) !important;
-    padding: 2px 8px !important;
-    border-radius: 9999px !important;
-  }
-
-  /* Inputs, Textareas & Select dropdowns */
-  input, textarea, select {
-    background: rgba(15, 23, 42, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.16) !important;
-    border-radius: 12px !important;
-    color: #ffffff !important;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4) !important;
-  }
-  select option {
-    background-color: #0f172a !important;
-    color: #ffffff !important;
-  }
-
-  /* All Action Buttons (Generate, Copy Token, etc.) */
-  button, .btn, a[class*="btn"] {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.28), rgba(99, 102, 241, 0.28)) !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.45) !important;
-    color: #ffffff !important;
-    border-radius: 12px !important;
-    font-weight: 600 !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
-    transition: all 0.2s ease !important;
-  }
-  button:hover, .btn:hover {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.45), rgba(99, 102, 241, 0.45)) !important;
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.35) !important;
-  }
-
-  /* Black floating button permanent eradication */
-  div[style*="border-radius: 50%"],
-  div[style*="z-index: 9999"], div[style*="z-index:9999"],
-  div[style*="z-index: 50"][style*="bottom:"],
-  [class*="bottom-"][class*="right-"] > div:has(button),
-  #ai-chat-btn, .ai-floating-btn {
+  /* Right-side AI Drawer / Panel ko completely hide karo */
+  [class*="drawer"], [id*="drawer"],
+  [class*="assistant"], [id*="assistant"],
+  div[class*="fixed"][class*="right-0"],
+  div:has(> [placeholder*="Type pro"]),
+  div:has(> * :contains("AI Assistant")),
+  .ai-btn, #ai-btn, [class*="chat-"] {
     display: none !important;
     visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
     width: 0 !important;
     height: 0 !important;
+    position: absolute !important;
+    left: -99999px !important;
+    pointer-events: none !important;
+  }
+
+  /* Top Navbar / Header fix (No white patch) */
+  header, nav, [class*="sticky top-0"], [class*="fixed top-0"] {
+    background: rgba(11, 15, 25, 0.85) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    width: 100% !important;
+  }
+  header div, nav div, header span, nav span, header button, nav button {
+    background: transparent !important;
+    color: #ffffff !important;
+  }
+  header a, nav a, header button, nav button {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 9999px !important;
+    color: #ffffff !important;
+  }
+
+  /* Main container full center */
+  main, .container, section {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
   }
 </style>
 
 </head>
 <body>
-    <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
+    
 
     <aside class="sidebar" id="sidebar">
         <div class="brand-box">
@@ -762,7 +725,7 @@
         </div>
     </div>
 
-    <!-- Centered SaaS Error Modal -->
+    
     <div id="saas-error-modal">
         <div class="saas-error-card">
             <div class="saas-error-icon-box">
@@ -778,7 +741,7 @@
         </div>
     </div>
 
-    <!-- Done Modal -->
+    
     <div id="done-screen">
         <div class="done-box">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -787,7 +750,7 @@
         </div>
     </div>
 
-    <!-- Global Helper Scripts -->
+    
     <script>
         window.showSaasError = function(customMsg, customTitle) {
             const modal = document.getElementById("saas-error-modal");
@@ -810,7 +773,7 @@
         }
     </script>
 
-    <!-- Firebase Authentication SDK -->
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -951,7 +914,7 @@
         };
     </script>
 
-    <!-- Premium Centered Confirmation Modal -->
+    
     <div id="saas-confirm-modal" style="display:none; position:fixed; inset:0; background:rgba(9, 9, 11, 0.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:1000000; align-items:center; justify-content:center; padding:20px;">
         <div class="saas-error-card" style="max-width:400px; text-align:center;">
             <div class="saas-error-icon-box" style="background:#fef2f2; border:1px solid #fee2e2; color:#ef4444;">
@@ -993,13 +956,13 @@
     </script>
 
 
-    <!-- Audio element for bot.mp3 -->
+    
     <audio id="bot-audio" preload="auto" src="/bot.mp3"></audio>
 
-    <!-- AI Girl Chatbot Launcher -->
+    
     
 
-    <!-- AI Chatbot Box -->
+    
     
 
 
@@ -1021,7 +984,7 @@
 
 
 
-<!-- SLEEK BLACK AI ASSISTANT -->
+
 <style>
 #ai-float-bubble {
     position: fixed;
@@ -1301,7 +1264,7 @@ async function sendAIMessage() {
 </script>
 
 
-<!-- Dark Floating Anime Voice Dropdown like Photo 1 -->
+
 <style>
 #dark-voice-popover {
     display: none;
