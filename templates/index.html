@@ -189,79 +189,96 @@
 
 
 
-<style id="akhil-absolute-zero-white">
-  /* 1. KISI BHI ELEMENT ME WHITE BACKGROUND ALLOW NAHI HOGA */
-  *, *::before, *::after {
-    box-sizing: border-box !important;
+
+
+
+<style id="akhil-universal-dark-glass-engine">
+  /* Global Background Match */
+  html, body {
+    background-color: #080c14 !important;
+    background-image: 
+      radial-gradient(circle at 10% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+      radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
+      linear-gradient(rgba(8, 12, 20, 0.85), rgba(8, 12, 20, 0.95)),
+      url('/static/main-bg.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+    color: #f1f5f9 !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
   }
 
-  /* Saare white backgrounds ko dark frosted glass me force override karein */
-  [class*="bg-white"],
-  [style*="background: white"],
-  [style*="background:#fff"],
-  [style*="background: #fff"],
-  [style*="background-color: white"],
-  [style*="background-color:#fff"],
-  [style*="background-color: #fff"],
-  .bg-white,
-  div[class*="bg-gray-50"],
-  div[class*="bg-gray-100"],
-  div[class*="bg-slate-50"],
-  div[class*="bg-slate-100"] {
-    background: rgba(17, 24, 39, 0.65) !important;
-    background-color: rgba(17, 24, 39, 0.65) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45) !important;
-  }
-
-  /* 2. Top Header & Navbar (Frosted Acrylic Lock) */
+  /* TOP NAVBAR / HEADER (Signs, Drawer Toggles) */
   header, nav, .navbar,
-  header div, nav div {
-    background: rgba(10, 15, 26, 0.8) !important;
-    background-color: rgba(10, 15, 26, 0.8) !important;
+  header div, nav div,
+  div[class*="border-b"]:has(button:has(svg)) {
+    background: rgba(10, 16, 28, 0.82) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  header *, nav *, .navbar * {
+    color: #ffffff !important;
   }
 
-  /* 3. Saare Text Colors & Readability (Koi text gayab ya kala nahi hoga) */
-  h1, h2, h3, h4, h5, h6, strong, b,
-  .text-slate-900, .text-gray-900, .text-black, [class*="text-zinc-900"] {
-    color: #ffffff !important;
-    font-weight: 700 !important;
+  /* ALL WHITE CARDS, CONTAINERS, MODALS (Login, Voice, Identity) */
+  .card, div.bg-white, .bg-white,
+  div[class*="rounded-3xl"], div[class*="rounded-2xl"], div[class*="rounded-xl"],
+  div[class*="shadow"]:not(button):not(input) {
+    background: rgba(17, 24, 39, 0.65) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
   }
-  p, span, label, td, th, li {
-    color: #cbd5e1 !important;
+
+  /* LOGIN / SIGN UP SWITCHER & PILLS */
+  div[class*="rounded-full"]:has(> button),
+  div[class*="grid-cols-2"]:has(button),
+  div:has(> a[href*="login"]) {
+    background: rgba(10, 15, 28, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 9999px !important;
   }
-  .text-gray-500, .text-slate-500, .text-gray-400 {
+  div[class*="rounded-full"] button,
+  div[class*="rounded-full"] a {
+    background: transparent !important;
     color: #94a3b8 !important;
   }
+  div[class*="rounded-full"] button.active,
+  div[class*="rounded-full"] button[class*="bg-white"],
+  div[class*="rounded-full"] button[class*="shadow"] {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 9999px !important;
+    backdrop-filter: blur(10px) !important;
+  }
 
-  /* 4. Buttons (Sign In, Google, GitHub, Actions, Submit) */
+  /* ALL BUTTONS (Google, GitHub, Sign In, Verify, Execute, Voice) */
   button, input[type="submit"], input[type="button"],
   a[href*="login"], a[href*="sign"], .sign-in-btn,
-  button[class*="bg-white"], a[class*="bg-white"] {
+  button:has(svg), a:has(svg), button:has(> img) {
     background: rgba(255, 255, 255, 0.08) !important;
-    background-color: rgba(255, 255, 255, 0.08) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.2s ease !important;
   }
-  button:hover, a[class*="btn"]:hover {
+  button:hover, a:hover {
     background: rgba(255, 255, 255, 0.16) !important;
     border-color: rgba(255, 255, 255, 0.35) !important;
+    transform: translateY(-1px);
   }
 
-  /* 5. Inputs, Textareas, Selects & Eye Button Containers */
+  /* INPUTS & TEXTAREAS (Password Eye Container Fix) */
   input, textarea, select {
-    background: rgba(12, 18, 30, 0.75) !important;
-    background-color: rgba(12, 18, 30, 0.75) !important;
+    background: rgba(11, 16, 28, 0.75) !important;
     border: 1px solid rgba(255, 255, 255, 0.16) !important;
     color: #ffffff !important;
     border-radius: 12px !important;
@@ -273,26 +290,57 @@
   div:has(> input[type="password"]) span,
   div:has(> input[type="password"]) button {
     background: transparent !important;
-    background-color: transparent !important;
     border: none !important;
+    box-shadow: none !important;
   }
 
-  /* 6. Console, Code, Tokens & Bearer Boxes */
-  code, pre, [class*="font-mono"],
+  /* PROTOCOL DOCS, CONSOLE, TOKENS & CODE BLOCKS */
+  pre, code, [class*="font-mono"],
   div:has(> * :contains("Ready")),
   div:has(> * :contains("Bearer")),
   div:has(> * :contains("akhi_live")) {
-    background: rgba(8, 12, 22, 0.88) !important;
-    background-color: rgba(8, 12, 22, 0.88) !important;
+    background: rgba(8, 12, 22, 0.9) !important;
     border: 1px solid rgba(56, 189, 248, 0.3) !important;
     border-radius: 12px !important;
     color: #38bdf8 !important;
   }
-  code *, pre *, [class*="font-mono"] * {
+  pre *, code *, [class*="font-mono"] * {
     color: #38bdf8 !important;
   }
 
-  /* 7. Permanent Eraser for AI floating circles & drawers */
+  /* TEXT VISIBILITY RULES */
+  h1, h2, h3, h4, h5, h6, strong, b,
+  .text-slate-900, .text-gray-900, .text-black {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+  p, span, label, td, th {
+    color: #cbd5e1 !important;
+  }
+  .text-gray-500, .text-slate-500, .text-gray-400 {
+    color: #94a3b8 !important;
+  }
+
+  /* SIDEBAR REINFORCEMENT */
+  aside.sidebar, #sidebar, .sidebar {
+    background: rgba(10, 16, 28, 0.96) !important;
+    backdrop-filter: blur(28px) !important;
+    -webkit-backdrop-filter: blur(28px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  aside.sidebar *, #sidebar *, .sidebar * {
+    color: #e2e8f0 !important;
+  }
+  .nav-section-title {
+    color: #64748b !important;
+  }
+  .nav-item.active {
+    background: rgba(56, 189, 248, 0.18) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  }
+
+  /* COMPLETE REMOVAL: AI Assistant Float Launcher */
   #ai-chat-launcher, #ai-float-bubble, #ai-chat-window,
   div[onclick*="toggleAiChat"], div[onclick*="toggleAIChat"],
   img[alt*="Assistant"], div[title*="AI Assistant"],
