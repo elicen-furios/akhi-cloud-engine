@@ -252,6 +252,35 @@
   }
 </style>
 
+
+<style>
+  /* Sidebar/Drawer aur buttons ko root se kill karo */
+  .ai-btn, #ai-btn, [class*="drawer"], [id*="drawer"], 
+  button[class*="chat"], div[class*="chat"],
+  span:has-text("AI"), button:has-text("AI") {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Full screen centered container */
+  body {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  main, section, .container {
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+  }
+</style>
+
 </head>
 <body>
 
