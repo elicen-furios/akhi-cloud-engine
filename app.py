@@ -19,6 +19,11 @@ from flask import Response, Flask, request, jsonify, send_file, session
 
 
 
+
+# Secure API Keys from Environment
+CARTESIA_API_KEY = os.environ.get("CARTESIA_API_KEY", "")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+
 app = Flask(__name__)
 
 @app.after_request
