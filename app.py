@@ -2470,3 +2470,7 @@ def page_project_detail(slug):
     # Recommend 2-3 related projects in same category
     related = [p for p in projects if p["category"] == target["category"] and p["slug"] != target["slug"]][:3]
     return render_template("project_detail.html", p=target, related=related, active_page="projects")
+
+
+from tools_engine import tools_bp
+app.register_blueprint(tools_bp)
