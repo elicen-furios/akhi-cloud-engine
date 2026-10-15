@@ -174,10 +174,13 @@
 
 
 
-<style id="akhil-master-frosted-glass">
-  /* 1. TOP NAVBAR / HEADER (Images 1, 2, 3, 4, 6) */
-  header, nav, .navbar, div:has(> button:has(svg)), div:has(> a[href*="login"]) {
-    background: rgba(11, 17, 32, 0.75) !important;
+
+
+
+<style id="akhil-glass-direct-match">
+  /* Force dark frosted glass on all containers & header */
+  header, nav, .navbar {
+    background: rgba(11, 15, 25, 0.75) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -185,98 +188,44 @@
   header *, nav *, .navbar * {
     color: #f1f5f9 !important;
   }
-  a[href*="login"], a[href*="sign"], button:has(> span:contains("Sign In")), .sign-in-btn {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-    border-radius: 9999px !important;
-  }
-
-  /* 2. ALL WHITE CARDS, MODALS & DIALOGS (Images 3 & 5) */
-  .bg-white, div.bg-white, .card,
-  div[class*="rounded-3xl"], div[class*="rounded-2xl"], div[class*="rounded-xl"],
-  div[class*="shadow"]:not(button):not(input) {
-    background: rgba(15, 23, 42, 0.72) !important;
+  
+  /* All dialogs, cards, popups */
+  .card, div[class*="rounded-3xl"], div[class*="rounded-2xl"], div[class*="rounded-xl"] {
+    background: rgba(15, 23, 42, 0.68) !important;
     backdrop-filter: blur(24px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45) !important;
   }
 
-  /* 3. CONSOLE, CODE & BEARER TOKEN BOXES (Images 2 & 4) */
-  pre, code,
-  div:has(> * :contains("Ready")),
-  div:has(> * :contains("Bearer")),
-  div:has(> * :contains("akhi_live")),
-  div[class*="font-mono"] {
-    background: rgba(8, 12, 22, 0.88) !important;
-    border: 1px solid rgba(56, 189, 248, 0.3) !important;
-    border-radius: 12px !important;
-    color: #38bdf8 !important;
-  }
-  pre *, code *, div[class*="font-mono"] * {
-    color: #38bdf8 !important;
-  }
-
-  /* 4. LOGIN / SOCIAL BUTTONS & SWITCHERS (Image 6) */
-  /* Google & GitHub Buttons */
+  /* Buttons & Social links (Google, GitHub, Sign In) */
   button:has(svg), a:has(svg),
-  div:has(> svg):not(nav):not(header),
-  button:has(> [src*="google"]), button:has(> [src*="github"]) {
+  button:has(> img),
+  a[href*="login"], a[href*="sign"] {
     background: rgba(255, 255, 255, 0.08) !important;
     backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.28) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
-  }
-  /* Login/Sign up Toggle Switch */
-  div[class*="rounded-full"]:has(> button),
-  div[class*="grid-cols-2"]:has(button) {
-    background: rgba(10, 15, 28, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    border-radius: 9999px !important;
-  }
-  div[class*="rounded-full"] button.bg-white,
-  div[class*="rounded-full"] button[class*="shadow"] {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-    border-radius: 9999px !important;
-    backdrop-filter: blur(8px) !important;
   }
 
-  /* Password field eye button container */
-  div:has(> input[type="password"]) div,
-  div:has(> input[type="password"]) button,
-  div:has(> input[type="password"]) span {
-    background: transparent !important;
-    border: none !important;
+  /* Code, Tokens, Transmission console */
+  code, pre, [class*="font-mono"],
+  div:has(> * :contains("Ready")),
+  div:has(> * :contains("Bearer")) {
+    background: rgba(10, 16, 28, 0.85) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    color: #38bdf8 !important;
+  }
+  code *, pre *, [class*="font-mono"] * {
+    color: #38bdf8 !important;
   }
 
-  /* 5. TEXT CONTRAST & READABILITY */
-  h1, h2, h3, h4, h5, h6, strong,
-  .text-slate-900, .text-gray-900, .text-black {
-    color: #ffffff !important;
-    font-weight: 700 !important;
-  }
-  p, span, label, td, th {
-    color: #cbd5e1 !important;
-  }
-  .text-gray-500, .text-slate-500, .text-gray-400 {
-    color: #94a3b8 !important;
-  }
-
-  /* 6. INPUTS & TEXTAREAS */
+  /* Input fields */
   input, textarea, select {
-    background: rgba(10, 16, 28, 0.75) !important;
+    background: rgba(12, 18, 32, 0.75) !important;
     border: 1px solid rgba(255, 255, 255, 0.16) !important;
-    border-radius: 12px !important;
     color: #ffffff !important;
-  }
-  input::placeholder, textarea::placeholder {
-    color: #64748b !important;
   }
 </style>
 
