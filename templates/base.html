@@ -711,6 +711,82 @@
   }
 </style>
 
+
+<style id="akhil-clean-final-fix">
+  /* 1. TOP HEADER / NAVBAR KO DARK FROSTED GLASS BANAO (NO WHITE BAR) */
+  header, nav, .navbar, [class*="sticky top-0"], [class*="fixed top-0"],
+  header > div, nav > div {
+    background: rgba(11, 15, 25, 0.85) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  header span, header a, header button, header div,
+  nav span, nav a, nav button, nav div {
+    color: #ffffff !important;
+  }
+
+  /* Hamburger & Sign In button in header */
+  header button, nav button, header a[href*="login"], nav a[href*="login"],
+  header .btn, nav .btn {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    border-radius: 9999px !important;
+  }
+
+  /* 2. VOICE STUDIO & ALL WHITE CARDS -> DARK GLASS */
+  .bg-white, div[class*="bg-white"],
+  div[class*="shadow-sm"][class*="rounded"],
+  div[class*="border"][class*="rounded-2xl"],
+  div[class*="border"][class*="rounded-xl"] {
+    background: rgba(18, 24, 38, 0.65) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  /* 3. TEXT VISIBILITY (Voice Studio Headings, Ready badge, Labels) */
+  .bg-white *, div[class*="bg-white"] * {
+    color: #f1f5f9 !important;
+  }
+  .bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4,
+  div[class*="bg-white"] h1, div[class*="bg-white"] h2, div[class*="bg-white"] h3 {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+  .bg-white p, div[class*="bg-white"] p,
+  .bg-white span, div[class*="bg-white"] span {
+    color: #cbd5e1 !important;
+  }
+  /* Voice Studio Ready badge */
+  span:contains("Ready"), div:contains("Ready") {
+    color: #34d399 !important;
+    background: rgba(16, 185, 129, 0.15) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  }
+
+  /* 4. BUTTON "Generate Natural Voice" Glow Styling */
+  button:has(svg), button[type="submit"], button:contains("Generate") {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.8), rgba(99, 102, 241, 0.8)) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35) !important;
+  }
+
+  /* 5. HIDE FLOATING BLACK CIRCLE IN BOTTOM RIGHT */
+  div[style*="border-radius: 50%"],
+  div[style*="z-index: 9999"], div[style*="z-index:9999"],
+  div[class*="bottom-"][class*="right-"] > div:has(button),
+  #ai-chat-btn, .ai-floating-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
