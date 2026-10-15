@@ -2344,3 +2344,39 @@ def api_assistant_chat_v2():
     except Exception as e:
         return jsonify({"reply": f"AI service error: {str(e)}"}), 500
 
+
+
+@app.route("/api/generate-script", methods=["POST"])
+def generate_script():
+    api_key = os.environ.get("GEMINI_API_KEY", "")
+    if not api_key:
+        return jsonify({"error": "GEMINI_API_KEY set nahi hai environment me"}), 400
+
+    data = request.get_json() or {}
+    prompt = data.get("prompt", "").strip()
+    if not prompt:
+        return jsonify({"error": "Prompt zaroori hai"}), 400
+
+    import urllib.request
+    import json
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    payload = {
+        "contents": [{
+            "parts": [{"text": f"Write a natural, conversational, ready-to-speak voiceover script based on this topic. Do not include markdown headers, timestamps, or stage directions. Output only the plain script text: {prompt}"}]
+        }]
+    }
+
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"}
+    )
+
+    try:
+        with urllib.request.urlopen(req) as resp:
+            res_data = json.loads(resp.read().decode("utf-8"))
+            generated_text = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
+            return jsonify({"script": generated_text})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
