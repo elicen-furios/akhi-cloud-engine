@@ -170,6 +170,55 @@
             margin-top: 12px; font-weight: 500;
         }
     </style>
+
+<style id="clean-glass-theme">
+  /* Dark Glassmorphism for Cards */
+  div.bg-white, .bg-white {
+    background: rgba(18, 24, 38, 0.65) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* Card Text Visibility */
+  div.bg-white h2, div.bg-white h3, div.bg-white p, div.bg-white span {
+    color: #f1f5f9 !important;
+  }
+  div.bg-white p {
+    color: #94a3b8 !important;
+  }
+
+  /* Remove Floating AI Icon */
+  div[style*="border-radius: 50%"],
+  a[href*="chat"],
+  img[alt*="Assistant"],
+  .fixed.bottom-4.right-4,
+  .fixed.bottom-6.right-6 {
+    display: none !important;
+    visibility: hidden !important;
+  }
+</style>
+
+
+<style id="nuke-ai-button">
+  #ai-float-bubble,
+  div[onclick*="toggleAIChat"],
+  div[onclick*="ai-chat"],
+  img[alt*="Assistant"],
+  div[style*="border-radius: 50%"],
+  div[style*="border-radius:50%"],
+  div[class*="bottom-"][class*="right-"]:has(img) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+</style>
+
 </head>
 <body>
 
