@@ -204,53 +204,7 @@
 
 
 
-<style id="layout-restore">
-  /* Force body full screen width without right shift */
-  html, body {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    min-width: 100vw !important;
-    overflow-x: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative !important;
-    box-sizing: border-box !important;
-  }
-  
-  /* Navbar text color fix */
-  header, nav, .navbar {
-    width: 100% !important;
-    max-width: 100vw !important;
-    color: #111827 !important;
-  }
-  header a, header span, header button, nav a, nav span {
-    color: #111827 !important;
-  }
 
-  /* Target exact elements visible on the screen: AI Assistant drawer and buttons */
-  div:has(> .ai-assistant), div:has(> #chat-box),
-  [class*="assistant"], [id*="assistant"],
-  [class*="chat-drawer"], [id*="chat-drawer"],
-  div[style*="right: 0"], div[style*="right:0"],
-  button:has-text("AI"), .ai-toggle-btn {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    position: absolute !important;
-    left: -9999px !important;
-  }
-
-  /* Reset main content container */
-  main, #main, .main-content, .container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    padding: 12px !important;
-    box-sizing: border-box !important;
-  }
-</style>
 
 
 <style>
@@ -304,6 +258,44 @@
   main, section, .container {
     width: 100% !important;
     max-width: 600px !important;
+    margin: 0 auto !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+  }
+</style>
+
+
+<style id="layout-bg-fix">
+  html, body {
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    background-color: #0b0f19 !important;
+    background-image: url('/static/image.png'), url('/image.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+    color: #ffffff !important;
+  }
+  
+  [class*="assistant"], [id*="assistant"],
+  [class*="drawer"], [id*="drawer"],
+  .ai-btn, #ai-btn, [class*="chat"], [id*="chat"] {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    pointer-events: none !important;
+  }
+
+  main, .container, section {
+    width: 100% !important;
+    max-width: 100% !important;
     margin: 0 auto !important;
     padding: 16px !important;
     box-sizing: border-box !important;
