@@ -1,59 +1,174 @@
-{% extends "base.html" %}
-{% block content %}
-<div style="position: relative; z-index: 20; max-width: 960px; margin: 30px auto 80px; padding: 0 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Anything Bridge — Akhil Platform</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #090d16;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px 16px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        .back-nav {
+            margin-bottom: 20px;
+        }
+        .back-nav a {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .card {
+            background: #111827;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #fff; }
+        p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        @media(min-width: 600px) {
+            .input-group { flex-direction: row; }
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 14px 16px;
+            background: #030712;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+        }
+        button {
+            padding: 14px 24px;
+            background: #38bdf8;
+            color: #030712;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover { background: #0ea5e9; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .terminal-box {
+            background: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 250px;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        pre {
+            color: #38bdf8;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-nav">
+            <a href="/">&larr; Back to Platform Home</a>
+        </div>
 
-    <!-- Back to Hub -->
-    <div style="margin-bottom: 18px;">
-        <a href="/projects" style="color: #94a3b8; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-            &larr; Return to Developer Projects Hub
-        </a>
+        <div class="card">
+            <span class="badge">Live Web Scraper & JSON Bridge</span>
+            <h1>API Anything Bridge</h1>
+            <p>Target public website ka URL daalein aur live structured JSON data extract karein.</p>
+            
+            <div class="input-group">
+                <input type="text" id="targetUrl" placeholder="https://httpbin.org/json" value="https://httpbin.org/json">
+                <button id="extractBtn" onclick="runScraper()">Extract JSON</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="terminal-header">
+                <h3 style="font-size: 1.1rem; color: #fff;">Output Terminal</h3>
+                <span id="statusTag" style="color: #64748b; font-size: 0.85rem; font-weight: 600;">System Ready</span>
+            </div>
+            <div class="terminal-box">
+                <pre id="outputView">// Yahan live extracted output dikhega...</pre>
+            </div>
+        </div>
     </div>
 
-    <!-- Active Control Card -->
-    <div style="background: rgba(13, 19, 33, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 20px; padding: 28px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); margin-bottom: 22px;">
-        <div style="display:inline-block; padding: 4px 12px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">
-            API Anything Suite
-        </div>
-        <h1 style="font-size: 2rem; font-weight: 800; color: #ffffff; margin: 0 0 8px;">Universal Web to JSON Bridge</h1>
-        <p style="color: #94a3b8; font-size: 0.94rem; margin: 0 0 22px; line-height: 1.5;">Extract live structured JSON from target web endpoints without requiring official API credentials.</p>
-        
-        <div style="display:flex; gap:10px;"><input id="targetUrl" type="text" placeholder="https://example.com" style="flex:1; padding:13px 16px; border-radius:12px; background:rgba(8,12,22,0.9); border:1px solid rgba(255,255,255,0.18); color:#fff; font-size:0.92rem; outline:none;"><button onclick="runBridge()" id="actionBtn" style="padding:13px 24px; background:#38bdf8; border:none; border-radius:12px; color:#020617; font-weight:700; font-size:0.9rem; cursor:pointer;">Extract JSON</button></div>
-    </div>
+    <script>
+        async function runScraper() {
+            const urlInput = document.getElementById('targetUrl').value.trim();
+            const output = document.getElementById('outputView');
+            const status = document.getElementById('statusTag');
+            const btn = document.getElementById('extractBtn');
 
-    <!-- Output Terminal Console -->
-    <div style="background: rgba(13, 19, 33, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 20px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-            <h3 style="color: #ffffff; font-size: 1.05rem; margin: 0; font-weight: 700;">Live Execution Output</h3>
-            <span id="toolStatusBadge" style="font-size: 0.78rem; color: #64748b; font-weight: 600;">System Ready</span>
-        </div>
-        <div style="background: rgba(5, 9, 17, 0.95); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 18px; min-height: 220px; max-height: 480px; overflow-y: auto;">
-            <pre id="outputLog" style="margin: 0; color: #38bdf8; font-family: monospace; font-size: 0.88rem; white-space: pre-wrap; word-break: break-all;">// Ready. Submit input above to trigger direct backend execution...</pre>
-        </div>
-    </div>
-</div>
+            if (!urlInput) {
+                alert("Kripya valid URL enter karein!");
+                return;
+            }
 
-<script>
-    async function runBridge() {
-        const u = document.getElementById('targetUrl').value.trim();
-        const log = document.getElementById('outputLog');
-        const badge = document.getElementById('toolStatusBadge');
-        const btn = document.getElementById('actionBtn');
-        if(!u) return alert('Please enter a target URL');
-        badge.innerText = 'Extracting...'; badge.style.color = '#fb923c'; btn.disabled = true;
-        log.innerText = '// Sending network requests to target...';
-        try {
-            const res = await fetch('/tools/api-bridge', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({url: u})
-            });
-            const data = await res.json();
-            log.innerText = JSON.stringify(data, null, 2);
-            badge.innerText = 'Success (200 OK)'; badge.style.color = '#4ade80';
-        } catch(e) {
-            log.innerText = '// Error: ' + e.message;
-            badge.innerText = 'Execution Failed'; badge.style.color = '#f43f5e';
-        } finally { btn.disabled = false; }
-    }
+            status.innerText = "Extracting data...";
+            status.style.color = "#fb923c";
+            btn.disabled = true;
+            output.innerText = "// Connecting to target server and extracting data...";
+
+            try {
+                const response = await fetch('/tools/api-bridge', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: urlInput })
+                });
+
+                const data = await response.json();
+                output.innerText = JSON.stringify(data, null, 2);
+                status.innerText = "Completed (200 OK)";
+                status.style.color = "#4ade80";
+            } catch (err) {
+                output.innerText = "// Extraction failed: " + err.message;
+                status.innerText = "Execution Error";
+                status.style.color = "#ef4444";
+            } finally {
+                btn.disabled = false;
+            }
+        }
     </script>
-{% endblock %}
+</body>
+</html>
