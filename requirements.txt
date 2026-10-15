@@ -1,8 +1,10 @@
 Flask==3.0.3
+beautifulsoup4
+edge-tts
+eventlet==0.35.2
+flask-cors
 flask-cors==4.0.1
 flask-sock==0.7.0
 gunicorn==21.2.0
-eventlet==0.35.2
+requests
 werkzeug==3.0.3
-flask-cors
-edge-tts
