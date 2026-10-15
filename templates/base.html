@@ -591,6 +591,72 @@
   }
 </style>
 
+
+<style id="glassmorphism-theme">
+  /* Background with image and blur */
+  body {
+    background-image: linear-gradient(rgba(11, 15, 25, 0.72), rgba(11, 15, 25, 0.82)), url('/static/main-bg.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+    min-height: 100vh !important;
+  }
+
+  /* Frosted Glass Cards & Containers */
+  .card, .container > div, div[class*="bg-white"], div[class*="rounded"], .shadow-sm, .shadow-md, .shadow-lg, table {
+    background: rgba(255, 255, 255, 0.07) !important;
+    backdrop-filter: blur(16px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+    color: #ffffff !important;
+  }
+
+  /* Frosted Glass Navbar / Header */
+  header, nav, .navbar {
+    background: rgba(15, 23, 42, 0.65) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  header *, nav * {
+    color: #ffffff !important;
+  }
+
+  /* Glassmorphism Buttons */
+  button, .btn, a[class*="btn"], input[type="submit"] {
+    background: rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
+  }
+  button:hover, .btn:hover, a[class*="btn"]:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    transform: translateY(-2px);
+  }
+
+  /* Inputs & Textareas */
+  input, textarea, select {
+    background: rgba(15, 23, 42, 0.5) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+  }
+
+  /* Table styles inside card */
+  th, td {
+    color: #e2e8f0 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
