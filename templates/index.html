@@ -177,21 +177,71 @@
 
 
 
-<style id="akhil-glass-direct-match">
-  /* Force dark frosted glass on all containers & header */
-  header, nav, .navbar {
-    background: rgba(11, 15, 25, 0.75) !important;
+
+
+
+
+
+
+<style id="akhil-master-frosted-glass-v2">
+  /* 1. Global Viewport & Background */
+  html, body {
+    background-color: #080c14 !important;
+    background-image: 
+      radial-gradient(circle at 10% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+      radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
+      linear-gradient(rgba(8, 12, 20, 0.85), rgba(8, 12, 20, 0.95)),
+      url('/static/main-bg.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+    color: #f1f5f9 !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* 2. Top Header & Navbar (Frosted Dark Glass) */
+  header, nav, .navbar,
+  header div, nav div,
+  div[class*="border-b"]:has(button:has(svg)),
+  div[class*="border-b"]:has(a[href*="login"]) {
+    background: rgba(11, 17, 32, 0.8) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
   header *, nav *, .navbar * {
     color: #f1f5f9 !important;
   }
-  
-  /* All dialogs, cards, popups */
-  .card, div[class*="rounded-3xl"], div[class*="rounded-2xl"], div[class*="rounded-xl"] {
-    background: rgba(15, 23, 42, 0.68) !important;
+
+  /* 3. Left Sidebar Drawer Menu */
+  aside, [class*="sidebar"], [id*="sidebar"], [class*="drawer"],
+  div[class*="fixed"][class*="left-0"] {
+    background: rgba(11, 15, 25, 0.96) !important;
+    backdrop-filter: blur(28px) !important;
+    -webkit-backdrop-filter: blur(28px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  aside *, [class*="sidebar"] *, [id*="sidebar"] *, div[class*="fixed"][class*="left-0"] * {
+    color: #e2e8f0 !important;
+  }
+  aside a, [class*="sidebar"] a {
+    color: #cbd5e1 !important;
+  }
+  aside a:hover, [class*="sidebar"] a:hover {
+    background: rgba(56, 189, 248, 0.15) !important;
+    color: #38bdf8 !important;
+  }
+
+  /* 4. Glassmorphism Cards, Panels, Modals & Voice Studio */
+  .card,
+  div.bg-white,
+  .bg-white,
+  div[class*="rounded-3xl"],
+  div[class*="rounded-2xl"],
+  div[class*="rounded-xl"] {
+    background: rgba(17, 24, 39, 0.65) !important;
     backdrop-filter: blur(24px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -199,33 +249,104 @@
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45) !important;
   }
 
-  /* Buttons & Social links (Google, GitHub, Sign In) */
+  /* 5. Buttons (Sign In, Google, GitHub, Actions) */
+  a[href*="login"], a[href*="sign"], .sign-in-btn,
   button:has(svg), a:has(svg),
   button:has(> img),
-  a[href*="login"], a[href*="sign"] {
+  button[class*="bg-white"], a[class*="bg-white"] {
     background: rgba(255, 255, 255, 0.08) !important;
     backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
     color: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+  }
+  button:hover, a:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
   }
 
-  /* Code, Tokens, Transmission console */
-  code, pre, [class*="font-mono"],
-  div:has(> * :contains("Ready")),
-  div:has(> * :contains("Bearer")) {
-    background: rgba(10, 16, 28, 0.85) !important;
-    border: 1px solid rgba(56, 189, 248, 0.3) !important;
-    color: #38bdf8 !important;
+  /* 6. Login / Sign Up Switcher & Password Container */
+  div[class*="rounded-full"]:has(> button),
+  div[class*="grid-cols-2"]:has(button) {
+    background: rgba(10, 15, 28, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 9999px !important;
   }
-  code *, pre *, [class*="font-mono"] * {
-    color: #38bdf8 !important;
+  div[class*="rounded-full"] button.bg-white,
+  div[class*="rounded-full"] button[class*="shadow"] {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 9999px !important;
+    backdrop-filter: blur(8px) !important;
+  }
+  div:has(> input[type="password"]) div,
+  div:has(> input[type="password"]) button,
+  div:has(> input[type="password"]) span {
+    background: transparent !important;
+    border: none !important;
+    color: #94a3b8 !important;
   }
 
-  /* Input fields */
+  /* 7. Inputs, Selects & Dropdowns */
   input, textarea, select {
-    background: rgba(12, 18, 32, 0.75) !important;
+    background: rgba(10, 16, 28, 0.75) !important;
     border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 12px !important;
     color: #ffffff !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748b !important;
+  }
+  select option {
+    background: #0b1120 !important;
+    color: #ffffff !important;
+  }
+
+  /* 8. Code, Tokens, Transmission Console & Protocol Docs */
+  pre, code, [class*="font-mono"],
+  div:has(> * :contains("Ready")),
+  div:has(> * :contains("Bearer")),
+  div:has(> * :contains("akhi_live")) {
+    background: rgba(8, 12, 22, 0.88) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    border-radius: 12px !important;
+    color: #38bdf8 !important;
+  }
+  pre *, code *, [class*="font-mono"] * {
+    color: #38bdf8 !important;
+  }
+
+  /* 9. Text Readability */
+  h1, h2, h3, h4, h5, h6, strong,
+  .text-slate-900, .text-gray-900, .text-black {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+  p, span, label, td, th {
+    color: #cbd5e1 !important;
+  }
+  .text-gray-500, .text-slate-500, .text-gray-400 {
+    color: #94a3b8 !important;
+  }
+
+  /* 10. Hide Floating AI Bubble */
+  #ai-chat-launcher,
+  #ai-float-bubble,
+  #ai-chat-window,
+  div[onclick*="toggleAiChat"],
+  div[onclick*="toggleAIChat"],
+  img[alt*="Assistant"],
+  div[title*="AI Assistant"],
+  div[style*="border-radius: 50%"][class*="bottom-"],
+  div[style*="border-radius:50%"][class*="bottom-"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 </style>
 
