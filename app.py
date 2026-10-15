@@ -2441,3 +2441,32 @@ def direct_gemini_handler():
             return jsonify({"reply": ans, "response": ans, "success": True})
     except Exception as e:
         return jsonify({"reply": f"API Error: {str(e)}", "error": str(e)}), 200
+
+
+# ==========================================================
+# AKHIL DEVELOPER PLATFORM — GITHUB PROJECTS HUB ROUTES
+# ==========================================================
+import json
+
+def load_projects_catalog():
+    try:
+        with open("projects_catalog.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+@app.route("/projects")
+def page_projects_directory():
+    projects = load_projects_catalog()
+    return render_template("projects_hub.html", projects=projects, active_page="projects")
+
+@app.route("/project/<slug>")
+def page_project_detail(slug):
+    projects = load_projects_catalog()
+    target = next((p for p in projects if p["slug"] == slug), None)
+    if not target:
+        return render_template("projects_hub.html", projects=projects, active_page="projects"), 404
+    
+    # Recommend 2-3 related projects in same category
+    related = [p for p in projects if p["category"] == target["category"] and p["slug"] != target["slug"]][:3]
+    return render_template("project_detail.html", p=target, related=related, active_page="projects")

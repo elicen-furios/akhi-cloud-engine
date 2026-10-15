@@ -1,0 +1,408 @@
+[
+  {
+    "slug": "apivault",
+    "name": "ApiVault",
+    "category": "api_tools",
+    "category_name": "API & Developer Tools",
+    "badge_color": "#38bdf8",
+    "icon": "vault",
+    "tagline": "Secure management and vault infrastructure for private API tokens and secrets.",
+    "repo_url": "https://github.com/exa-studio/ApiVault",
+    "overview": "ApiVault provides production-grade centralized storage for API keys, bearer tokens, and secrets with rotation policies and request telemetry tracking.",
+    "features": [
+      "Encrypted at-rest API key and credential persistence",
+      "Granular permission scopes and token rotation",
+      "Latency and usage quota analytics across external endpoints",
+      "Eliminates hardcoded API secrets in frontend or source control"
+    ],
+    "requirements": "Node.js 18+ or Docker, PostgreSQL / SQLite backend",
+    "installation": "git clone https://github.com/exa-studio/ApiVault.git\ncd ApiVault\nnpm install\nnpm run build && npm start",
+    "security_notes": "Always deploy behind an HTTPS reverse proxy and restrict external database port exposure.",
+    "status": "Available"
+  },
+  {
+    "slug": "api-anything",
+    "name": "API Anything",
+    "category": "api_tools",
+    "category_name": "API & Developer Tools",
+    "badge_color": "#fb923c",
+    "icon": "globe_bridge",
+    "tagline": "Turn arbitrary websites and dynamic SPAs into clean structured JSON endpoints.",
+    "repo_url": "https://github.com/goodnight000/api-anything",
+    "overview": "Universal scraping and network parsing bridge that monitors browser network payloads and converts web targets into self-healing REST APIs without official API keys.",
+    "features": [
+      "Automatic extraction of internal fetch/XHR endpoints",
+      "Headless DOM-to-JSON fallback for dynamic single-page applications",
+      "Normalized JSON payload output with pagination detection",
+      "Self-healing schema extraction resilient to minor HTML redesigns"
+    ],
+    "requirements": "Python 3.10+ / Node runtime, Playwright / Chromium drivers",
+    "installation": "git clone https://github.com/goodnight000/api-anything.git\ncd api-anything\npip install -r requirements.txt\npython main.py",
+    "security_notes": "Avoid scraping target sites with aggressive Cloudflare Turnstile without authorized residential proxy rotation.",
+    "status": "Available"
+  },
+  {
+    "slug": "reverse-api-engineer",
+    "name": "Reverse API Engineer",
+    "category": "api_tools",
+    "category_name": "API & Developer Tools",
+    "badge_color": "#a855f7",
+    "icon": "code_gear",
+    "tagline": "AI agent that drives browser traffic capture and generates production API clients.",
+    "repo_url": "https://github.com/kalil0321/reverse-api-engineer",
+    "overview": "Autonomous agent that visits web targets via browser, captures network traffic to HAR, and uses LLMs to write typed API clients in Python, TypeScript, Go, and Java.",
+    "features": [
+      "Dual modes: manual browser drive or autonomous AI agent capture",
+      "Chrome MCP and Playwright driver support preserving active sessions",
+      "Direct code generation in Python, JS, Go, Rust, and C#",
+      "Automated structured data collection into JSON and CSV"
+    ],
+    "requirements": "Python 3.10+, uv or pip, Claude Code / Anthropic SDK key",
+    "installation": "uv tool install reverse-api-engineer\n# Or via pip:\npip install reverse-api-engineer\nreverse-api-engineer",
+    "security_notes": "Verify auto-generated client code locally before deploying to automated pipelines.",
+    "status": "Available"
+  },
+  {
+    "slug": "ctala-api-reverse-engineer",
+    "name": "API Reverse Engineer (Chrome Extension)",
+    "category": "api_tools",
+    "category_name": "API & Developer Tools",
+    "badge_color": "#06b6d4",
+    "icon": "radar",
+    "tagline": "Tab-scoped Chrome extension to intercept fetch & XHR requests into JSONL.",
+    "repo_url": "https://github.com/ctala/api-reverse-engineer",
+    "overview": "Developer extension allowing one-click recording of internal HTTP requests while browsing normally, exporting full headers, cookies, payloads, and timing.",
+    "features": [
+      "Intercepts fetch and XHR calls with zero DevTools clutter",
+      "Tab-scoped isolation preventing noisy background tab logs",
+      "Secret redaction mode masking cookies and bearer tokens prior to export",
+      "Direct JSON-Lines (JSONL) export with live request counter badge"
+    ],
+    "requirements": "Google Chrome / Chromium-based browser (Manifest V3)",
+    "installation": "git clone https://github.com/ctala/api-reverse-engineer.git\n# Open chrome://extensions -> Toggle 'Developer mode'\n# Click 'Load unpacked' and select the cloned directory",
+    "security_notes": "Redaction mode should be kept enabled when recording sensitive sessions.",
+    "status": "Available"
+  },
+  {
+    "slug": "omnivoice",
+    "name": "OmniVoice (K2-FSA)",
+    "category": "voice_audio",
+    "category_name": "AI Voice & Audio",
+    "badge_color": "#ec4899",
+    "icon": "mic_waves",
+    "tagline": "Universal neural text-to-speech engine supporting multi-speaker streaming synthesis.",
+    "repo_url": "https://github.com/k2-fsa/OmniVoice",
+    "overview": "Open-source state-of-the-art TTS engine from the K2-FSA team, optimized for low-latency edge synthesis, high naturalness, and diverse acoustic characteristics.",
+    "features": [
+      "Streaming text-to-speech with chunked generation",
+      "Multi-speaker voice latent embedding support",
+      "Optimized for ONNX runtime and PyTorch inference pipelines",
+      "Highly accurate phoneme and prosody control"
+    ],
+    "requirements": "Python 3.9+, PyTorch 2.0+, ONNXRuntime, Librosa",
+    "installation": "git clone https://github.com/k2-fsa/OmniVoice.git\ncd OmniVoice\npip install -r requirements.txt",
+    "security_notes": "Verify model weights checksum before loading into memory.",
+    "status": "Available"
+  },
+  {
+    "slug": "heygen-comp",
+    "name": "HeyGen Developer Suite",
+    "category": "voice_audio",
+    "category_name": "AI Voice & Audio",
+    "badge_color": "#8b5cf6",
+    "icon": "video_ai",
+    "tagline": "SDK and workflow connectors for AI avatar synthesis and video dubbing pipelines.",
+    "repo_url": "https://github.com/heygen-comP",
+    "overview": "Community and developer integrations bridging programmatic video avatar generation, voice synchronization, and multilingual video localization.",
+    "features": [
+      "Programmatic avatar generation triggers via webhook payloads",
+      "Synchronized lip-sync alignment with input audio files",
+      "Multilingual translation and automated voice replacement flows"
+    ],
+    "requirements": "Python 3.10+ or Node 18+, Valid Service Account Token",
+    "installation": "git clone https://github.com/heygen-comP\n# Follow specific sub-repository README instructions for credentials setup",
+    "security_notes": "Upstream repo or profile may be private or restricted; check accessibility on GitHub.",
+    "status": "Available"
+  },
+  {
+    "slug": "handy",
+    "name": "Handy Desktop Engine",
+    "category": "voice_audio",
+    "category_name": "AI Voice & Audio",
+    "badge_color": "#10b981",
+    "icon": "command_box",
+    "tagline": "Free-form autonomous speech-to-text and keyboard macro orchestrator.",
+    "repo_url": "https://github.com/cjpais/handy",
+    "overview": "A keyboard-first productivity utility combining local speech recognition with system automation, command execution, and macro dispatching.",
+    "features": [
+      "Local audio transcription using lightweight Whisper backends",
+      "Global system hotkey triggers and command bar interface",
+      "Zero external telemetry or cloud audio transfer when run locally"
+    ],
+    "requirements": "Go 1.21+ / Python, PortAudio, Local Audio Capture Device",
+    "installation": "git clone https://github.com/cjpais/handy.git\ncd handy\ngo build -o handy main.go\n./handy",
+    "security_notes": "Grant OS microphone and accessibility permissions locally on the host device.",
+    "status": "Available"
+  },
+  {
+    "slug": "omnivoice-studio",
+    "name": "OmniVoice Studio",
+    "category": "voice_audio",
+    "category_name": "AI Voice & Audio",
+    "badge_color": "#f43f5e",
+    "icon": "studio_equalizer",
+    "tagline": "Modern web dashboard and studio interface for the OmniVoice TTS model.",
+    "repo_url": "https://github.com/debpalash/OmniVoice-Studio",
+    "overview": "Web-based graphical frontend allowing audio creators to adjust pitch, speed, speaker IDs, preview waveform buffers, and export audio in lossy/lossless formats.",
+    "features": [
+      "Interactive audio timeline and pitch curve tuning",
+      "Multi-language selector and instant audio playback buffer",
+      "Batch text file synthesis and ZIP download packaging"
+    ],
+    "requirements": "Python 3.10+, Gradio / Streamlit or Flask, OmniVoice dependencies",
+    "installation": "git clone https://github.com/debpalash/OmniVoice-Studio.git\ncd OmniVoice-Studio\npip install -r requirements.txt\npython app.py",
+    "security_notes": "Restrict concurrent thread limits when generating long text on CPU targets.",
+    "status": "Available"
+  },
+  {
+    "slug": "playlist",
+    "name": "Playlist Synchronizer",
+    "category": "music_tools",
+    "category_name": "Music & Audio Utilities",
+    "badge_color": "#e11d48",
+    "icon": "music_note",
+    "tagline": "High-speed cross-platform playlist aggregator and metadata exporter.",
+    "repo_url": "https://github.com/techgptx/Playlist",
+    "overview": "Utility dedicated to batch parsing, extracting, and syncing tracklists from YouTube, Spotify, and streaming providers with lossless metadata tags.",
+    "features": [
+      "Rapid concurrent metadata scraping for multi-hundred track lists",
+      "ID3 tag injection including album art, artist, and release dates",
+      "M3U8 and JSON playlist format exports"
+    ],
+    "requirements": "Python 3.9+, ffmpeg-python, yt-dlp dependencies",
+    "installation": "git clone https://github.com/techgptx/Playlist.git\ncd Playlist\npip install -r requirements.txt\npython playlist.py",
+    "security_notes": "Respect rate-limiting thresholds to avoid temporary IP throttles.",
+    "status": "Available"
+  },
+  {
+    "slug": "magix-quickstart",
+    "name": "MAGIX Music Maker Quickstart",
+    "category": "music_tools",
+    "category_name": "Music & Audio Utilities",
+    "badge_color": "#f59e0b",
+    "icon": "drum_pad",
+    "tagline": "Modular automation scripts, templates, and track setups for DAW workflows.",
+    "repo_url": "https://github.com/jtr21300/MAGIX-Music-Maker-Quickstart",
+    "overview": "Template collection and automation starter kit designed to streamline soundpool organization, MIDI routing, and track setups in MAGIX Music Maker.",
+    "features": [
+      "Pre-configured routing schemas for virtual synthesizers and plugins",
+      "Automated soundpool cataloging scripts",
+      "Reference guide for project stems and sample rate alignment"
+    ],
+    "requirements": "Windows 10/11, MAGIX Music Maker DAW installation",
+    "installation": "git clone https://github.com/jtr21300/MAGIX-Music-Maker-Quickstart.git\n# Review setup guides in the repository docs folder",
+    "security_notes": "Ensure VST audio plugins are sourced from verified publishers.",
+    "status": "Available"
+  },
+  {
+    "slug": "maigret",
+    "name": "Maigret",
+    "category": "osint_recon",
+    "category_name": "OSINT & Reconnaissance",
+    "badge_color": "#3b82f6",
+    "icon": "user_search",
+    "tagline": "Collect a dossier on a person by username across 3000+ public platforms.",
+    "repo_url": "https://github.com/soxoj/maigret",
+    "overview": "High-powered OSINT framework based on Sherlock with extended parsing capabilities, avatar extraction, web archives verification, and graph visualization.",
+    "features": [
+      "Scans across 3000+ social sites, forums, and developer platforms",
+      "Generates comprehensive HTML, PDF, and Graphviz visual reports",
+      "Extracts connected profiles, country, bio tags, and linked websites"
+    ],
+    "requirements": "Python 3.8+ (Linux / macOS / Termux / Windows)",
+    "installation": "pip3 install maigret\n# Or from source:\ngit clone https://github.com/soxoj/maigret.git\ncd maigret\npip3 install -r requirements.txt\n./maigret.py <username> --html",
+    "security_notes": "Authorized usage only: strictly intended for security research, identity theft defense, and authorized assessments.",
+    "status": "Available"
+  },
+  {
+    "slug": "recon-ng",
+    "name": "Recon-ng",
+    "category": "osint_recon",
+    "category_name": "OSINT & Reconnaissance",
+    "badge_color": "#0ea5e9",
+    "icon": "crosshair",
+    "tagline": "Full-featured reconnaissance framework with modular plugins and database.",
+    "repo_url": "https://github.com/lanmaster53/recon-ng",
+    "overview": "A modular web reconnaissance framework structured similarly to Metasploit, providing automated target discovery, DNS enumeration, contact harvesting, and database reporting.",
+    "features": [
+      "Extensible module architecture (discovery, exploitation, reporting)",
+      "Integrated SQLite workspace database managing contacts and hosts",
+      "Built-in interactive command-line interface with tab completion"
+    ],
+    "requirements": "Python 3.8+, Git",
+    "installation": "git clone https://github.com/lanmaster53/recon-ng.git\ncd recon-ng\npip install -r REQUIREMENTS\n./recon-ng",
+    "security_notes": "Ensure you have permission to query OSINT databases regarding the target domain.",
+    "status": "Available"
+  },
+  {
+    "slug": "sherlock",
+    "name": "Sherlock",
+    "category": "osint_recon",
+    "category_name": "OSINT & Reconnaissance",
+    "badge_color": "#6366f1",
+    "icon": "magnifier",
+    "tagline": "Hunt down social media accounts by username across hundreds of networks.",
+    "repo_url": "https://github.com/sherlock-project/sherlock",
+    "overview": "The standard open-source investigative utility for matching user handles across hundreds of online websites with multi-threading and proxy support.",
+    "features": [
+      "High-concurrency asynchronous username lookups",
+      "Tor and HTTP/SOCKS proxy rotation capabilities",
+      "CSV and JSON output generation"
+    ],
+    "requirements": "Python 3.9+",
+    "installation": "git clone https://github.com/sherlock-project/sherlock.git\ncd sherlock\npython3 -m pip install -r requirements.txt\npython3 sherlock <username>",
+    "security_notes": "For authorized research and digital footprint auditing only.",
+    "status": "Available"
+  },
+  {
+    "slug": "godseye",
+    "name": "Godseye 1.0 (Geospatial OSINT)",
+    "category": "osint_recon",
+    "category_name": "OSINT & Reconnaissance",
+    "badge_color": "#14b8a6",
+    "icon": "sat_globe",
+    "tagline": "Interactive 3D geospatial OSINT globe with live aircraft, CCTV, & satellites.",
+    "repo_url": "https://github.com/VrushankPatel/godseye",
+    "overview": "Tactical HUD 3D globe visualization powered by CesiumJS, integrating real-time aircraft tracks, orbital satellites, public CCTV points, seismic alerts, and weather matrices.",
+    "features": [
+      "Fullscreen CesiumJS globe with HUD overlays and multiple visual modes (NVG, FLIR)",
+      "Live ADS-B aircraft data feeds, satellite orbital propagation via TLE",
+      "Integrated NASA EONET alerts, USGS earthquakes, and municipal feeds",
+      "Keyless frontend-first architecture with Bring-Your-Own-Key model"
+    ],
+    "requirements": "Node.js 18+, modern browser supporting WebGL",
+    "installation": "git clone https://github.com/VrushankPatel/godseye.git\ncd godseye\nnpm install\nnpm run dev",
+    "security_notes": "Feeds use publicly broadcast telemetry; verify local legal jurisdiction for surveillance displays.",
+    "status": "Available"
+  },
+  {
+    "slug": "apk-reverse",
+    "name": "APK Reverse",
+    "category": "reverse_engineering",
+    "category_name": "Reverse Engineering & Security",
+    "badge_color": "#eab308",
+    "icon": "android_bug",
+    "tagline": "Android application package reverse-engineering and security auditor.",
+    "repo_url": "https://github.com/newliver666/apk-reverse",
+    "overview": "Static analysis pipeline parsing Android APK packages, inspecting AndroidManifest.xml permissions, decompiling smali code, and scanning for hardcoded secrets.",
+    "features": [
+      "Automated extraction of APK components, activities, and exported services",
+      "Smali decompilation and string pattern regex matching",
+      "Security vulnerability detection for insecure cleartext network traffic"
+    ],
+    "requirements": "Java JRE/JDK 11+, Python 3.8+, apktool, dex2jar",
+    "installation": "git clone https://github.com/newliver666/apk-reverse.git\ncd apk-reverse\npip install -r requirements.txt\npython audit.py sample.apk",
+    "security_notes": "Execute analysis only on applications you own or have explicit written permission to audit.",
+    "status": "Available"
+  },
+  {
+    "slug": "image-upload-exploits",
+    "name": "Image Upload Exploits",
+    "category": "reverse_engineering",
+    "category_name": "Reverse Engineering & Security",
+    "badge_color": "#ef4444",
+    "icon": "shield_alert",
+    "tagline": "Reference test payloads for testing web application media processing parsers.",
+    "repo_url": "https://github.com/barrracud4/image-upload-exploits",
+    "overview": "A curated research repository containing safe test media files and proof-of-concept formats (SVG, GIF, PDF) for validating parser security (ImageMagick, Ghostscript) during authorized penetration tests.",
+    "features": [
+      "Documentation on parser memory leaks, XXE via SVG, and SSRF vectors",
+      "Verified test cases for fuzzing media handling infrastructure",
+      "Guidance on defensive file validation, re-encoding, and MIME filtering"
+    ],
+    "requirements": "Security lab environment (Docker / isolated VM)",
+    "installation": "git clone https://github.com/barrracud4/image-upload-exploits.git\n# Review defensive documentation and inspect safe payloads",
+    "security_notes": "Intended strictly for authorized bug bounty programs and defensive remediation. Never upload to unauthorized third-party platforms.",
+    "status": "Available"
+  },
+  {
+    "slug": "thc-hydra",
+    "name": "THC Hydra",
+    "category": "reverse_engineering",
+    "category_name": "Reverse Engineering & Security",
+    "badge_color": "#dc2626",
+    "icon": "key_lock",
+    "tagline": "Very fast network logon cracker supporting numerous communication protocols.",
+    "repo_url": "https://github.com/vanhauser-thc/thc-hydra",
+    "overview": "The industry standard security auditing tool for testing credential resilience and password policies across SSH, FTP, HTTP POST, MySQL, and 50+ network protocols.",
+    "features": [
+      "Parallelized multithreaded network authentication engine",
+      "Flexible target definition and protocol fuzzing options",
+      "SSL/TLS wrapper integration for modern encrypted endpoints"
+    ],
+    "requirements": "Linux / BSD / Termux / macOS, GCC, OpenSSL, libssh",
+    "installation": "# On Debian/Ubuntu/Termux:\napt update && apt install hydra\n# Or build from source:\ngit clone https://github.com/vanhauser-thc/thc-hydra.git\ncd thc-hydra && ./configure && make && sudo make install",
+    "security_notes": "Strictly prohibited against systems without written mutual engagement authorization.",
+    "status": "Available"
+  },
+  {
+    "slug": "h4cker",
+    "name": "The Art of Hacking (H4cker)",
+    "category": "reverse_engineering",
+    "category_name": "Reverse Engineering & Security",
+    "badge_color": "#84cc16",
+    "icon": "book_open",
+    "tagline": "Curated security research reference, labs, exploit tutorials, and cheatsheets.",
+    "repo_url": "https://github.com/The-Art-of-Hacking/h4cker",
+    "overview": "Massive educational repository maintained by Omar Santos containing thousands of ethical hacking notes, defensive engineering playbooks, certified lab walkthroughs, and security scripts.",
+    "features": [
+      "Comprehensive guides across Web, Cloud, IoT, and Reverse Engineering",
+      "Hands-on defensive architecture checklists and mitigation strategies",
+      "Regular updates tracking modern CVEs and zero-day mitigations"
+    ],
+    "requirements": "Web browser, Git, Markdown reader",
+    "installation": "git clone https://github.com/The-Art-of-Hacking/h4cker.git\n# Navigate to specific topic folders (e.g., cloud-security, ethical-hacking)",
+    "security_notes": "All materials are for educational and authorized defensive readiness purposes only.",
+    "status": "Available"
+  },
+  {
+    "slug": "awesome-ai-agents",
+    "name": "Awesome AI Agents",
+    "category": "ai_agents",
+    "category_name": "AI Agents & Discovery",
+    "badge_color": "#8b5cf6",
+    "icon": "bot_sparkle",
+    "tagline": "Curated directory of autonomous AI agents, multi-agent frameworks, and architectures.",
+    "repo_url": "https://github.com/aloth/awesome-ai-agents",
+    "overview": "An authoritative index tracking autonomous agent frameworks (AutoGPT, CrewAI, LangGraph), tool-use capabilities, benchmark evals, and developer architectures.",
+    "features": [
+      "Categorized listing of production and experimental agent repositories",
+      "Tool-calling frameworks and memory management libraries",
+      "Comparison tables of autonomous LLM reasoning benchmarks"
+    ],
+    "requirements": "Git or Web browser",
+    "installation": "git clone https://github.com/aloth/awesome-ai-agents.git\n# Explore the categorized list in README.md",
+    "security_notes": "When running third-party autonomous agents, sandbox execution environments to prevent unwanted local shell executions.",
+    "status": "Available"
+  },
+  {
+    "slug": "github-ranking-ai",
+    "name": "GitHub Ranking AI",
+    "category": "ai_agents",
+    "category_name": "AI Agents & Discovery",
+    "badge_color": "#0ea5e9",
+    "icon": "chart_star",
+    "tagline": "Automated daily rankings and velocity tracker for trending AI/ML repositories.",
+    "repo_url": "https://github.com/yuxiaopeng/Github-Ranking-AI",
+    "overview": "Scheduled GitHub actions pipeline that tracks star velocities, fork growth, and trending AI research projects, archiving daily metrics into structured tables.",
+    "features": [
+      "Daily automated generation of trending GitHub AI lists",
+      "Star velocity analysis filtering out artificial bot spikes",
+      "Historical archive of seminal open-source machine learning releases"
+    ],
+    "requirements": "Python 3.8+, GitHub Personal Access Token (for local crawler runs)",
+    "installation": "git clone https://github.com/yuxiaopeng/Github-Ranking-AI.git\ncd Github-Ranking-AI\npip install -r requirements.txt",
+    "security_notes": "Requires standard GitHub API rate-limit adherence.",
+    "status": "Available"
+  }
+]

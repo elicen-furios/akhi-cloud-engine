@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 1250px; margin: 20px auto 60px; padding: 0 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <!-- Hero Section -->
+    <div class="card" style="padding: 32px 24px; margin-bottom: 24px; text-align: center; border-radius: 20px;">
+        <div style="display:inline-block; padding: 4px 14px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 20px; font-size: 0.78rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">
+            ENGINEERED BY DEVELOPER AKHIL
+        </div>
+        <h1 style="font-size: 2.1rem; font-weight: 800; color: #ffffff; margin: 0 0 10px; letter-spacing: -0.02em;">
+            AKHIL DEVELOPER PLATFORM
+        </h1>
+        <p style="color: #94a3b8; font-size: 0.95rem; max-width: 760px; margin: 0 auto 20px; line-height: 1.6;">
+            Explore verified AI neural audio synthesis, reverse-engineering suites, API scraping bridges, OSINT intelligence trackers, and autonomous agent frameworks.
+        </p>
+
+        <!-- Search Input -->
+        <div style="max-width: 580px; margin: 0 auto; position: relative;">
+            <input type="text" id="projectSearchInput" onkeyup="filterProjects()" placeholder="Search tools, repos, commands (e.g. 'recon', 'voice', 'hydra')..." 
+                style="width: 100%; padding: 13px 18px 13px 44px; border-radius: 12px; background: rgba(10, 16, 28, 0.85); border: 1px solid rgba(255,255,255,0.18); color: #fff; font-size: 0.92rem; outline: none; box-sizing: border-box;">
+            <svg style="position: absolute; left: 16px; top: 14px;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+    </div>
+
+    <!-- Category Filters -->
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px;">
+        <button class="cat-pill active" onclick="setCategory('all', this)">All Projects ({{ projects|length }})</button>
+        <button class="cat-pill" onclick="setCategory('api_tools', this)">API & Developer Tools</button>
+        <button class="cat-pill" onclick="setCategory('voice_audio', this)">Voice & Audio</button>
+        <button class="cat-pill" onclick="setCategory('music_tools', this)">Music & Playlists</button>
+        <button class="cat-pill" onclick="setCategory('osint_recon', this)">OSINT & Recon</button>
+        <button class="cat-pill" onclick="setCategory('reverse_engineering', this)">Reverse Engineering</button>
+        <button class="cat-pill" onclick="setCategory('ai_agents', this)">AI Agents</button>
+    </div>
+
+    <!-- Projects Grid Container -->
+    <div id="projectsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px;">
+        {% for p in projects %}
+        <div class="card project-item" data-category="{{ p.category }}" data-keywords="{{ p.name|lower }} {{ p.tagline|lower }} {{ p.overview|lower }}" 
+             style="padding: 22px; border-radius: 18px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s ease, border-color 0.2s ease;">
+            <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="font-size: 0.72rem; font-weight: 700; color: {{ p.badge_color }}; background: rgba(255,255,255,0.06); padding: 3px 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                        {{ p.category_name }}
+                    </span>
+                    <span style="font-size: 0.72rem; color: #4ade80; display: inline-flex; align-items: center; gap: 4px;">
+                        <span style="width:6px; height:6px; border-radius:50%; background:#4ade80;"></span> {{ p.status }}
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <!-- Clean dynamic SVG icons -->
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ p.badge_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            {% if p.category == 'api_tools' %}
+                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+                            {% elif p.category == 'voice_audio' %}
+                            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            {% elif p.category == 'music_tools' %}
+                            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                            {% elif p.category == 'osint_recon' %}
+                            <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                            {% elif p.category == 'reverse_engineering' %}
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            {% else %}
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            {% endif %}
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; color: #ffffff; font-size: 1.12rem; font-weight: 700;">{{ p.name }}</h3>
+                        <p style="margin: 2px 0 0; color: #94a3b8; font-size: 0.8rem;">Dedicated Suite</p>
+                    </div>
+                </div>
+
+                <p style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.5; margin-bottom: 18px;">
+                    {{ p.tagline }}
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+                <a href="/project/{{ p.slug }}" style="flex: 1; text-align: center; padding: 10px; background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 10px; color: #38bdf8; font-size: 0.84rem; font-weight: 600; text-decoration: none;">
+                    Explore Docs &rarr;
+                </a>
+                <a href="{{ p.repo_url }}" target="_blank" rel="noopener noreferrer" style="padding: 10px 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: #cbd5e1; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Open on GitHub">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    <div id="noResultsMsg" class="card" style="display: none; padding: 36px; text-align: center; margin-top: 20px;">
+        <p style="color: #94a3b8; font-size: 1rem; margin: 0;">No matching developer repositories found for your query.</p>
+    </div>
+
+    <!-- Floating Scroll-to-Top Button -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" 
+            style="position: fixed; bottom: 24px; right: 24px; width: 44px; height: 44px; border-radius: 50%; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.5); backdrop-filter: blur(12px); z-index: 100;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+</div>
+
+<style>
+.cat-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #94a3b8;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.cat-pill:hover, .cat-pill.active {
+    background: rgba(56, 189, 248, 0.18) !important;
+    border-color: rgba(56, 189, 248, 0.5) !important;
+    color: #38bdf8 !important;
+}
+.project-item:hover {
+    transform: translateY(-3px);
+    border-color: rgba(56, 189, 248, 0.3) !important;
+}
+</style>
+
+<script>
+let currentCategory = 'all';
+
+function setCategory(cat, btn) {
+    currentCategory = cat;
+    document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterProjects();
+}
+
+function filterProjects() {
+    const query = document.getElementById('projectSearchInput').value.toLowerCase().trim();
+    const items = document.querySelectorAll('.project-item');
+    let visibleCount = 0;
+
+    items.forEach(item => {
+        const cat = item.getAttribute('data-category');
+        const keywords = item.getAttribute('data-keywords');
+        const matchCat = (currentCategory === 'all' || cat === currentCategory);
+        const matchQuery = (!query || keywords.includes(query));
+
+        if (matchCat && matchQuery) {
+            item.style.display = 'flex';
+            visibleCount++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
+    document.getElementById('noResultsMsg').style.display = (visibleCount === 0) ? 'block' : 'none';
+}
+</script>
+{% endblock %}
