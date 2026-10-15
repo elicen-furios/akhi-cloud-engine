@@ -592,6 +592,36 @@
   }
 </style>
 
+
+<style>
+  /* Floating widget aur icons ko hide karein */
+  [class*="chat"], [id*="chat"], [class*="assistant"], [id*="assistant"],
+  div[style*="position: fixed"], button[style*="position: fixed"] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Dark anime background */
+  html, body {
+    background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.90)),
+                url('/static/images/main-bg.jpg') no-repeat center center fixed !important;
+    background-size: cover !important;
+    color: #ffffff !important;
+  }
+
+  /* Blinding white boxes ko transparent dark glass karein */
+  .bg-white, .card, [class*="bg-white"] {
+    background-color: rgba(30, 41, 59, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(10px) !important;
+  }
+  h1, h2, h3, p, span, div {
+    color: inherit;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -880,9 +910,7 @@
     <audio id="bot-audio" preload="auto" src="/bot.mp3"></audio>
 
     <!-- AI Girl Chatbot Launcher -->
-    <div id="ai-chat-launcher" onclick="toggleAiChat()" title="Talk with AI Assistant">
-        <img src="?auto=format&fit=crop&w=200&q=80" alt="AI Girl Assistant">
-    </div>
+    
 
     <!-- AI Chatbot Box -->
     
@@ -952,10 +980,7 @@
 
 <div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
 
-<div id="ai-chat-window">
-    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
-        <div style="display:flex; align-items:center; gap:8px;">
-            <div style="display:none;">AI</div>
+
             <div>
                 <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
                 <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
@@ -964,8 +989,7 @@
         <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
     </div>
 
-    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
-        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
+    
     </div>
 
     <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">

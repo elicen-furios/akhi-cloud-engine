@@ -170,6 +170,36 @@
             margin-top: 12px; font-weight: 500;
         }
     </style>
+
+<style>
+  /* Floating widget aur icons ko hide karein */
+  [class*="chat"], [id*="chat"], [class*="assistant"], [id*="assistant"],
+  div[style*="position: fixed"], button[style*="position: fixed"] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Dark anime background */
+  html, body {
+    background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.90)),
+                url('/static/images/main-bg.jpg') no-repeat center center fixed !important;
+    background-size: cover !important;
+    color: #ffffff !important;
+  }
+
+  /* Blinding white boxes ko transparent dark glass karein */
+  .bg-white, .card, [class*="bg-white"] {
+    background-color: rgba(30, 41, 59, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(10px) !important;
+  }
+  h1, h2, h3, p, span, div {
+    color: inherit;
+  }
+</style>
+
 </head>
 <body>
 

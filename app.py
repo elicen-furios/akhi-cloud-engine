@@ -2410,3 +2410,34 @@ def ai_assistant_route():
             return jsonify({"reply": reply, "script": reply, "success": True})
     except Exception as e:
         return jsonify({"error": str(e), "success": False}), 500
+
+
+@app.route("/api/chat", methods=["POST"])
+@app.route("/api/ai-chat", methods=["POST"])
+def direct_gemini_handler():
+    import urllib.request, json
+    key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not key:
+        return jsonify({"reply": "GEMINI_API_KEY environment me missing hai."}), 200
+
+    data = request.get_json(silent=True) or {}
+    msg = data.get("message") or data.get("prompt") or "Hello"
+
+    # API key query param me pass karne se 401 resolve ho jata hai
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
+    payload = json.dumps({
+        "contents": [{"parts": [{"text": msg}]}]
+    }).encode("utf-8")
+
+    try:
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=15) as res:
+            res_json = json.loads(res.read().decode("utf-8"))
+            ans = res_json["candidates"][0]["content"]["parts"][0]["text"]
+            return jsonify({"reply": ans, "response": ans, "success": True})
+    except Exception as e:
+        return jsonify({"reply": f"API Error: {str(e)}", "error": str(e)}), 200
