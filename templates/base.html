@@ -519,186 +519,55 @@
 
     </style>
 
-
-
-
-
-
-
-<style>
-  /* Floating widget aur icons ko hide karein */
-  [class*="chat"], [id*="chat"], [class*="assistant"], [id*="assistant"],
-  div[style*="position: fixed"], button[style*="position: fixed"] {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-
-  /* Dark anime background */
-  html, body {
-    background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.90)),
-                url('/static/images/main-bg.jpg') no-repeat center center fixed !important;
-    background-size: cover !important;
-    color: #ffffff !important;
-  }
-
-  /* Blinding white boxes ko transparent dark glass karein */
-  .bg-white, .card, [class*="bg-white"] {
-    background-color: rgba(30, 41, 59, 0.75) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-    backdrop-filter: blur(10px) !important;
-  }
-  h1, h2, h3, p, span, div {
-    color: inherit;
-  }
-</style>
-
-
-
-
-
-
-
-
-<style>
-  /* Sidebar/Drawer aur buttons ko root se kill karo */
-  .ai-btn, #ai-btn, [class*="drawer"], [id*="drawer"], 
-  button[class*="chat"], div[class*="chat"],
-  span:has-text("AI"), button:has-text("AI") {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-
-  /* Full screen centered container */
+<style id="anime-theme-styles">
   body {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-  }
-  
-  main, section, .container {
-    width: 100% !important;
-    max-width: 600px !important;
-    margin: 0 auto !important;
-    padding: 16px !important;
-    box-sizing: border-box !important;
-  }
-</style>
-
-
-<style>
-  /* Sidebar/Drawer aur buttons ko root se kill karo */
-  .ai-btn, #ai-btn, [class*="drawer"], [id*="drawer"], 
-  button[class*="chat"], div[class*="chat"],
-  span:has-text("AI"), button:has-text("AI") {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-
-  /* Full screen centered container */
-  body {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-  }
-  
-  main, section, .container {
-    width: 100% !important;
-    max-width: 600px !important;
-    margin: 0 auto !important;
-    padding: 16px !important;
-    box-sizing: border-box !important;
-  }
-</style>
-
-
-
-
-
-<style id="akhil-perfect-theme">
-  html, body {
-    width: 100% !important;
-    max-width: 100vw !important;
-    min-height: 100vh !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-    background-color: #0b0f19 !important;
-    background-image: linear-gradient(rgba(11, 15, 25, 0.78), rgba(11, 15, 25, 0.88)), url('/static/image.png') !important;
+    background: linear-gradient(rgba(10, 15, 29, 0.88), rgba(10, 15, 29, 0.92)),
+                url("{{ url_for('static', filename='images/main-bg.jpg') }}") no-repeat center center fixed !important;
     background-size: cover !important;
-    background-position: center !important;
-    background-attachment: fixed !important;
-    background-repeat: no-repeat !important;
-    color: #ffffff !important;
   }
-
-  /* Right-side broken drawer, AI chat buttons permanently eradicate */
-  [class*="assistant"], [id*="assistant"],
-  [class*="drawer"], [id*="drawer"],
-  .ai-btn, #ai-btn, [class*="chat-box"], [id*="chat-box"],
-  button[class*="chat"], div[class*="chat"],
-  .side-drawer, #chat-container {
-    display: none !important;
-    visibility: hidden !important;
-    width: 0 !important;
-    height: 0 !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    position: absolute !important;
-    left: -9999px !important;
+  .anime-hero-card {
+    width: 100%;
+    max-width: 440px;
+    margin: 14px auto 22px auto;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    border: 3px solid rgba(255, 255, 255, 0.85);
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-
-  /* Containers ko full-width aur centered balance karein */
-  main, .container, section, .max-w-7xl, .max-w-6xl {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-    box-sizing: border-box !important;
+  .anime-hero-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
   }
-
-  /* Cards glass-dark finish */
-  .card, div[class*="bg-white"], .bg-white {
-    background: rgba(17, 24, 39, 0.75) !important;
-    backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    color: #ffffff !important;
-    border-radius: 16px !important;
+  /* Login Video Styling */
+  .login-video-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
   }
-
-  /* Text colors */
-  h1, h2, h3, h4, p, span, label {
-    color: #ffffff !important;
-  }
-  
-  header, nav {
-    background: rgba(11, 15, 25, 0.8) !important;
-    backdrop-filter: blur(8px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  .login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 15, 29, 0.75);
+    z-index: -1;
   }
 </style>
 
 </head>
 <body>
-
-<div id="login-video-bg" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; overflow: hidden; pointer-events: none;">
-  <video autoplay muted loop playsinline style="min-width: 100%; min-height: 100%; width: 100%; height: 100%; object-fit: cover; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-    <source src="/static/login-bg.mp4" type="video/mp4">
-  </video>
-  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.65);"></div>
-</div>
-
-    
+    <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
     <aside class="sidebar" id="sidebar">
         <div class="brand-box">
@@ -984,7 +853,9 @@
     <audio id="bot-audio" preload="auto" src="/bot.mp3"></audio>
 
     <!-- AI Girl Chatbot Launcher -->
-    
+    <div id="ai-chat-launcher" onclick="toggleAiChat()" title="Talk with AI Assistant">
+        <img src="?auto=format&fit=crop&w=200&q=80" alt="AI Girl Assistant">
+    </div>
 
     <!-- AI Chatbot Box -->
     
@@ -1054,7 +925,10 @@
 
 <div id="ai-float-bubble" onclick="document.getElementById('ai-chat-window').style.display='flex'; this.style.display='none'; document.getElementById('ai-chat-input').focus();">AI</div>
 
-
+<div id="ai-chat-window">
+    <div style="background:#121215; padding:12px 14px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:none;">AI</div>
             <div>
                 <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
                 <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
@@ -1063,7 +937,8 @@
         <button onclick="document.getElementById('ai-chat-window').style.display='none'; document.getElementById('ai-float-bubble').style.display='flex';" style="background:none; border:none; color:#a1a1aa; font-size:1.15rem; cursor:pointer; padding:2px 6px;">✕</button>
     </div>
 
-    
+    <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;">
+        <div class="ai-msg ai-msg-bot">Hello! Main aapka AI assistant hoon. Aap mujhse koi bhi sawaal pooch sakte hain.</div>
     </div>
 
     <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
