@@ -576,7 +576,6 @@
     background-repeat: no-repeat !important;
   }
 
-  /* Black floating button / AI Assistant icon remove */
   div[class*="assistant"], button[class*="assistant"],
   div[id*="assistant"], button[id*="assistant"],
   img[alt*="Assistant"], [class*="ai-btn"], [id*="ai-btn"],
@@ -633,7 +632,6 @@
   [class*="assistant"], [id*="assistant"],
   div[class*="fixed"][class*="right-0"],
   div:has(> [placeholder*="Type pro"]),
-  div:has(> * :contains("AI Assistant")),
   .ai-btn, #ai-btn, [class*="chat-"] {
     display: none !important;
     visibility: hidden !important;
@@ -1032,7 +1030,6 @@
 
 
             <div>
-                <div style="font-size:0.85rem; font-weight:700; color:#ffffff;">AI Assistant</div>
                 <div style="font-size:0.68rem; color:#10b981; font-weight:500;">● Online</div>
             </div>
         </div>
@@ -1043,7 +1040,6 @@
     </div>
 
     <div style="padding:10px 12px; border-top:1px solid #27272a; background:#121215; display:flex; align-items:center; gap:8px;">
-        <input type="text" id="ai-chat-input" placeholder="Type prompt or code..." onkeydown="if(event.key==='Enter') sendAIMessage();" style="flex:1; background:#18181b; border:1px solid #27272a; border-radius:6px; padding:8px 10px; font-size:0.85rem; color:#ffffff; outline:none;">
         <button onclick="sendAIMessage()" style="background:transparent; border:none; cursor:pointer; padding:6px 8px; display:flex; align-items:center; justify-content:center;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -1054,7 +1050,6 @@
 
 <script>
 async function sendAIMessage() {
-    const inp = document.getElementById('ai-chat-input');
     const txt = inp.value.trim();
     if (!txt) return;
 
