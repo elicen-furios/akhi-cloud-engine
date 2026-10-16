@@ -3,22 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Footprint OSINT Engine — Akhil Platform</title>
+    <title>Footprint OSINT Engine — Akhil Developer Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background: #090d16;
             color: #f1f5f9;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 20px 16px;
+            padding: 20px 16px 60px;
             min-height: 100vh;
         }
-        .container { max-width: 850px; margin: 0 auto; }
+        .container { max-width: 860px; margin: 0 auto; }
         .back-nav { margin-bottom: 20px; }
-        .back-nav a { color: #6366f1; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+        .back-nav a {
+            color: #818cf8;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
         .card {
             background: #111827;
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 20px;
@@ -26,7 +31,7 @@
         }
         .badge {
             display: inline-block;
-            background: rgba(99, 102, 241, 0.15);
+            background: rgba(129, 140, 248, 0.15);
             color: #818cf8;
             font-size: 0.75rem;
             font-weight: 700;
@@ -34,78 +39,155 @@
             border-radius: 6px;
             text-transform: uppercase;
             margin-bottom: 10px;
+            letter-spacing: 0.04em;
         }
-        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #fff; }
-        p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #ffffff; }
+        p.sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
         .input-group { display: flex; flex-direction: column; gap: 12px; }
         @media(min-width: 600px) { .input-group { flex-direction: row; } }
-        input[type="text"] {
-            flex: 1; padding: 14px 16px; background: #030712;
-            border: 1px solid #374151; border-radius: 10px; color: #fff; font-size: 1rem; outline: none;
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 13px 16px;
+            background: #030712;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
         }
-        input[type="text"]:focus { border-color: #6366f1; }
-        button {
-            padding: 14px 24px; background: #6366f1; color: #ffffff;
-            font-weight: 700; font-size: 1rem; border: none; border-radius: 10px; cursor: pointer;
+        input[type="text"]:focus, textarea:focus { border-color: #818cf8; }
+        button.primary-btn {
+            padding: 14px 24px;
+            background: #818cf8;
+            color: #030712;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
         }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
-        .terminal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        button.primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .copy-btn {
+            background: rgba(255,255,255,0.08);
+            color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
         .terminal-box {
-            background: #030712; border: 1px solid #1f2937; border-radius: 10px;
-            padding: 16px; min-height: 250px; max-height: 450px; overflow-y: auto;
+            background: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 220px;
+            max-height: 440px;
+            overflow-y: auto;
         }
-        pre { color: #818cf8; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; }
+        pre {
+            color: #818cf8;
+            font-family: monospace;
+            font-size: 0.88rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .guide-section h3 {
+            color: #ffffff;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .guide-section h4 {
+            color: #818cf8;
+            font-size: 0.95rem;
+            margin: 14px 0 8px;
+            text-transform: uppercase;
+        }
+        .guide-section ol, .guide-section ul {
+            padding-left: 20px;
+            color: #cbd5e1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="back-nav"><a href="/">&larr; Back to Platform Home</a></div>
-        <div class="card">
-            <span class="badge">Public Footprint & Registry Auditor</span>
-            <h1>Footprint OSINT Engine</h1>
-            <p>Username enter karein aur public developer registries (GitHub, Dev.to, GitLab) par existence verify karein.</p>
-            <div class="input-group">
-                <input type="text" id="usernameInput" placeholder="torvalds" value="torvalds">
-                <button id="scanBtn" onclick="runScan()">Scan Username</button>
-            </div>
+        <div class="back-nav">
+            <a href="/">&larr; Back to Platform Home</a>
         </div>
+
+        <!-- Tool Input Card -->
+        <div class="card">
+            <span class="badge">Public Identity Recon</span>
+            <h1>Footprint OSINT Engine</h1>
+            <p class="sub">Verify username availability and public profile metadata across developer registries.</p>
+            <div class="input-group">
+        <input type="text" id="usernameInput" placeholder="Enter handle (e.g. torvalds)" value="torvalds">
+        <button id="runBtn" class="primary-btn" style="color:#fff; background:#6366f1;" onclick="executeTool()">Scan Username</button>
+    </div>
+        </div>
+
+        <!-- Output Terminal Card -->
         <div class="card">
             <div class="terminal-header">
-                <h3 style="font-size: 1.1rem; color: #fff;">Scan Output</h3>
-                <span id="statusTag" style="color: #64748b; font-size: 0.85rem; font-weight: 600;">System Ready</span>
+                <div>
+                    <span style="font-size: 1.05rem; font-weight: 700; color: #fff;">Live Execution Output</span>
+                    <span id="statusTag" style="margin-left: 10px; color: #64748b; font-size: 0.82rem; font-weight: 600;">System Ready</span>
+                </div>
+                <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
             </div>
             <div class="terminal-box">
-                <pre id="outputView">// Scan result yahan display hoga...</pre>
+                <pre id="outputView">// Ready. Follow the instructions below and click the action button to run...</pre>
             </div>
         </div>
+
+        <!-- English Documentation & Usage Guide -->
+        <div class="card guide-section">
+            <h3>How to Use This Tool — Documentation & Features</h3>
+            <h4>Step-by-Step Instructions</h4>
+            <ol>
+                <li style='margin-bottom: 8px;'>Type a target username or developer handle (alphanumeric characters, hyphens, or underscores).</li><li style='margin-bottom: 8px;'>Click <strong>Scan Username</strong> to query open public registries in real time.</li><li style='margin-bottom: 8px;'>Inspect the returned JSON for public profile metadata including name, bio, follower count, public repositories, and profile links.</li>
+            </ol>
+            <h4>Key Capabilities & Features</h4>
+            <ul>
+                <li style='margin-bottom: 6px;'><strong>Real-Time API Lookups:</strong> Queries official public endpoints on GitHub, Dev.to, and GitLab.</li><li style='margin-bottom: 6px;'><strong>Rich Metadata Extraction:</strong> Retrieves public bio, location, blog URL, and repository counts when available.</li><li style='margin-bottom: 6px;'><strong>Authorized OSINT Compliance:</strong> Strictly accesses publicly declared profile data without intrusive scraping.</li>
+            </ul>
+        </div>
     </div>
+
     <script>
-        async function runScan() {
-            const user = document.getElementById('usernameInput').value.trim();
-            const output = document.getElementById('outputView');
-            const status = document.getElementById('statusTag');
-            const btn = document.getElementById('scanBtn');
-            if(!user) return alert("Username required");
-            status.innerText = "Querying registries...";
-            status.style.color = "#fb923c";
-            btn.disabled = true;
-            output.innerText = "// Verifying handle exposure across public platforms...";
-            try {
-                const res = await fetch('/tools/osint-username', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username: user})
-                });
-                const data = await res.json();
-                output.innerText = JSON.stringify(data, null, 2);
-                status.innerText = "Audit Complete";
-                status.style.color = "#4ade80";
-            } catch(e) {
-                output.innerText = "// Scan error: " + e.message;
-                status.innerText = "Error";
-                status.style.color = "#ef4444";
-            } finally { btn.disabled = false; }
+        function copyOutput() {
+            const text = document.getElementById('outputView').innerText;
+            navigator.clipboard.writeText(text);
+            alert('Output copied to clipboard!');
         }
+        async function executeTool() {
+        const u = document.getElementById('usernameInput').value.trim();
+        const out = document.getElementById('outputView');
+        const st = document.getElementById('statusTag');
+        const btn = document.getElementById('runBtn');
+        if(!u) return alert("Please enter a username.");
+        st.innerText = "Scanning Registries..."; st.style.color = "#fb923c"; btn.disabled = true;
+        out.innerText = "// Querying GitHub, Dev.to, and GitLab public endpoints...";
+        try {
+            const r = await fetch('/tools/osint-username', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:u})});
+            const d = await r.json();
+            out.innerText = JSON.stringify(d, null, 2);
+            st.innerText = "Scan Complete"; st.style.color = "#4ade80";
+        } catch(e) {
+            out.innerText = "// Error: " + e.message; st.innerText = "Failed"; st.style.color = "#ef4444";
+        } finally { btn.disabled = false; }
+    }
     </script>
 </body>
 </html>

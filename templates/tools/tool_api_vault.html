@@ -3,54 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApiVault Key Auditor — Akhil Platform</title>
+    <title>ApiVault Key Auditor — Akhil Developer Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #090d16; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px 16px; min-height: 100vh; }
-        .container { max-width: 850px; margin: 0 auto; }
-        .back-nav a { color: #38bdf8; text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-block; margin-bottom: 20px; }
-        .card { background: #111827; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .badge { display: inline-block; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; margin-bottom: 10px; }
-        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #fff; }
-        p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; }
-        input[type="text"] { width: 100%; padding: 14px 16px; background: #030712; border: 1px solid #374151; border-radius: 10px; color: #fff; font-size: 1rem; outline: none; margin-bottom: 12px; }
-        button { padding: 14px 24px; background: #38bdf8; color: #030712; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; }
-        .terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; min-height: 220px; }
-        pre { color: #38bdf8; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; }
+        body {
+            background: #090d16;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px 16px 60px;
+            min-height: 100vh;
+        }
+        .container { max-width: 860px; margin: 0 auto; }
+        .back-nav { margin-bottom: 20px; }
+        .back-nav a {
+            color: #4ade80;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+        .card {
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.04em;
+        }
+        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #ffffff; }
+        p.sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .input-group { display: flex; flex-direction: column; gap: 12px; }
+        @media(min-width: 600px) { .input-group { flex-direction: row; } }
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 13px 16px;
+            background: #030712;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        input[type="text"]:focus, textarea:focus { border-color: #4ade80; }
+        button.primary-btn {
+            padding: 14px 24px;
+            background: #4ade80;
+            color: #030712;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        button.primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .copy-btn {
+            background: rgba(255,255,255,0.08);
+            color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .terminal-box {
+            background: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 220px;
+            max-height: 440px;
+            overflow-y: auto;
+        }
+        pre {
+            color: #4ade80;
+            font-family: monospace;
+            font-size: 0.88rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .guide-section h3 {
+            color: #ffffff;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .guide-section h4 {
+            color: #4ade80;
+            font-size: 0.95rem;
+            margin: 14px 0 8px;
+            text-transform: uppercase;
+        }
+        .guide-section ol, .guide-section ul {
+            padding-left: 20px;
+            color: #cbd5e1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="back-nav"><a href="/">&larr; Back to Platform Home</a></div>
-        <div class="card">
-            <span class="badge">ApiVault Key Intelligence</span>
-            <h1>ApiVault Secret Auditor</h1>
-            <p>API keys aur tokens ka Shannon entropy score aur security strength inspect karein.</p>
-            <input type="text" id="secretKey" placeholder="Paste your API key or token here..." value="akhi_sample_api_token_audit_test">
-            <button onclick="auditSecret()">Audit Key</button>
+        <div class="back-nav">
+            <a href="/">&larr; Back to Platform Home</a>
         </div>
+
+        <!-- Tool Input Card -->
         <div class="card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <h3 style="color:#fff; font-size:1.1rem;">Entropy Evaluation</h3>
-                <span id="statusTag" style="color:#64748b; font-size:0.85rem;">Ready</span>
+            <span class="badge">Secret Security Engine</span>
+            <h1>ApiVault Key Auditor</h1>
+            <p class="sub">Evaluate API key complexity, Shannon entropy bits, and character diversity.</p>
+            <div class="input-group">
+        <input type="text" id="secretKey" placeholder="Enter API key or token to audit..." value="akhi_sample_api_token_audit_99X7zQ">
+        <button id="runBtn" class="primary-btn" onclick="executeTool()">Audit Secret</button>
+    </div>
+        </div>
+
+        <!-- Output Terminal Card -->
+        <div class="card">
+            <div class="terminal-header">
+                <div>
+                    <span style="font-size: 1.05rem; font-weight: 700; color: #fff;">Live Execution Output</span>
+                    <span id="statusTag" style="margin-left: 10px; color: #64748b; font-size: 0.82rem; font-weight: 600;">System Ready</span>
+                </div>
+                <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
             </div>
-            <div class="terminal-box"><pre id="outputLog">// Output evaluation yahan show hogi...</pre></div>
+            <div class="terminal-box">
+                <pre id="outputView">// Ready. Follow the instructions below and click the action button to run...</pre>
+            </div>
+        </div>
+
+        <!-- English Documentation & Usage Guide -->
+        <div class="card guide-section">
+            <h3>How to Use This Tool — Documentation & Features</h3>
+            <h4>Step-by-Step Instructions</h4>
+            <ol>
+                <li style='margin-bottom: 8px;'>Paste any API token, JWT secret, or bearer key into the input box.</li><li style='margin-bottom: 8px;'>Click <strong>Audit Secret</strong> to run a mathematical entropy and character analysis.</li><li style='margin-bottom: 8px;'>Check the <strong>rating</strong> (High, Medium, or Weak) and <strong>shannon_entropy_score</strong> in the output box.</li>
+            </ol>
+            <h4>Key Capabilities & Features</h4>
+            <ul>
+                <li style='margin-bottom: 6px;'><strong>Shannon Entropy Calculation:</strong> Measures true randomness and unpredictability per character.</li><li style='margin-bottom: 6px;'><strong>Character Diversity Check:</strong> Verifies presence of uppercase, lowercase, digits, and special symbols.</li><li style='margin-bottom: 6px;'><strong>Zero Data Retention:</strong> Keys are analyzed in-memory and never logged or stored on disk.</li>
+            </ul>
         </div>
     </div>
+
     <script>
-        async function auditSecret() {
-            const k = document.getElementById('secretKey').value.trim();
-            if(!k) return alert("Key required");
-            const res = await fetch('/tools/api-vault', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({key: k})
-            });
-            const data = await res.json();
-            document.getElementById('outputLog').innerText = JSON.stringify(data, null, 2);
-            document.getElementById('statusTag').innerText = "Evaluation Done";
-            document.getElementById('statusTag').style.color = "#4ade80";
+        function copyOutput() {
+            const text = document.getElementById('outputView').innerText;
+            navigator.clipboard.writeText(text);
+            alert('Output copied to clipboard!');
         }
+        async function executeTool() {
+        const key = document.getElementById('secretKey').value.trim();
+        const out = document.getElementById('outputView');
+        const st = document.getElementById('statusTag');
+        if(!key) return alert("Please enter a key or token.");
+        st.innerText = "Auditing..."; st.style.color = "#fb923c";
+        const r = await fetch('/tools/api-vault', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key:key})});
+        const d = await r.json();
+        out.innerText = JSON.stringify(d, null, 2);
+        st.innerText = "Audit Complete"; st.style.color = "#4ade80";
+    }
     </script>
 </body>
 </html>

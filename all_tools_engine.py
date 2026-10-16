@@ -238,3 +238,27 @@ def domain_recon():
         return jsonify({"status": "success", "domain": domain, "resolved_ip": ip, "security_headers": headers_found})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@interactive_bp.route('/tools/apk-inspector', methods=['GET', 'POST'])
+def apk_inspector():
+    if request.method == 'GET':
+        return render_template('tools/tool_apk.html', active_page='tools')
+    if 'file' not in request.files:
+        return jsonify({"status": "error", "message": "No APK file uploaded"}), 400
+    f = request.files['file']
+    if not f.filename.endswith('.apk'):
+        return jsonify({"status": "error", "message": "File must end with .apk"}), 400
+    try:
+        with zipfile.ZipFile(f, 'r') as z:
+            names = z.namelist()
+            return jsonify({
+                "status": "success",
+                "filename": f.filename,
+                "total_files": len(names),
+                "dex_count": len([n for n in names if n.endswith('.dex')]),
+                "manifest_present": 'AndroidManifest.xml' in names,
+                "components": [n for n in names if n.endswith('.dex') or n.startswith('lib/')][:15]
+            })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500

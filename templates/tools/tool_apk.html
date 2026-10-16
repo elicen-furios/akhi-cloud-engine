@@ -1,56 +1,195 @@
-{% extends "base.html" %}
-{% block content %}
-<div style="position: relative; z-index: 20; max-width: 960px; margin: 30px auto 80px; padding: 0 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APK Static Inspector — Akhil Developer Platform</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #090d16;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px 16px 60px;
+            min-height: 100vh;
+        }
+        .container { max-width: 860px; margin: 0 auto; }
+        .back-nav { margin-bottom: 20px; }
+        .back-nav a {
+            color: #facc15;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+        .card {
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(250, 204, 21, 0.15);
+            color: #facc15;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.04em;
+        }
+        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #ffffff; }
+        p.sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .input-group { display: flex; flex-direction: column; gap: 12px; }
+        @media(min-width: 600px) { .input-group { flex-direction: row; } }
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 13px 16px;
+            background: #030712;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        input[type="text"]:focus, textarea:focus { border-color: #facc15; }
+        button.primary-btn {
+            padding: 14px 24px;
+            background: #facc15;
+            color: #030712;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        button.primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .copy-btn {
+            background: rgba(255,255,255,0.08);
+            color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .terminal-box {
+            background: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 220px;
+            max-height: 440px;
+            overflow-y: auto;
+        }
+        pre {
+            color: #facc15;
+            font-family: monospace;
+            font-size: 0.88rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .guide-section h3 {
+            color: #ffffff;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .guide-section h4 {
+            color: #facc15;
+            font-size: 0.95rem;
+            margin: 14px 0 8px;
+            text-transform: uppercase;
+        }
+        .guide-section ol, .guide-section ul {
+            padding-left: 20px;
+            color: #cbd5e1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-nav">
+            <a href="/">&larr; Back to Platform Home</a>
+        </div>
 
-    <!-- Back to Hub -->
-    <div style="margin-bottom: 18px;">
-        <a href="/projects" style="color: #94a3b8; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-            &larr; Return to Developer Projects Hub
-        </a>
+        <!-- Tool Input Card -->
+        <div class="card">
+            <span class="badge">Android Package Auditor</span>
+            <h1>APK Static Inspector</h1>
+            <p class="sub">Statically inspect Android APK archives, DEX counts, and native libraries without execution.</p>
+            <div class="input-group">
+        <input type="file" id="apkFile" accept=".apk">
+        <button id="runBtn" class="primary-btn" onclick="executeTool()">Inspect APK Archive</button>
+    </div>
+        </div>
+
+        <!-- Output Terminal Card -->
+        <div class="card">
+            <div class="terminal-header">
+                <div>
+                    <span style="font-size: 1.05rem; font-weight: 700; color: #fff;">Live Execution Output</span>
+                    <span id="statusTag" style="margin-left: 10px; color: #64748b; font-size: 0.82rem; font-weight: 600;">System Ready</span>
+                </div>
+                <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
+            </div>
+            <div class="terminal-box">
+                <pre id="outputView">// Ready. Follow the instructions below and click the action button to run...</pre>
+            </div>
+        </div>
+
+        <!-- English Documentation & Usage Guide -->
+        <div class="card guide-section">
+            <h3>How to Use This Tool — Documentation & Features</h3>
+            <h4>Step-by-Step Instructions</h4>
+            <ol>
+                <li style='margin-bottom: 8px;'>Tap <strong>Choose File</strong> and select any valid <code>.apk</code> package from your device storage.</li><li style='margin-bottom: 8px;'>Click <strong>Inspect APK Archive</strong> to upload and analyze the package structure in memory.</li><li style='margin-bottom: 8px;'>Review the total file count, <code>classes.dex</code> count, <code>AndroidManifest.xml</code> status, and native <code>lib/</code> components.</li>
+            </ol>
+            <h4>Key Capabilities & Features</h4>
+            <ul>
+                <li style='margin-bottom: 6px;'><strong>Zero-Execution Static Analysis:</strong> Safely inspects internal archive headers using Python's <code>zipfile</code> engine without running untrusted code.</li><li style='margin-bottom: 6px;'><strong>DEX & Architecture Discovery:</strong> Counts multi-dex bytecode files and identifies compiled native C/C++ libraries.</li>
+            </ul>
+        </div>
     </div>
 
-    <!-- Active Control Card -->
-    <div style="background: rgba(13, 19, 33, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 20px; padding: 28px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); margin-bottom: 22px;">
-        <div style="display:inline-block; padding: 4px 12px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">
-            APK Security Audit
-        </div>
-        <h1 style="font-size: 2rem; font-weight: 800; color: #ffffff; margin: 0 0 8px;">APK Static Archive Inspector</h1>
-        <p style="color: #94a3b8; font-size: 0.94rem; margin: 0 0 22px; line-height: 1.5;">Statically inspect DEX files, assets, and AndroidManifest metadata without executing binaries.</p>
-        
-        <div style="display:flex; gap:10px;"><input type="file" id="apkUpload" accept=".apk" style="flex:1; padding:10px; border-radius:12px; background:rgba(8,12,22,0.9); border:1px solid rgba(255,255,255,0.18); color:#fff;"><button onclick="runApkAudit()" id="actionBtn" style="padding:13px 24px; background:#eab308; border:none; border-radius:12px; color:#020617; font-weight:700; font-size:0.9rem; cursor:pointer;">Inspect Package</button></div>
-    </div>
-
-    <!-- Output Terminal Console -->
-    <div style="background: rgba(13, 19, 33, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 20px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-            <h3 style="color: #ffffff; font-size: 1.05rem; margin: 0; font-weight: 700;">Live Execution Output</h3>
-            <span id="toolStatusBadge" style="font-size: 0.78rem; color: #64748b; font-weight: 600;">System Ready</span>
-        </div>
-        <div style="background: rgba(5, 9, 17, 0.95); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 18px; min-height: 220px; max-height: 480px; overflow-y: auto;">
-            <pre id="outputLog" style="margin: 0; color: #38bdf8; font-family: monospace; font-size: 0.88rem; white-space: pre-wrap; word-break: break-all;">// Ready. Submit input above to trigger direct backend execution...</pre>
-        </div>
-    </div>
-</div>
-
-<script>
-    async function runApkAudit() {
-        const file = document.getElementById('apkUpload').files[0];
-        const log = document.getElementById('outputLog');
-        const badge = document.getElementById('toolStatusBadge');
-        const btn = document.getElementById('actionBtn');
-        if(!file) return alert('Select an .apk file to inspect');
+    <script>
+        function copyOutput() {
+            const text = document.getElementById('outputView').innerText;
+            navigator.clipboard.writeText(text);
+            alert('Output copied to clipboard!');
+        }
+        async function executeTool() {
+        const fileInput = document.getElementById('apkFile');
+        const out = document.getElementById('outputView');
+        const st = document.getElementById('statusTag');
+        const btn = document.getElementById('runBtn');
+        if(!fileInput.files.length) return alert("Please select an .apk file from your device first.");
         const fd = new FormData();
-        fd.append('file', file);
-        badge.innerText = 'Unpacking archive...'; badge.style.color = '#fb923c'; btn.disabled = true;
+        fd.append('file', fileInput.files[0]);
+        st.innerText = "Unpacking Archive..."; st.style.color = "#fb923c"; btn.disabled = true;
+        out.innerText = "// Reading ZIP headers and scanning internal DEX/Manifest entries...";
         try {
-            const res = await fetch('/tools/apk-inspector', { method: 'POST', body: fd });
-            const data = await res.json();
-            log.innerText = JSON.stringify(data, null, 2);
-            badge.innerText = 'Inspection Finished'; badge.style.color = '#4ade80';
+            const r = await fetch('/tools/apk-inspector', {method:'POST', body:fd});
+            const d = await r.json();
+            out.innerText = JSON.stringify(d, null, 2);
+            st.innerText = "Inspection Complete"; st.style.color = "#4ade80";
         } catch(e) {
-            log.innerText = '// Parse error: ' + e.message;
-            badge.innerText = 'Error'; badge.style.color = '#f43f5e';
+            out.innerText = "// Error: " + e.message; st.innerText = "Failed"; st.style.color = "#ef4444";
         } finally { btn.disabled = false; }
     }
     </script>
-{% endblock %}
+</body>
+</html>

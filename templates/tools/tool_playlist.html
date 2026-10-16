@@ -3,51 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playlist Metadata Exporter — Akhil Platform</title>
+    <title>Playlist Metadata Exporter — Akhil Developer Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #090d16; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px 16px; min-height: 100vh; }
-        .container { max-width: 850px; margin: 0 auto; }
-        .back-nav a { color: #f43f5e; text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-block; margin-bottom: 20px; }
-        .card { background: #111827; border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .badge { display: inline-block; background: rgba(244, 63, 94, 0.15); color: #fb7185; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; margin-bottom: 10px; }
-        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #fff; }
-        p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; }
-        input[type="text"] { width: 100%; padding: 12px 14px; background: #030712; border: 1px solid #374151; border-radius: 10px; color: #fff; font-size: 1rem; margin-bottom: 12px; outline: none; }
-        textarea { width: 100%; height: 90px; padding: 12px 14px; background: #030712; border: 1px solid #374151; border-radius: 10px; color: #fff; font-size: 0.9rem; margin-bottom: 12px; outline: none; }
-        button { padding: 14px 24px; background: #f43f5e; color: #fff; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; }
-        .terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; min-height: 220px; }
-        pre { color: #fb7185; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; }
+        body {
+            background: #090d16;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px 16px 60px;
+            min-height: 100vh;
+        }
+        .container { max-width: 860px; margin: 0 auto; }
+        .back-nav { margin-bottom: 20px; }
+        .back-nav a {
+            color: #fb7185;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+        .card {
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(251, 113, 133, 0.15);
+            color: #fb7185;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.04em;
+        }
+        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #ffffff; }
+        p.sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .input-group { display: flex; flex-direction: column; gap: 12px; }
+        @media(min-width: 600px) { .input-group { flex-direction: row; } }
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 13px 16px;
+            background: #030712;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        input[type="text"]:focus, textarea:focus { border-color: #fb7185; }
+        button.primary-btn {
+            padding: 14px 24px;
+            background: #fb7185;
+            color: #030712;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        button.primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .copy-btn {
+            background: rgba(255,255,255,0.08);
+            color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .terminal-box {
+            background: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 220px;
+            max-height: 440px;
+            overflow-y: auto;
+        }
+        pre {
+            color: #fb7185;
+            font-family: monospace;
+            font-size: 0.88rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .guide-section h3 {
+            color: #ffffff;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .guide-section h4 {
+            color: #fb7185;
+            font-size: 0.95rem;
+            margin: 14px 0 8px;
+            text-transform: uppercase;
+        }
+        .guide-section ol, .guide-section ul {
+            padding-left: 20px;
+            color: #cbd5e1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="back-nav"><a href="/">&larr; Back to Platform Home</a></div>
-        <div class="card">
-            <span class="badge">Audio Tools Engine</span>
-            <h1>Playlist Metadata Exporter</h1>
-            <p>Generate clean cue sheets, standardized metadata JSON, and M3U8 exports for lossless tracks.</p>
-            <input type="text" id="plTitle" placeholder="Playlist Title" value="Cyber Ambient 2026">
-            <textarea id="plTracks" placeholder="Enter tracks (comma separated or newline)">Midnight City, Resonance, Starboy, After Dark</textarea>
-            <button onclick="compilePlaylist()">Generate M3U8 & Schema</button>
+        <div class="back-nav">
+            <a href="/">&larr; Back to Platform Home</a>
         </div>
+
+        <!-- Tool Input Card -->
         <div class="card">
-            <h3 style="color:#fff; font-size:1.1rem; margin-bottom:10px;">Generated Output</h3>
-            <div class="terminal-box"><pre id="outputLog">// Formatted schema will appear here...</pre></div>
+            <span class="badge">Audio Schema Utility</span>
+            <h1>Playlist Metadata Exporter</h1>
+            <p class="sub">Generate standardized M3U8 playlist files and lossless track schemas.</p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+        <input type="text" id="plTitle" placeholder="Playlist Title" value="Cyber Ambient 2026">
+        <textarea id="plTracks" rows="3">Midnight City, Resonance, Starboy, After Dark</textarea>
+        <button id="runBtn" class="primary-btn" style="color:#fff; background:#e11d48;" onclick="executeTool()">Generate M3U8 & Schema</button>
+    </div>
+        </div>
+
+        <!-- Output Terminal Card -->
+        <div class="card">
+            <div class="terminal-header">
+                <div>
+                    <span style="font-size: 1.05rem; font-weight: 700; color: #fff;">Live Execution Output</span>
+                    <span id="statusTag" style="margin-left: 10px; color: #64748b; font-size: 0.82rem; font-weight: 600;">System Ready</span>
+                </div>
+                <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
+            </div>
+            <div class="terminal-box">
+                <pre id="outputView">// Ready. Follow the instructions below and click the action button to run...</pre>
+            </div>
+        </div>
+
+        <!-- English Documentation & Usage Guide -->
+        <div class="card guide-section">
+            <h3>How to Use This Tool — Documentation & Features</h3>
+            <h4>Step-by-Step Instructions</h4>
+            <ol>
+                <li style='margin-bottom: 8px;'>Enter a custom title for your playlist in the top field.</li><li style='margin-bottom: 8px;'>Enter your track names separated by commas or new lines in the text box.</li><li style='margin-bottom: 8px;'>Click <strong>Generate M3U8 & Schema</strong> to create indexed track metadata and raw <code>#EXTM3U</code> playlist text.</li>
+            </ol>
+            <h4>Key Capabilities & Features</h4>
+            <ul>
+                <li style='margin-bottom: 6px;'><strong>M3U8 Export Generation:</strong> Produces standard playlist directives compatible with VLC, Foobar2000, and mobile players.</li><li style='margin-bottom: 6px;'><strong>Automated Track Indexing:</strong> Formats track numbers and filenames into clean, lossless schema structures.</li>
+            </ul>
         </div>
     </div>
+
     <script>
-        async function compilePlaylist() {
-            const t = document.getElementById('plTitle').value.trim();
-            const tr = document.getElementById('plTracks').value.trim();
-            const res = await fetch('/tools/playlist-generator', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({title: t, tracks: tr})
-            });
-            const data = await res.json();
-            document.getElementById('outputLog').innerText = JSON.stringify(data, null, 2);
+        function copyOutput() {
+            const text = document.getElementById('outputView').innerText;
+            navigator.clipboard.writeText(text);
+            alert('Output copied to clipboard!');
         }
+        async function executeTool() {
+        const t = document.getElementById('plTitle').value.trim();
+        const tr = document.getElementById('plTracks').value.trim();
+        const out = document.getElementById('outputView');
+        const st = document.getElementById('statusTag');
+        const r = await fetch('/tools/playlist-generator', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title:t, tracks:tr})});
+        const d = await r.json();
+        out.innerText = JSON.stringify(d, null, 2);
+        st.innerText = "Schema Compiled"; st.style.color = "#4ade80";
+    }
     </script>
 </body>
 </html>

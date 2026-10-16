@@ -3,49 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Request Reverser — Akhil Platform</title>
+    <title>API Request Reverser — Akhil Developer Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #090d16; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px 16px; min-height: 100vh; }
-        .container { max-width: 850px; margin: 0 auto; }
-        .back-nav a { color: #a855f7; text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-block; margin-bottom: 20px; }
-        .card { background: #111827; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .badge { display: inline-block; background: rgba(168, 85, 247, 0.15); color: #c084fc; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; margin-bottom: 10px; }
-        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #fff; }
-        p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; }
-        textarea { width: 100%; height: 100px; padding: 14px 16px; background: #030712; border: 1px solid #374151; border-radius: 10px; color: #fff; font-family: monospace; font-size: 0.9rem; outline: none; margin-bottom: 12px; }
-        button { padding: 14px 24px; background: #a855f7; color: #fff; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; }
-        .terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; min-height: 250px; }
-        pre { color: #c084fc; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; }
+        body {
+            background: #090d16;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px 16px 60px;
+            min-height: 100vh;
+        }
+        .container { max-width: 860px; margin: 0 auto; }
+        .back-nav { margin-bottom: 20px; }
+        .back-nav a {
+            color: #c084fc;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+        .card {
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(192, 132, 252, 0.15);
+            color: #c084fc;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.04em;
+        }
+        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #ffffff; }
+        p.sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .input-group { display: flex; flex-direction: column; gap: 12px; }
+        @media(min-width: 600px) { .input-group { flex-direction: row; } }
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 13px 16px;
+            background: #030712;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        input[type="text"]:focus, textarea:focus { border-color: #c084fc; }
+        button.primary-btn {
+            padding: 14px 24px;
+            background: #c084fc;
+            color: #030712;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        button.primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .copy-btn {
+            background: rgba(255,255,255,0.08);
+            color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .terminal-box {
+            background: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 220px;
+            max-height: 440px;
+            overflow-y: auto;
+        }
+        pre {
+            color: #c084fc;
+            font-family: monospace;
+            font-size: 0.88rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .guide-section h3 {
+            color: #ffffff;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .guide-section h4 {
+            color: #c084fc;
+            font-size: 0.95rem;
+            margin: 14px 0 8px;
+            text-transform: uppercase;
+        }
+        .guide-section ol, .guide-section ul {
+            padding-left: 20px;
+            color: #cbd5e1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="back-nav"><a href="/">&larr; Back to Platform Home</a></div>
+        <div class="back-nav">
+            <a href="/">&larr; Back to Platform Home</a>
+        </div>
+
+        <!-- Tool Input Card -->
         <div class="card">
             <span class="badge">Reverse Engineering Suite</span>
             <h1>API Request Reverser</h1>
-            <p>Paste any browser cURL network snippet to convert into a working Python script.</p>
-            <textarea id="curlInput">curl -X GET "https://jsonplaceholder.typicode.com/posts/1" -H "Accept: application/json"</textarea>
-            <button onclick="reverseCmd()">Reverse to Python Client</button>
+            <p class="sub">Convert raw browser cURL network requests into clean, executable Python code.</p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+        <textarea id="curlInput" rows="4">curl -X GET "https://jsonplaceholder.typicode.com/posts/1" -H "Accept: application/json" -H "X-Custom-Client: AkhilPlatform"</textarea>
+        <button id="runBtn" class="primary-btn" style="color:#fff; background:#9333ea;" onclick="executeTool()">Reverse to Python Client</button>
+    </div>
         </div>
+
+        <!-- Output Terminal Card -->
         <div class="card">
-            <h3 style="color:#fff; font-size:1.1rem; margin-bottom:10px;">Generated Python Code</h3>
-            <div class="terminal-box"><pre id="outputLog">// Generated code will appear here...</pre></div>
+            <div class="terminal-header">
+                <div>
+                    <span style="font-size: 1.05rem; font-weight: 700; color: #fff;">Live Execution Output</span>
+                    <span id="statusTag" style="margin-left: 10px; color: #64748b; font-size: 0.82rem; font-weight: 600;">System Ready</span>
+                </div>
+                <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
+            </div>
+            <div class="terminal-box">
+                <pre id="outputView">// Ready. Follow the instructions below and click the action button to run...</pre>
+            </div>
+        </div>
+
+        <!-- English Documentation & Usage Guide -->
+        <div class="card guide-section">
+            <h3>How to Use This Tool — Documentation & Features</h3>
+            <h4>Step-by-Step Instructions</h4>
+            <ol>
+                <li style='margin-bottom: 8px;'>Open your browser Developer Tools (Network Tab), right-click any network request, and select <strong>Copy as cURL</strong>.</li><li style='margin-bottom: 8px;'>Paste the raw cURL command into the text area above.</li><li style='margin-bottom: 8px;'>Click <strong>Reverse to Python Client</strong> to automatically generate a ready-to-run Python <code>requests</code> script.</li><li style='margin-bottom: 8px;'>Click <strong>Copy Output</strong> and run the script directly in Termux or your IDE.</li>
+            </ol>
+            <h4>Key Capabilities & Features</h4>
+            <ul>
+                <li style='margin-bottom: 6px;'><strong>Automatic Header Parsing:</strong> Extracts all <code>-H</code> flags and converts them into a Python dictionary.</li><li style='margin-bottom: 6px;'><strong>Method Detection:</strong> Automatically identifies GET, POST, PUT, and DELETE HTTP verbs.</li><li style='margin-bottom: 6px;'><strong>Error-Safe Output:</strong> Generates clean boilerplate with status code and JSON fallback handling.</li>
+            </ul>
         </div>
     </div>
+
     <script>
-        async function reverseCmd() {
-            const c = document.getElementById('curlInput').value.trim();
-            if(!c) return alert("cURL required");
-            const res = await fetch('/tools/request-reverser', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({curl: c})
-            });
-            const data = await res.json();
-            document.getElementById('outputLog').innerText = data.executable_python || JSON.stringify(data, null, 2);
+        function copyOutput() {
+            const text = document.getElementById('outputView').innerText;
+            navigator.clipboard.writeText(text);
+            alert('Output copied to clipboard!');
         }
+        async function executeTool() {
+        const curl = document.getElementById('curlInput').value.trim();
+        const out = document.getElementById('outputView');
+        const st = document.getElementById('statusTag');
+        if(!curl) return alert("Please enter a cURL command.");
+        const r = await fetch('/tools/request-reverser', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({curl:curl})});
+        const d = await r.json();
+        out.innerText = d.executable_python || JSON.stringify(d, null, 2);
+        st.innerText = "Code Generated"; st.style.color = "#4ade80";
+    }
     </script>
 </body>
 </html>
