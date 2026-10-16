@@ -262,3 +262,39 @@ def apk_inspector():
             })
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@interactive_bp.route('/tools/website-generator', methods=['GET', 'POST'])
+def website_generator():
+    if request.method == 'GET':
+        return render_template('tools/tool_webgen.html', active_page='tools')
+    data = request.get_json() or {}
+    brand = data.get('brand', 'Akhil Cyber Studio').strip()
+    tagline = data.get('tagline', 'Next-Generation AI & Security Infrastructure').strip()
+    accent = data.get('accent', '#38bdf8').strip()
+
+    generated_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{brand}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
+  <header class="border-b border-slate-800 px-6 py-4 flex justify-between items-center max-w-6xl mx-auto">
+    <h1 class="text-xl font-bold tracking-wider" style="color: {accent};">{brand}</h1>
+    <a href="#contact" class="px-4 py-2 rounded-lg font-semibold text-slate-950" style="background: {accent};">Get Started</a>
+  </header>
+  <main class="max-w-4xl mx-auto text-center py-24 px-6">
+    <span class="px-3 py-1 rounded-full text-xs uppercase tracking-widest bg-slate-900 border border-slate-700" style="color: {accent};">Live Production System</span>
+    <h2 class="text-5xl font-extrabold mt-6 mb-4 text-white">{tagline}</h2>
+    <p class="text-slate-400 text-lg mb-8">Built with automated responsive architecture for high-speed cloud deployment.</p>
+  </main>
+</body>
+</html>"""
+    return jsonify({
+        "status": "success",
+        "brand": brand,
+        "generated_html": generated_html
+    })

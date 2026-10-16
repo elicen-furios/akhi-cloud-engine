@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Website Generator — Akhil Developer Platform</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #090d16; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px 16px 60px; min-height: 100vh; }
+        .container { max-width: 860px; margin: 0 auto; }
+        .back-nav { margin-bottom: 20px; }
+        .back-nav a { color: #ec4899; text-decoration: none; font-size: 0.92rem; font-weight: 600; }
+        .card { background: #111827; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .badge { display: inline-block; background: rgba(236,72,153,0.15); color: #ec4899; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; margin-bottom: 10px; }
+        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #fff; }
+        p.sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; }
+        input[type="text"] { width: 100%; padding: 13px 16px; background: #030712; border: 1px solid #374151; border-radius: 10px; color: #fff; font-size: 0.95rem; margin-bottom: 12px; outline: none; }
+        button.primary-btn { padding: 14px 24px; background: #ec4899; color: #fff; font-weight: 700; font-size: 0.95rem; border: none; border-radius: 10px; cursor: pointer; }
+        .terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; min-height: 220px; max-height: 440px; overflow-y: auto; }
+        pre { color: #f472b6; font-family: monospace; font-size: 0.88rem; white-space: pre-wrap; word-break: break-all; }
+        .guide-section h3 { color: #fff; font-size: 1.15rem; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .guide-section ol { padding-left: 20px; color: #cbd5e1; font-size: 0.92rem; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-nav"><a href="/projects">&larr; Back to All Projects Hub</a></div>
+        <div class="card">
+            <span class="badge">AI Website Boilerplate Engine</span>
+            <h1>AI Website Generator</h1>
+            <p class="sub">Synthesize responsive HTML5 & Tailwind CSS landing page code in one click.</p>
+            <input type="text" id="brandInput" placeholder="Brand / Website Title" value="Akhil Neural Cloud">
+            <input type="text" id="taglineInput" placeholder="Hero Tagline" value="Autonomous AI & Security Research Platform">
+            <button class="primary-btn" onclick="generateSite()">Generate Responsive HTML5</button>
+        </div>
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span style="font-weight:700; color:#fff;">Generated HTML5 Source Code</span>
+                <button onclick="navigator.clipboard.writeText(document.getElementById('outputView').innerText); alert('Copied!');" style="background:rgba(255,255,255,0.1); color:#fff; border:none; padding:4px 10px; border-radius:6px; cursor:pointer;">Copy Code</button>
+            </div>
+            <div class="terminal-box"><pre id="outputView">// Click Generate to synthesize complete HTML5 landing page code...</pre></div>
+        </div>
+        <div class="card guide-section">
+            <h3>How to Use This Tool — Documentation & Guide</h3>
+            <ol>
+                <li>Enter your desired <strong>Brand Title</strong> and <strong>Hero Tagline</strong> in the input fields above.</li>
+                <li>Click <strong>Generate Responsive HTML5</strong> to synthesize a complete Tailwind CSS dark-mode landing page.</li>
+                <li>Click <strong>Copy Code</strong> and save the output as <code>index.html</code> to host anywhere immediately.</li>
+            </ol>
+        </div>
+    </div>
+    <script>
+        async function generateSite() {
+            const b = document.getElementById('brandInput').value.trim();
+            const t = document.getElementById('taglineInput').value.trim();
+            const res = await fetch('/tools/website-generator', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({brand: b, tagline: t, accent: '#38bdf8'})
+            });
+            const data = await res.json();
+            document.getElementById('outputView').innerText = data.generated_html;
+        }
+    </script>
+</body>
+</html>
