@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slash Prompt Commander — Akhil Developer Platform</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #070b14; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px 16px 80px; min-height: 100vh; }
+        .container { max-width: 880px; margin: 0 auto; }
+        .back-nav { margin-bottom: 20px; }
+        .back-nav a { color: #f59e0b; text-decoration: none; font-size: 0.92rem; font-weight: 600; }
+        .card { background: #111827; border: 1px solid rgba(245, 158, 11, 0.28); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+        .badge { display: inline-block; background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; margin-bottom: 10px; }
+        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #fff; }
+        p.sub { color: #94a3b8; font-size: 0.94rem; margin-bottom: 16px; }
+        .cmd-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+        .pill { background: #030712; border: 1px solid #374151; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; cursor: pointer; }
+        .pill.active { border-color: #f59e0b; color: #f59e0b; background: rgba(245, 158, 11, 0.12); font-weight: 700; }
+        textarea { width: 100%; padding: 13px 16px; background: #030712; border: 1px solid #374151; border-radius: 10px; color: #fff; font-size: 0.95rem; margin-bottom: 12px; outline: none; }
+        button.primary-btn { padding: 14px 24px; background: #f59e0b; color: #020617; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; }
+        .terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; min-height: 200px; }
+        pre { color: #fbbf24; font-family: monospace; font-size: 0.88rem; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-nav"><a href="/projects">&larr; Back to Projects Hub</a></div>
+        <div class="card">
+            <span class="badge">Developer Slash Commands</span>
+            <h1>Master Prompt & Architecture Commander</h1>
+            <p class="sub">Select a slash command mode below and enter your code snippet or project topic to generate structured engineering blueprints.</p>
+            
+            <div class="cmd-pills" id="pillGroup">
+                <span class="pill active" onclick="setCmd('/debug', this)">/debug</span>
+                <span class="pill" onclick="setCmd('/refactor', this)">/refactor</span>
+                <span class="pill" onclick="setCmd('/optimizecode', this)">/optimizecode</span>
+                <span class="pill" onclick="setCmd('/systemdesign', this)">/systemdesign</span>
+                <span class="pill" onclick="setCmd('/security', this)">/security</span>
+                <span class="pill" onclick="setCmd('/blueprint', this)">/blueprint</span>
+            </div>
+
+            <textarea id="topicInput" rows="3" placeholder="Paste code or describe system architecture...">Flask API Gateway with SQLite Telemetry and In-Memory Token Vault</textarea>
+            <button class="primary-btn" onclick="runCommander()">Execute Slash Command</button>
+        </div>
+
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span style="color:#fff; font-weight:700;">Command Output Terminal</span>
+                <button onclick="navigator.clipboard.writeText(document.getElementById('cmdOut').innerText); alert('Copied!');" style="background:rgba(255,255,255,0.1); color:#fff; border:none; padding:4px 10px; border-radius:6px; cursor:pointer;">Copy Output</button>
+            </div>
+            <div class="terminal-box"><pre id="cmdOut">// Select a command pill and click Execute...</pre></div>
+        </div>
+    </div>
+
+    <script>
+        let selectedCmd = '/debug';
+        function setCmd(cmd, el) {
+            selectedCmd = cmd;
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+        }
+        async function runCommander() {
+            const text = document.getElementById('topicInput').value.trim();
+            const res = await fetch('/tools/prompt-commander', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: selectedCmd, input_text: text})
+            });
+            const data = await res.json();
+            document.getElementById('cmdOut').innerText = data.output || JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>

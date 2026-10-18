@@ -1,5 +1,27 @@
 [
   {
+    "id": "interactive-voice-workstation",
+    "name": "Interactive Voice & Waveform Studio",
+    "category": "Voice & Audio",
+    "badge": "WAVE-AI",
+    "accent": "#38bdf8",
+    "repo_url": "https://github.com/debpalash/OmniVoice-Studio",
+    "live_tool_url": "/tools/voice-studio",
+    "summary": "Real-time HTML5 Canvas audio frequency visualizer, multi-voice speech synthesizer, and downloadable WAV clip history table.",
+    "guide": "Enter your text, choose a custom filename prefix, and click Synthesize to watch live audio waves and download .wav clips."
+  },
+  {
+    "id": "slash-prompt-commander",
+    "name": "Slash Prompt & Architecture Engine",
+    "category": "AI & Web Gen",
+    "badge": "SLASH",
+    "accent": "#f59e0b",
+    "repo_url": "https://github.com/aloth/awesome-ai-agents",
+    "live_tool_url": "/tools/prompt-commander",
+    "summary": "Interactive developer slash command workstation (/debug, /refactor, /systemdesign, /security, /blueprint) for instant engineering blueprints.",
+    "guide": "Select any slash command pill, enter your topic or code snippet, and execute to generate structured technical diagnostics."
+  },
+  {
     "id": "ai-website-generator",
     "name": "AI Website Generator",
     "category": "AI & Web Gen",

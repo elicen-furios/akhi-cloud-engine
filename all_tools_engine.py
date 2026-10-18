@@ -298,3 +298,37 @@ def website_generator():
         "brand": brand,
         "generated_html": generated_html
     })
+
+
+# 8. Interactive Voice Studio & Waveform Workstation
+@interactive_bp.route('/tools/voice-studio', methods=['GET'])
+def voice_studio_workstation():
+    return render_template('tools/tool_voice_studio.html', active_page='tools')
+
+# 9. Master Prompt & Slash Command Engine
+@interactive_bp.route('/tools/prompt-commander', methods=['GET', 'POST'])
+def prompt_commander():
+    if request.method == 'GET':
+        return render_template('tools/tool_prompt_commander.html', active_page='tools')
+    data = request.get_json() or {}
+    cmd = data.get('command', '/debug').strip()
+    topic = data.get('input_text', '').strip()
+    if not topic:
+        return jsonify({"status": "error", "message": "Input code or topic required"}), 400
+
+    templates_map = {
+        "/debug": f"[DEBUG DIAGNOSTIC REPORT]\nTarget Input: {topic[:120]}...\n\n1. Syntax & Runtime Verification:\n   - Check for unhandled exceptions, null pointers, and async race conditions.\n2. Root Cause Isolation:\n   - Verify API payload keys and response status codes (200 vs 4xx/5xx).\n3. Recommended Fix:\n   - Wrap network/IO calls in try-except blocks with explicit timeout parameters.",
+        "/refactor": f"[CLEAN CODE REFACTOR BLUEPRINT]\nTarget Input: {topic[:120]}...\n\n1. Modularity: Extract repeated logic into pure helper functions.\n2. Naming Conventions: Enforce PEP8 (snake_case for Python) and descriptive variable identifiers.\n3. Dead Code Removal: Strip unused imports and redundant conditional branches.",
+        "/optimizecode": f"[PERFORMANCE OPTIMIZATION PLAN]\nTarget Input: {topic[:120]}...\n\n1. Time Complexity: Replace nested O(n^2) loops with hash maps/dictionaries O(1) lookups.\n2. Memory Footprint: Use generators/streams instead of loading full lists in 512MB RAM containers.\n3. I/O Caching: Cache repetitive HTTP/DNS lookups in memory.",
+        "/systemdesign": f"[SYSTEM ARCHITECTURE BLUEPRINT]\nProject Scope: {topic}\n\n1. Frontend Layer: Standalone Responsive HTML5 + Glassmorphism Dark UI.\n2. Application Gateway: Flask Gunicorn WSGI Worker Pool.\n3. Security Layer: SSRF Filtering, Shannon Entropy Token Auditing, Rate Limiting.\n4. Deployment Pipeline: GitHub Main Branch -> Render Cloud Container.",
+        "/security": f"[DEFENSIVE SECURITY AUDIT]\nTarget Scope: {topic[:120]}...\n\n1. Input Sanitization: Validate all query/JSON payloads against command and SQL injection.\n2. Secret Protection: Store API keys in environment variables (.env), never hardcoded.\n3. Transport Security: Enforce Strict-Transport-Security (HSTS) and CSP headers.",
+        "/blueprint": f"[EXECUTION BLUEPRINT & CHECKLIST]\nObjective: {topic}\n\n[x] Phase 1: Core Requirements & Route Definition\n[x] Phase 2: Backend API Endpoint & Error Handling\n[x] Phase 3: Standalone Frontend UI & Terminal Integration\n[x] Phase 4: Bytecode Compilation & Production Git Push"
+    }
+
+    output_text = templates_map.get(cmd, f"[COMMAND EXECUTION: {cmd.upper()}]\nTarget: {topic}\n\nStructured analysis generated:\n- First Principles Breakdown\n- Actionable Implementation Steps\n- Edge Case & Risk Verification")
+
+    return jsonify({
+        "status": "success",
+        "command": cmd,
+        "output": output_text
+    })
