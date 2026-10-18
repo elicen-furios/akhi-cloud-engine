@@ -37,7 +37,7 @@
             margin-bottom: 24px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.5);
         }
-        .hero-banner h1 { font-size: 2rem; color: #fff; margin-bottom: 8px; }
+        .hero-banner h1 { font-size: 2rem; color: #0b1120; margin-bottom: 8px; }
         .hero-banner p { color: #94a3b8; font-size: 0.98rem; line-height: 1.6; }
         .search-bar {
             width: 100%;
@@ -45,7 +45,7 @@
             background: #030712;
             border: 1px solid #334155;
             border-radius: 12px;
-            color: #fff;
+            color: #0b1120;
             font-size: 1rem;
             margin-top: 16px;
             outline: none;
@@ -86,7 +86,7 @@
             background: rgba(255,255,255,0.06);
             color: #cbd5e1;
         }
-        .project-card h2 { font-size: 1.25rem; color: #fff; margin-bottom: 8px; }
+        .project-card h2 { font-size: 1.25rem; color: #0b1120; margin-bottom: 8px; }
         .project-card p.desc { color: #94a3b8; font-size: 0.9rem; line-height: 1.5; margin-bottom: 12px; }
         .guide-box {
             background: #030712;
@@ -122,71 +122,120 @@
         }
     </style>
 
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style id="global-zero-white-override">
-  /* Force dark theme on root, body, and all containers */
-  html, body {
-    background-color: #070b14 !important;
-    color: #f1f5f9 !important;
+  /* 1. Global Font & Zero-White Text Replacement */
+  * {
+    font-family: 'Space Grotesk', sans-serif !important;
   }
-  /* Target Login, Signup, Auth Cards, Modals, Panels, and White Boxes */
-  .auth-card, .login-card, .signup-card, .auth-box, .login-box, .signup-box,
-  .card, .panel, .modal-content, .box, .container-box, .form-container,
-  div[class*="white"], div[style*="255, 255, 255"], div[style*="#fff"], div[style*="white"] {
-    background: #111827 !important;
-    background-color: #111827 !important;
-    color: #f1f5f9 !important;
-    border: 1px solid rgba(56, 189, 248, 0.28) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+  h1, h2, h3, .brand, .logo, nav a {
+    font-family: 'Orbitron', sans-serif !important;
+    color: #38bdf8 !important; /* Neon Cyan instead of White */
+    letter-spacing: 0.04em !important;
+    text-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
   }
-  /* Target ALL Inputs, Password fields, Emails, Textareas, Selects */
-  input, input[type="text"], input[type="password"], input[type="email"],
-  input[type="number"], input[type="search"], input[type="url"],
-  textarea, select, .form-control, .form-input {
-    background: #030712 !important;
-    background-color: #030712 !important;
-    color: #38bdf8 !important;
-    border: 1px solid #334155 !important;
-    border-radius: 10px !important;
-    caret-color: #38bdf8 !important;
-  }
-  input::placeholder, textarea::placeholder {
-    color: #64748b !important;
-  }
-  /* Fix Chrome/Mobile White/Yellow Autofill Background on Login & Signup */
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 40px #030712 inset !important;
-    -webkit-text-fill-color: #38bdf8 !important;
-    transition: background-color 5000s ease-in-out 0s !important;
-  }
-  /* Fix Labels, Headings, and Links inside Login/Signup */
-  label, .form-label, h1, h2, h3, h4, h5, h6, th {
-    color: #f8fafc !important;
-  }
-  p, span, td, small {
-    color: #cbd5e1;
-  }
-  /* Fix White Buttons -> Cyber Neon Buttons */
-  button, input[type="submit"], .btn, .submit-btn, .login-btn, .auth-btn {
-    background: linear-gradient(135deg, #0284c7, #2563eb) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  h4, h5, h6, label, th, strong, b {
+    color: #a5b4fc !important; /* Soft Indigo-Cyan */
     font-weight: 700 !important;
   }
-  /* Fix Tables, Code blocks, Token Pills, Alerts */
-  table, tr, td, th, tbody, thead {
-    background-color: transparent !important;
-    color: #e2e8f0 !important;
-    border-color: #1e293b !important;
+  p, span, td, li, small, div {
+    color: #94a3b8; /* Muted Cyber Slate */
   }
-  pre, code, .token-box, .alert {
+  code, pre, .token, [id*="token"], [class*="token"] {
+    font-family: 'JetBrains Mono', monospace !important;
+    color: #4ade80 !important; /* Matrix Neon Green */
+  }
+
+  /* 2. Force Dark Cyber Backgrounds on Everything */
+  html, body {
+    background-color: #050811 !important;
+    color: #38bdf8 !important;
+  }
+
+  /* 3. Nuclear Fix for ANY White Box inside Cards (Including NEW TOKEN GENERATED) */
+  .card div, .panel div, main div, section div, form div,
+  .auth-card, .login-card, .signup-card, .modal-content {
+    background-color: #0b1120 !important;
+    border-color: rgba(56, 189, 248, 0.25) !important;
+  }
+
+  /* Make outer cards slightly distinct from inner boxes */
+  .card, .panel, .auth-box, .login-box, .signup-box {
+    background: linear-gradient(145deg, #0f172a 0%, #090d16 100%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  /* Specifically style inner boxes inside cards (like NEW TOKEN GENERATED box) */
+  .card > div, .card form > div, [id*="result"], [id*="output"], [id*="token"], [class*="box"], [class*="alert"] {
+    background: #030712 !important;
     background-color: #030712 !important;
+    border: 1px solid rgba(74, 222, 128, 0.4) !important;
+    border-radius: 12px !important;
     color: #4ade80 !important;
-    border: 1px solid rgba(74, 222, 128, 0.3) !important;
+  }
+
+  /* 4. Inputs, Selects, Textareas */
+  input, select, textarea {
+    background: #020617 !important;
+    background-color: #020617 !important;
+    color: #38bdf8 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    border: 1px solid #1e293b !important;
+    border-radius: 10px !important;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
+  }
+
+  /* 5. Buttons */
+  button, .btn, input[type="submit"] {
+    background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%) !important;
+    color: #e0f2fe !important;
+    font-family: 'Orbitron', sans-serif !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.05em !important;
+    border: 1px solid rgba(56, 189, 248, 0.5) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35) !important;
   }
 </style>
+
+<script id="cyber-color-enforcer">
+  // Live scanner that kills any dynamic white background or white text instantly
+  function enforceCyberTheme() {
+    document.querySelectorAll('*').forEach(el => {
+      const style = window.getComputedStyle(el);
+      const bg = style.backgroundColor;
+      const fg = style.color;
+      // If background is white or very light gray (rgb values > 200)
+      const m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (m && parseInt(m[1]) > 180 && parseInt(m[2]) > 180 && parseInt(m[3]) > 180) {
+        el.style.setProperty('background', '#030712', 'important');
+        el.style.setProperty('background-color', '#030712', 'important');
+        el.style.setProperty('border', '1px solid rgba(56, 189, 248, 0.4)', 'important');
+        el.style.setProperty('color', '#4ade80', 'important');
+      }
+      // If text color is pure white, shift to Cyber Cyan or Neon Green
+      if (fg === 'rgb(255, 255, 255)') {
+        if (['H1','H2','H3','TH','BUTTON','A'].includes(el.tagName)) {
+          el.style.setProperty('color', '#38bdf8', 'important');
+        } else {
+          el.style.setProperty('color', '#a5f3fc', 'important');
+        }
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', enforceCyberTheme);
+  setInterval(enforceCyberTheme, 400);
+</script>
 
 </head>
 <body>
@@ -213,7 +262,7 @@
                     <h2>{{ p.name }}</h2>
                     <p class="desc">{{ p.summary }}</p>
                     <div class="guide-box" style="border-left-color: {{ p.accent }};">
-                        <strong style="color:#fff;">How to Use:</strong> {{ p.guide }}
+                        <strong style="color:#0b1120;">How to Use:</strong> {{ p.guide }}
                     </div>
                 </div>
                 <div class="btn-row">
