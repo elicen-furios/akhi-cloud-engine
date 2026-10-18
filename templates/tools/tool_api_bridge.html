@@ -41,7 +41,7 @@
             margin-bottom: 10px;
             letter-spacing: 0.04em;
         }
-        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #0b1120; }
+        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #38bdf8; }
         p.sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
         .input-group { display: flex; flex-direction: column; gap: 12px; }
         @media(min-width: 600px) { .input-group { flex-direction: row; } }
@@ -51,7 +51,7 @@
             background: #030712;
             border: 1px solid #374151;
             border-radius: 10px;
-            color: #0b1120;
+            color: #38bdf8;
             font-size: 0.95rem;
             outline: none;
         }
@@ -100,7 +100,7 @@
             word-break: break-all;
         }
         .guide-section h3 {
-            color: #0b1120;
+            color: #38bdf8;
             font-size: 1.15rem;
             margin-bottom: 12px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -127,112 +127,108 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
+
+
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
 <style id="global-zero-white-override">
-  /* 1. Global Font & Zero-White Text Replacement */
   * {
     font-family: 'Space Grotesk', sans-serif !important;
+    box-sizing: border-box;
   }
-  h1, h2, h3, .brand, .logo, nav a {
-    font-family: 'Orbitron', sans-serif !important;
-    color: #38bdf8 !important; /* Neon Cyan instead of White */
-    letter-spacing: 0.04em !important;
-    text-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
-  }
-  h4, h5, h6, label, th, strong, b {
-    color: #a5b4fc !important; /* Soft Indigo-Cyan */
-    font-weight: 700 !important;
-  }
-  p, span, td, li, small, div {
-    color: #94a3b8; /* Muted Cyber Slate */
-  }
-  code, pre, .token, [id*="token"], [class*="token"] {
-    font-family: 'JetBrains Mono', monospace !important;
-    color: #4ade80 !important; /* Matrix Neon Green */
-  }
-
-  /* 2. Force Dark Cyber Backgrounds on Everything */
   html, body {
-    background-color: #050811 !important;
+    background-color: #060913 !important;
+    color: #e2e8f0 !important;
+  }
+  /* Fix invisible headings, brand names, and session titles */
+  h1, h2, h3, h4, .brand, .logo, header a, nav a, .navbar-brand, .session-title {
+    font-family: 'Orbitron', sans-serif !important;
     color: #38bdf8 !important;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.35) !important;
+    opacity: 1 !important;
   }
-
-  /* 3. Nuclear Fix for ANY White Box inside Cards (Including NEW TOKEN GENERATED) */
-  .card div, .panel div, main div, section div, form div,
-  .auth-card, .login-card, .signup-card, .modal-content {
-    background-color: #0b1120 !important;
-    border-color: rgba(56, 189, 248, 0.25) !important;
+  /* Fix top-right user pill (JITENDRA CHAND) and secondary buttons (Access Vault, Copy Output) */
+  header span, header div, .user-badge, .profile-btn, a.btn, button, .btn {
+    color: #38bdf8 !important;
+    border-color: rgba(56, 189, 248, 0.45) !important;
+    opacity: 1 !important;
   }
-
-  /* Make outer cards slightly distinct from inner boxes */
-  .card, .panel, .auth-box, .login-box, .signup-box {
-    background: linear-gradient(145deg, #0f172a 0%, #090d16 100%) !important;
+  /* Make all buttons and action links clearly visible with Neon Borders & Bright Text */
+  button, .btn, input[type="submit"], a[class*="btn"], a[style*="border"], a[href*="vault"], a[href*="logout"] {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%) !important;
+    color: #38bdf8 !important;
+    border: 1px solid #38bdf8 !important;
+    font-family: 'Orbitron', sans-serif !important;
+    font-weight: 700 !important;
+    padding: 10px 18px !important;
+    border-radius: 10px !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.2) !important;
+  }
+  button.primary-btn, button[type="submit"], a[href*="logout"] {
+    background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%) !important;
+    color: #e0f2fe !important;
+  }
+  /* Cards & Containers */
+  .card, .panel, .auth-card, .login-card, .session-card {
+    background: rgba(15, 23, 42, 0.92) !important;
     border: 1px solid rgba(56, 189, 248, 0.35) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+    border-radius: 16px !important;
+    color: #cbd5e1 !important;
   }
-
-  /* Specifically style inner boxes inside cards (like NEW TOKEN GENERATED box) */
-  .card > div, .card form > div, [id*="result"], [id*="output"], [id*="token"], [class*="box"], [class*="alert"] {
-    background: #030712 !important;
-    background-color: #030712 !important;
-    border: 1px solid rgba(74, 222, 128, 0.4) !important;
-    border-radius: 12px !important;
+  /* Inner Token / Output Boxes (Never White, Always Pitch Dark with Neon Green Text) */
+  #tokenCard, .token-box, pre, code, [id*="output"], [id*="Out"], .terminal-box {
+    background-color: #020617 !important;
     color: #4ade80 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    border: 1px solid rgba(74, 222, 128, 0.4) !important;
+    border-radius: 10px !important;
   }
-
-  /* 4. Inputs, Selects, Textareas */
-  input, select, textarea {
-    background: #020617 !important;
+  /* Inputs & Textareas - Pitch Dark with Cyan Text and Visible Gray Examples (Placeholders) */
+  input, textarea, select {
     background-color: #020617 !important;
     color: #38bdf8 !important;
     font-family: 'JetBrains Mono', monospace !important;
-    border: 1px solid #1e293b !important;
+    border: 1px solid #334155 !important;
     border-radius: 10px !important;
   }
-  input:focus, select:focus, textarea:focus {
-    border-color: #38bdf8 !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
-  }
-
-  /* 5. Buttons */
-  button, .btn, input[type="submit"] {
-    background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%) !important;
-    color: #e0f2fe !important;
-    font-family: 'Orbitron', sans-serif !important;
-    font-size: 0.85rem !important;
-    letter-spacing: 0.05em !important;
-    border: 1px solid rgba(56, 189, 248, 0.5) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35) !important;
+  input::placeholder, textarea::placeholder {
+    color: #64748b !important;
+    opacity: 1 !important;
   }
 </style>
 
 <script id="cyber-color-enforcer">
-  // Live scanner that kills any dynamic white background or white text instantly
-  function enforceCyberTheme() {
+  function fixVisibilityAndWhiteBoxes() {
     document.querySelectorAll('*').forEach(el => {
       const style = window.getComputedStyle(el);
       const bg = style.backgroundColor;
       const fg = style.color;
-      // If background is white or very light gray (rgb values > 200)
-      const m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-      if (m && parseInt(m[1]) > 180 && parseInt(m[2]) > 180 && parseInt(m[3]) > 180) {
-        el.style.setProperty('background', '#030712', 'important');
-        el.style.setProperty('background-color', '#030712', 'important');
-        el.style.setProperty('border', '1px solid rgba(56, 189, 248, 0.4)', 'important');
+      // 1. Turn any remaining white/light background into deep cyber dark
+      const mBg = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (mBg && parseInt(mBg[1]) > 180 && parseInt(mBg[2]) > 180 && parseInt(mBg[3]) > 180) {
+        el.style.setProperty('background', '#020617', 'important');
+        el.style.setProperty('background-color', '#020617', 'important');
         el.style.setProperty('color', '#4ade80', 'important');
+        el.style.setProperty('border', '1px solid #38bdf8', 'important');
       }
-      // If text color is pure white, shift to Cyber Cyan or Neon Green
-      if (fg === 'rgb(255, 255, 255)') {
-        if (['H1','H2','H3','TH','BUTTON','A'].includes(el.tagName)) {
-          el.style.setProperty('color', '#38bdf8', 'important');
-        } else {
-          el.style.setProperty('color', '#a5f3fc', 'important');
-        }
+      // 2. Fix dark-on-dark invisible text (if text color is dark rgb < 65, make it bright cyan!)
+      const mFg = fg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (mFg && parseInt(mFg[1]) < 65 && parseInt(mFg[2]) < 65 && parseInt(mFg[3]) < 65) {
+        el.style.setProperty('color', '#38bdf8', 'important');
       }
     });
   }
-  document.addEventListener('DOMContentLoaded', enforceCyberTheme);
-  setInterval(enforceCyberTheme, 400);
+  document.addEventListener('DOMContentLoaded', fixVisibilityAndWhiteBoxes);
+  setInterval(fixVisibilityAndWhiteBoxes, 350);
 </script>
 
 </head>
@@ -248,7 +244,7 @@
             <h1>API Anything Bridge</h1>
             <p class="sub">Convert any public webpage or open JSON endpoint into structured data.</p>
             <div class="input-group">
-        <input type="text" id="targetUrl" placeholder="https://httpbin.org/json" value="https://httpbin.org/json">
+        <input type="text" id="targetUrl" placeholder="Example: https://httpbin.org/json">
         <button id="runBtn" class="primary-btn" onclick="executeTool()">Extract JSON</button>
     </div>
         </div>
@@ -257,7 +253,7 @@
         <div class="card">
             <div class="terminal-header">
                 <div>
-                    <span style="font-size: 1.05rem; font-weight: 700; color: #0b1120;">Live Execution Output</span>
+                    <span style="font-size: 1.05rem; font-weight: 700; color: #38bdf8;">Live Execution Output</span>
                     <span id="statusTag" style="margin-left: 10px; color: #64748b; font-size: 0.82rem; font-weight: 600;">System Ready</span>
                 </div>
                 <button class="copy-btn" onclick="copyOutput()">Copy Output</button>

@@ -46,7 +46,7 @@
             width: 52px;
             height: 52px;
             background: #0284c7;
-            color: #0b1120;
+            color: #38bdf8;
             border: none;
             border-radius: 50%;
             display: flex;
@@ -124,7 +124,7 @@
             width: 100%; box-sizing: border-box;
             background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px; padding: 10px 12px;
-            color: #0b1120; font-size: 13px;
+            color: #38bdf8; font-size: 13px;
         }
         .ws-input-field input:focus { border-color: var(--accent); outline: none; }
         .ws-input-field input:disabled {
@@ -138,10 +138,10 @@
             width: 100%; padding: 12px; border-radius: 6px;
             font-size: 13px; font-weight: 600; cursor: pointer; border: none;
         }
-        .ws-btn-primary { background: #0284c7; color: #0b1120; }
-        .ws-btn-generate { background: #059669; color: #0b1120; }
-        .ws-btn-save { background: #38bdf8; color: #0b1120; }
-        .ws-btn-cancel { background: #334155; color: #0b1120; }
+        .ws-btn-primary { background: #0284c7; color: #38bdf8; }
+        .ws-btn-generate { background: #059669; color: #38bdf8; }
+        .ws-btn-save { background: #38bdf8; color: #38bdf8; }
+        .ws-btn-cancel { background: #334155; color: #38bdf8; }
         .ws-action-row { display: flex; gap: 10px; margin-top: 10px; }
         .ws-error-text { color: #f43f5e; font-size: 12px; margin-top: 8px; }
         .ws-edit-pane {
@@ -163,7 +163,7 @@
         }
         .ws-btn-copy {
             background: #38bdf8; border: none; padding: 0 14px;
-            border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; color: #0b1120;
+            border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; color: #38bdf8;
         }
         .ws-gratitude-text {
             font-size: 12px; color: #38bdf8; text-align: center;
@@ -206,7 +206,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
   }
   header *, nav *, .navbar *, .topbar * {
-    color: #0b1120 !important;
+    color: #38bdf8 !important;
   }
   header button, nav button, header a, nav a,
   .topbar button, .topbar a {
@@ -214,7 +214,7 @@
     background-color: rgba(255, 255, 255, 0.08) !important;
     backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    color: #0b1120 !important;
+    color: #38bdf8 !important;
   }
 
   /* 2. LOGIN / SIGNUP SWITCHER (Screenshot 2) */
@@ -244,7 +244,7 @@
     background: rgba(255, 255, 255, 0.18) !important;
     background-color: rgba(255, 255, 255, 0.18) !important;
     backdrop-filter: blur(12px) !important;
-    color: #0b1120 !important;
+    color: #38bdf8 !important;
     border-radius: 9999px !important;
   }
 
@@ -273,7 +273,7 @@
   div:has(> * :contains("Unauthorized Access")) a {
     background: rgba(255, 255, 255, 0.12) !important;
     border: 1px solid rgba(255, 255, 255, 0.25) !important;
-    color: #0b1120 !important;
+    color: #38bdf8 !important;
     border-radius: 12px !important;
   }
 
@@ -282,10 +282,10 @@
     background: rgba(15, 23, 42, 0.8) !important;
     background-color: rgba(15, 23, 42, 0.8) !important;
     border: 1px solid rgba(255, 255, 255, 0.16) !important;
-    color: #0b1120 !important;
+    color: #38bdf8 !important;
   }
   #voice-picker-btn *, [onclick*="openVoiceModal"] * {
-    color: #0b1120 !important;
+    color: #38bdf8 !important;
   }
 
   /* 5. UNIVERSAL SWEEP FOR ANY REMAINING #0b1120 */
@@ -308,112 +308,108 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
+
+
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
 <style id="global-zero-white-override">
-  /* 1. Global Font & Zero-White Text Replacement */
   * {
     font-family: 'Space Grotesk', sans-serif !important;
+    box-sizing: border-box;
   }
-  h1, h2, h3, .brand, .logo, nav a {
-    font-family: 'Orbitron', sans-serif !important;
-    color: #38bdf8 !important; /* Neon Cyan instead of White */
-    letter-spacing: 0.04em !important;
-    text-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
-  }
-  h4, h5, h6, label, th, strong, b {
-    color: #a5b4fc !important; /* Soft Indigo-Cyan */
-    font-weight: 700 !important;
-  }
-  p, span, td, li, small, div {
-    color: #94a3b8; /* Muted Cyber Slate */
-  }
-  code, pre, .token, [id*="token"], [class*="token"] {
-    font-family: 'JetBrains Mono', monospace !important;
-    color: #4ade80 !important; /* Matrix Neon Green */
-  }
-
-  /* 2. Force Dark Cyber Backgrounds on Everything */
   html, body {
-    background-color: #050811 !important;
+    background-color: #060913 !important;
+    color: #e2e8f0 !important;
+  }
+  /* Fix invisible headings, brand names, and session titles */
+  h1, h2, h3, h4, .brand, .logo, header a, nav a, .navbar-brand, .session-title {
+    font-family: 'Orbitron', sans-serif !important;
     color: #38bdf8 !important;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.35) !important;
+    opacity: 1 !important;
   }
-
-  /* 3. Nuclear Fix for ANY White Box inside Cards (Including NEW TOKEN GENERATED) */
-  .card div, .panel div, main div, section div, form div,
-  .auth-card, .login-card, .signup-card, .modal-content {
-    background-color: #0b1120 !important;
-    border-color: rgba(56, 189, 248, 0.25) !important;
+  /* Fix top-right user pill (JITENDRA CHAND) and secondary buttons (Access Vault, Copy Output) */
+  header span, header div, .user-badge, .profile-btn, a.btn, button, .btn {
+    color: #38bdf8 !important;
+    border-color: rgba(56, 189, 248, 0.45) !important;
+    opacity: 1 !important;
   }
-
-  /* Make outer cards slightly distinct from inner boxes */
-  .card, .panel, .auth-box, .login-box, .signup-box {
-    background: linear-gradient(145deg, #0f172a 0%, #090d16 100%) !important;
+  /* Make all buttons and action links clearly visible with Neon Borders & Bright Text */
+  button, .btn, input[type="submit"], a[class*="btn"], a[style*="border"], a[href*="vault"], a[href*="logout"] {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%) !important;
+    color: #38bdf8 !important;
+    border: 1px solid #38bdf8 !important;
+    font-family: 'Orbitron', sans-serif !important;
+    font-weight: 700 !important;
+    padding: 10px 18px !important;
+    border-radius: 10px !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.2) !important;
+  }
+  button.primary-btn, button[type="submit"], a[href*="logout"] {
+    background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%) !important;
+    color: #e0f2fe !important;
+  }
+  /* Cards & Containers */
+  .card, .panel, .auth-card, .login-card, .session-card {
+    background: rgba(15, 23, 42, 0.92) !important;
     border: 1px solid rgba(56, 189, 248, 0.35) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+    border-radius: 16px !important;
+    color: #cbd5e1 !important;
   }
-
-  /* Specifically style inner boxes inside cards (like NEW TOKEN GENERATED box) */
-  .card > div, .card form > div, [id*="result"], [id*="output"], [id*="token"], [class*="box"], [class*="alert"] {
-    background: #030712 !important;
-    background-color: #030712 !important;
-    border: 1px solid rgba(74, 222, 128, 0.4) !important;
-    border-radius: 12px !important;
+  /* Inner Token / Output Boxes (Never White, Always Pitch Dark with Neon Green Text) */
+  #tokenCard, .token-box, pre, code, [id*="output"], [id*="Out"], .terminal-box {
+    background-color: #020617 !important;
     color: #4ade80 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    border: 1px solid rgba(74, 222, 128, 0.4) !important;
+    border-radius: 10px !important;
   }
-
-  /* 4. Inputs, Selects, Textareas */
-  input, select, textarea {
-    background: #020617 !important;
+  /* Inputs & Textareas - Pitch Dark with Cyan Text and Visible Gray Examples (Placeholders) */
+  input, textarea, select {
     background-color: #020617 !important;
     color: #38bdf8 !important;
     font-family: 'JetBrains Mono', monospace !important;
-    border: 1px solid #1e293b !important;
+    border: 1px solid #334155 !important;
     border-radius: 10px !important;
   }
-  input:focus, select:focus, textarea:focus {
-    border-color: #38bdf8 !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
-  }
-
-  /* 5. Buttons */
-  button, .btn, input[type="submit"] {
-    background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%) !important;
-    color: #e0f2fe !important;
-    font-family: 'Orbitron', sans-serif !important;
-    font-size: 0.85rem !important;
-    letter-spacing: 0.05em !important;
-    border: 1px solid rgba(56, 189, 248, 0.5) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35) !important;
+  input::placeholder, textarea::placeholder {
+    color: #64748b !important;
+    opacity: 1 !important;
   }
 </style>
 
 <script id="cyber-color-enforcer">
-  // Live scanner that kills any dynamic white background or white text instantly
-  function enforceCyberTheme() {
+  function fixVisibilityAndWhiteBoxes() {
     document.querySelectorAll('*').forEach(el => {
       const style = window.getComputedStyle(el);
       const bg = style.backgroundColor;
       const fg = style.color;
-      // If background is white or very light gray (rgb values > 200)
-      const m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-      if (m && parseInt(m[1]) > 180 && parseInt(m[2]) > 180 && parseInt(m[3]) > 180) {
-        el.style.setProperty('background', '#030712', 'important');
-        el.style.setProperty('background-color', '#030712', 'important');
-        el.style.setProperty('border', '1px solid rgba(56, 189, 248, 0.4)', 'important');
+      // 1. Turn any remaining white/light background into deep cyber dark
+      const mBg = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (mBg && parseInt(mBg[1]) > 180 && parseInt(mBg[2]) > 180 && parseInt(mBg[3]) > 180) {
+        el.style.setProperty('background', '#020617', 'important');
+        el.style.setProperty('background-color', '#020617', 'important');
         el.style.setProperty('color', '#4ade80', 'important');
+        el.style.setProperty('border', '1px solid #38bdf8', 'important');
       }
-      // If text color is pure white, shift to Cyber Cyan or Neon Green
-      if (fg === 'rgb(255, 255, 255)') {
-        if (['H1','H2','H3','TH','BUTTON','A'].includes(el.tagName)) {
-          el.style.setProperty('color', '#38bdf8', 'important');
-        } else {
-          el.style.setProperty('color', '#a5f3fc', 'important');
-        }
+      // 2. Fix dark-on-dark invisible text (if text color is dark rgb < 65, make it bright cyan!)
+      const mFg = fg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (mFg && parseInt(mFg[1]) < 65 && parseInt(mFg[2]) < 65 && parseInt(mFg[3]) < 65) {
+        el.style.setProperty('color', '#38bdf8', 'important');
       }
     });
   }
-  document.addEventListener('DOMContentLoaded', enforceCyberTheme);
-  setInterval(enforceCyberTheme, 400);
+  document.addEventListener('DOMContentLoaded', fixVisibilityAndWhiteBoxes);
+  setInterval(fixVisibilityAndWhiteBoxes, 350);
 </script>
 
 </head>

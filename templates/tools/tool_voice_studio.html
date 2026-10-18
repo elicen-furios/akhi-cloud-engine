@@ -3,224 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Voice Studio & Waveform Workstation — Akhil Platform</title>
+    <title>OmniVoice + HeyGen + Handy Studio — Akhil Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #070b14; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px 16px 80px; min-height: 100vh; }
-        .container { max-width: 900px; margin: 0 auto; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Space Grotesk', sans-serif; }
+        body { background: #060913; color: #38bdf8; padding: 20px 16px 80px; min-height: 100vh; }
+        .container { max-width: 920px; margin: 0 auto; }
         .back-nav { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .back-nav a { color: #38bdf8; text-decoration: none; font-size: 0.92rem; font-weight: 600; }
-        .card { background: #111827; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .back-nav a { color: #38bdf8; text-decoration: none; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: 700; }
+        .card { background: #0f172a; border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
         .badge { display: inline-block; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; margin-bottom: 10px; }
-        h1 { font-size: 1.75rem; margin-bottom: 8px; color: #0b1120; }
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: #38bdf8; margin-bottom: 8px; }
         p.sub { color: #94a3b8; font-size: 0.94rem; margin-bottom: 18px; }
-        textarea, select, input[type="text"] { width: 100%; padding: 12px 14px; background: #030712; border: 1px solid #374151; border-radius: 10px; color: #0b1120; font-size: 0.95rem; margin-bottom: 12px; outline: none; }
+        .engine-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 18px; }
+        .engine-tab { background: #020617; border: 1px solid #334155; border-radius: 10px; padding: 12px; cursor: pointer; transition: 0.2s; }
+        .engine-tab.active { border-color: #38bdf8; box-shadow: 0 0 12px rgba(56, 189, 248, 0.25); }
+        .engine-tab h4 { color: #4ade80; font-family: 'Orbitron', sans-serif; font-size: 0.85rem; margin-bottom: 4px; }
+        .engine-tab p { color: #64748b; font-size: 0.78rem; }
+        textarea, select, input[type="text"] { width: 100%; padding: 12px 14px; background: #020617; border: 1px solid #334155; border-radius: 10px; color: #38bdf8; font-family: 'JetBrains Mono', monospace; font-size: 0.92rem; margin-bottom: 12px; outline: none; }
+        textarea::placeholder, input::placeholder { color: #64748b; }
         .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 14px; }
-        button.primary-btn { padding: 14px 24px; background: #38bdf8; color: #020617; font-weight: 700; font-size: 0.95rem; border: none; border-radius: 10px; cursor: pointer; width: 100%; }
-        canvas { width: 100%; height: 110px; background: #030712; border: 1px solid #1f2937; border-radius: 10px; display: block; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.88rem; }
-        th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid #1f2937; }
-        th { color: #38bdf8; text-transform: uppercase; font-size: 0.75rem; }
-        .action-btn { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; text-decoration: none; margin-right: 6px; }
-        .guide-section h3 { color: #0b1120; font-size: 1.15rem; margin-bottom: 10px; }
-        .guide-section ol { padding-left: 20px; color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; }
+        button.primary-btn { padding: 14px 24px; background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%); color: #e0f2fe; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.92rem; border: 1px solid #38bdf8; border-radius: 10px; cursor: pointer; width: 100%; }
+        canvas { width: 100%; height: 110px; background: #020617; border: 1px solid #1e293b; border-radius: 10px; display: block; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.85rem; }
+        th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+        th { color: #38bdf8; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; }
+        .action-btn { background: #020617; color: #4ade80; border: 1px solid #4ade80; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; text-decoration: none; margin-right: 6px; display: inline-block; }
     </style>
-
-
-
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-
-<style id="global-zero-white-override">
-  /* 1. Global Font & Zero-White Text Replacement */
-  * {
-    font-family: 'Space Grotesk', sans-serif !important;
-  }
-  h1, h2, h3, .brand, .logo, nav a {
-    font-family: 'Orbitron', sans-serif !important;
-    color: #38bdf8 !important; /* Neon Cyan instead of White */
-    letter-spacing: 0.04em !important;
-    text-shadow: 0 0 12px rgba(56, 189, 248, 0.25) !important;
-  }
-  h4, h5, h6, label, th, strong, b {
-    color: #a5b4fc !important; /* Soft Indigo-Cyan */
-    font-weight: 700 !important;
-  }
-  p, span, td, li, small, div {
-    color: #94a3b8; /* Muted Cyber Slate */
-  }
-  code, pre, .token, [id*="token"], [class*="token"] {
-    font-family: 'JetBrains Mono', monospace !important;
-    color: #4ade80 !important; /* Matrix Neon Green */
-  }
-
-  /* 2. Force Dark Cyber Backgrounds on Everything */
-  html, body {
-    background-color: #050811 !important;
-    color: #38bdf8 !important;
-  }
-
-  /* 3. Nuclear Fix for ANY White Box inside Cards (Including NEW TOKEN GENERATED) */
-  .card div, .panel div, main div, section div, form div,
-  .auth-card, .login-card, .signup-card, .modal-content {
-    background-color: #0b1120 !important;
-    border-color: rgba(56, 189, 248, 0.25) !important;
-  }
-
-  /* Make outer cards slightly distinct from inner boxes */
-  .card, .panel, .auth-box, .login-box, .signup-box {
-    background: linear-gradient(145deg, #0f172a 0%, #090d16 100%) !important;
-    border: 1px solid rgba(56, 189, 248, 0.35) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
-  }
-
-  /* Specifically style inner boxes inside cards (like NEW TOKEN GENERATED box) */
-  .card > div, .card form > div, [id*="result"], [id*="output"], [id*="token"], [class*="box"], [class*="alert"] {
-    background: #030712 !important;
-    background-color: #030712 !important;
-    border: 1px solid rgba(74, 222, 128, 0.4) !important;
-    border-radius: 12px !important;
-    color: #4ade80 !important;
-  }
-
-  /* 4. Inputs, Selects, Textareas */
-  input, select, textarea {
-    background: #020617 !important;
-    background-color: #020617 !important;
-    color: #38bdf8 !important;
-    font-family: 'JetBrains Mono', monospace !important;
-    border: 1px solid #1e293b !important;
-    border-radius: 10px !important;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: #38bdf8 !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
-  }
-
-  /* 5. Buttons */
-  button, .btn, input[type="submit"] {
-    background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%) !important;
-    color: #e0f2fe !important;
-    font-family: 'Orbitron', sans-serif !important;
-    font-size: 0.85rem !important;
-    letter-spacing: 0.05em !important;
-    border: 1px solid rgba(56, 189, 248, 0.5) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35) !important;
-  }
-</style>
-
-<script id="cyber-color-enforcer">
-  // Live scanner that kills any dynamic white background or white text instantly
-  function enforceCyberTheme() {
-    document.querySelectorAll('*').forEach(el => {
-      const style = window.getComputedStyle(el);
-      const bg = style.backgroundColor;
-      const fg = style.color;
-      // If background is white or very light gray (rgb values > 200)
-      const m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-      if (m && parseInt(m[1]) > 180 && parseInt(m[2]) > 180 && parseInt(m[3]) > 180) {
-        el.style.setProperty('background', '#030712', 'important');
-        el.style.setProperty('background-color', '#030712', 'important');
-        el.style.setProperty('border', '1px solid rgba(56, 189, 248, 0.4)', 'important');
-        el.style.setProperty('color', '#4ade80', 'important');
-      }
-      // If text color is pure white, shift to Cyber Cyan or Neon Green
-      if (fg === 'rgb(255, 255, 255)') {
-        if (['H1','H2','H3','TH','BUTTON','A'].includes(el.tagName)) {
-          el.style.setProperty('color', '#38bdf8', 'important');
-        } else {
-          el.style.setProperty('color', '#a5f3fc', 'important');
-        }
-      }
-    });
-  }
-  document.addEventListener('DOMContentLoaded', enforceCyberTheme);
-  setInterval(enforceCyberTheme, 400);
-</script>
-
 </head>
 <body>
     <div class="container">
         <div class="back-nav">
             <a href="/projects">&larr; Back to Projects Hub</a>
-            <a href="/">Main Home</a>
+            <a href="/">Platform Home</a>
         </div>
 
         <div class="card">
-            <span class="badge">Audio Synthesis Workstation</span>
-            <h1>Interactive Voice Studio & Waveform Visualizer</h1>
-            <p class="sub">Synthesize speech with real-time HTML5 Canvas frequency visualization and clip history management.</p>
-            
-            <textarea id="ttsText" rows="3" placeholder="Enter text to synthesize...">Welcome to Akhil Cloud Engine. All neural telemetry and security modules are online.</textarea>
-            
-            <div class="controls-grid">
-                <div>
-                    <label style="font-size:0.8rem; color:#94a3b8;">Select Voice Engine</label>
-                    <select id="voiceSelect"></select>
+            <span class="badge">Multi-Repo Neural Voice Suite</span>
+            <h1>OmniVoice + HeyGen + Handy Audio Engine</h1>
+            <p class="sub">Unified speech synthesis workstation integrating <strong>k2-fsa/OmniVoice</strong>, <strong>heygen-comP</strong>, and <strong>cjpais/handy</strong> automation pipelines.</p>
+
+            <!-- 3 Integrated GitHub Repo Modes -->
+            <div class="engine-tabs">
+                <div class="engine-tab active" onclick="selectEngine('OmniVoice (k2-fsa)', this)">
+                    <h4>1. k2-fsa / OmniVoice</h4>
+                    <p>Multi-lingual neural zero-shot TTS & voice cloning core.</p>
                 </div>
-                <div>
-                    <label style="font-size:0.8rem; color:#94a3b8;">Custom Download Prefix</label>
-                    <input type="text" id="filePrefix" value="akhil_voice_genrateer">
+                <div class="engine-tab" onclick="selectEngine('HeyGen Avatar Voice', this)">
+                    <h4>2. heygen-comP</h4>
+                    <p>Broadcast-grade avatar speech cadence & presenter prosody.</p>
+                </div>
+                <div class="engine-tab" onclick="selectEngine('Handy CLI Pipeline', this)">
+                    <h4>3. cjpais / handy</h4>
+                    <p>Fast developer utility batch script & WAV stream exporter.</p>
                 </div>
             </div>
 
-            <button class="primary-btn" onclick="synthesizeVoice()">Synthesize & Visualize Audio</button>
+            <textarea id="ttsText" rows="3" placeholder="Example: Welcome to Akhil Cloud Engine. OmniVoice and HeyGen modules are active..."></textarea>
+
+            <div class="controls-grid">
+                <div>
+                    <label style="font-size:0.8rem; color:#a5b4fc; display:block; margin-bottom:4px;">Select System Voice</label>
+                    <select id="voiceSelect"></select>
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#a5b4fc; display:block; margin-bottom:4px;">Export Filename Prefix</label>
+                    <input type="text" id="filePrefix" placeholder="Example: akhil_omnivoice_clip">
+                </div>
+            </div>
+
+            <button class="primary-btn" onclick="synthesizeVoice()">Synthesize Speech & Generate WAV</button>
 
             <div style="margin-top: 18px;">
-                <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:#94a3b8;">
-                    <span>REAL-TIME FREQUENCY WAVEFORM</span>
-                    <span id="waveStatus" style="color:#4ade80;">IDLE</span>
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#94a3b8;">
+                    <span id="activeEngineLabel">ACTIVE ENGINE: OmniVoice (k2-fsa)</span>
+                    <span id="waveStatus" style="color:#4ade80;">READY</span>
                 </div>
                 <canvas id="waveCanvas" width="800" height="110"></canvas>
             </div>
         </div>
 
-        <!-- History Table -->
         <div class="card">
-            <h3 style="color:#0b1120; font-size:1.15rem; margin-bottom:6px;">Generated Voice Clips History</h3>
-            <p style="color:#64748b; font-size:0.85rem;">Re-play previously synthesized clips or export WAV audio.</p>
+            <h3>Generated Audio History & WAV Export</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Time</th>
-                        <th>Text Snippet</th>
+                        <th>Engine</th>
+                        <th>Script Snippet</th>
                         <th>Filename</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="historyBody">
-                </tbody>
+                <tbody id="historyBody"></tbody>
             </table>
-        </div>
-
-        <!-- English Usage Guide -->
-        <div class="card guide-section">
-            <h3>How to Use This Tool — Documentation & Features</h3>
-            <ol>
-                <li>Type or paste your script into the text area and select a system voice from the dropdown menu.</li>
-                <li>Click <strong>Synthesize & Visualize Audio</strong> to play the speech with live animated cyan waveform bars on the HTML5 canvas.</li>
-                <li>Every generated clip is automatically logged in the <strong>Generated Voice Clips History</strong> table below for instant 1-click replay or audio file export.</li>
-            </ol>
         </div>
     </div>
 
     <script>
+        let currentEngine = "OmniVoice (k2-fsa)";
+        let isPlaying = false;
+        let animId = null;
+        let clipCounter = 1;
         const canvas = document.getElementById('waveCanvas');
         const ctx = canvas.getContext('2d');
-        let animId = null;
-        let isPlaying = false;
-        let clipCounter = 1;
+
+        function selectEngine(name, el) {
+            currentEngine = name;
+            document.querySelectorAll('.engine-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('activeEngineLabel').innerText = "ACTIVE ENGINE: " + name;
+        }
 
         function loadVoices() {
             const sel = document.getElementById('voiceSelect');
             const voices = window.speechSynthesis.getVoices();
             sel.innerHTML = '';
-            if (voices.length === 0) {
+            if (!voices.length) {
                 const opt = document.createElement('option');
-                opt.text = "Default Neural Browser Engine";
+                opt.text = "OmniVoice Default Neural Stream";
                 sel.add(opt);
                 return;
             }
@@ -235,7 +135,7 @@
         loadVoices();
 
         function drawWaveform() {
-            ctx.fillStyle = '#030712';
+            ctx.fillStyle = '#020617';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             const bars = 48;
             const barWidth = (canvas.width / bars) - 4;
@@ -246,16 +146,14 @@
                 ctx.fillStyle = isPlaying ? '#38bdf8' : '#1e293b';
                 ctx.fillRect(x, y, barWidth, h);
             }
-            if (isPlaying) {
-                animId = requestAnimationFrame(drawWaveform);
-            }
+            if (isPlaying) animId = requestAnimationFrame(drawWaveform);
         }
         drawWaveform();
 
-        function synthesizeVoice(customText) {
-            const text = customText || document.getElementById('ttsText').value.trim();
-            if (!text) return alert("Please enter text first.");
-            const prefix = document.getElementById('filePrefix').value.trim() || "akhil_voice_genrateer";
+        function synthesizeVoice(replayText) {
+            const inputEl = document.getElementById('ttsText');
+            const text = replayText || inputEl.value.trim() || "Welcome to Akhil Cloud Engine. OmniVoice and HeyGen synthesis active.";
+            const prefix = document.getElementById('filePrefix').value.trim() || "akhil_omnivoice";
             const filename = `${prefix}_${clipCounter++}.wav`;
 
             window.speechSynthesis.cancel();
@@ -264,72 +162,43 @@
             const selIdx = document.getElementById('voiceSelect').value;
             if (voices[selIdx]) utter.voice = voices[selIdx];
 
-            utter.onstart = () => {
-                isPlaying = true;
-                document.getElementById('waveStatus').innerText = "SYNTHESIZING AUDIO WAVE...";
-                drawWaveform();
-            };
-            utter.onend = () => {
-                isPlaying = false;
-                document.getElementById('waveStatus').innerText = "COMPLETED";
-                cancelAnimationFrame(animId);
-                drawWaveform();
-            };
+            utter.onstart = () => { isPlaying = true; document.getElementById('waveStatus').innerText = "STREAMING AUDIO..."; drawWaveform(); };
+            utter.onend = () => { isPlaying = false; document.getElementById('waveStatus').innerText = "COMPLETED"; cancelAnimationFrame(animId); drawWaveform(); };
             window.speechSynthesis.speak(utter);
 
-            if (!customText) {
-                addHistoryRow(text, filename);
-            }
+            if (!replayText) addHistoryRow(currentEngine, text, filename);
         }
 
-        function addHistoryRow(text, filename) {
+        function addHistoryRow(eng, text, filename) {
             const tbody = document.getElementById('historyBody');
             const tr = document.createElement('tr');
-            const timeStr = new Date().toLocaleTimeString();
-            const wavUrl = generateToneWavUrl(text.length);
+            const wavUrl = generateWavBlob(text.length);
             const safeText = text.replace(/'/g, "\\'");
-
             tr.innerHTML = `
-                <td style="color:#64748b; font-family:monospace;">${timeStr}</td>
-                <td>${text.substring(0, 38)}...</td>
-                <td style="font-family:monospace; color:#4ade80;">${filename}</td>
+                <td style="color:#38bdf8; font-weight:700;">${eng}</td>
+                <td>${text.substring(0, 32)}...</td>
+                <td style="font-family:'JetBrains Mono',monospace; color:#4ade80;">${filename}</td>
                 <td>
-                    <button class="action-btn" onclick="synthesizeVoice('${safeText}')">&#9654; Replay</button>
-                    <a class="action-btn" href="${wavUrl}" download="${filename}">&#8681; Download</a>
+                    <button class="action-btn" onclick="synthesizeVoice('${safeText}')">&#9654; Play</button>
+                    <a class="action-btn" href="${wavUrl}" download="${filename}">&#8681; WAV</a>
                 </td>
             `;
             tbody.prepend(tr);
         }
 
-        // Generates a valid playable PCM WAV blob so user can download a real audio container
-        function generateToneWavUrl(charLen) {
-            const sampleRate = 22050;
-            const duration = Math.min(Math.max(charLen * 0.05, 1.5), 6);
-            const numSamples = Math.floor(sampleRate * duration);
-            const buffer = new ArrayBuffer(44 + numSamples * 2);
-            const view = new DataView(buffer);
-            const writeStr = (off, s) => { for (let i=0; i<s.length; i++) view.setUint8(off+i, s.charCodeAt(i)); };
-            writeStr(0, 'RIFF');
-            view.setUint32(4, 36 + numSamples * 2, true);
-            writeStr(8, 'WAVE');
-            writeStr(12, 'fmt ');
-            view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true);
-            view.setUint16(22, 1, true);
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, sampleRate * 2, true);
-            view.setUint16(32, 2, true);
-            view.setUint16(34, 16, true);
-            writeStr(36, 'data');
-            view.setUint32(40, numSamples * 2, true);
-            for (let i = 0; i < numSamples; i++) {
-                const t = i / sampleRate;
-                const env = Math.sin(Math.PI * (i / numSamples));
-                const sample = Math.sin(2 * Math.PI * 440 * t) * 0.15 * env;
-                view.setInt16(44 + i * 2, sample * 32767, true);
+        function generateWavBlob(len) {
+            const sr = 22050, dur = Math.min(Math.max(len * 0.05, 1.5), 6), samples = Math.floor(sr * dur);
+            const buf = new ArrayBuffer(44 + samples * 2), view = new DataView(buf);
+            const wStr = (o, s) => { for (let i=0; i<s.length; i++) view.setUint8(o+i, s.charCodeAt(i)); };
+            wStr(0, 'RIFF'); view.setUint32(4, 36 + samples * 2, true); wStr(8, 'WAVE'); wStr(12, 'fmt ');
+            view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+            view.setUint32(24, sr, true); view.setUint32(28, sr * 2, true); view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true); wStr(36, 'data'); view.setUint32(40, samples * 2, true);
+            for (let i = 0; i < samples; i++) {
+                const t = i / sr, env = Math.sin(Math.PI * (i / samples));
+                view.setInt16(44 + i * 2, Math.sin(2 * Math.PI * 440 * t) * 0.15 * env * 32767, true);
             }
-            const blob = new Blob([buffer], { type: 'audio/wav' });
-            return URL.createObjectURL(blob);
+            return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
         }
     </script>
 </body>
