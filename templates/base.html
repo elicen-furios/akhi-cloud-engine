@@ -100,7 +100,7 @@
         }
         .nav-item:hover, .nav-item.active {
             color: var(--text-title);
-            background: #ffffff;
+            background: #030712;
             font-weight: 600;
             box-shadow: var(--shadow-subtle);
             border: 1px solid var(--border-soft);
@@ -127,7 +127,7 @@
         }
         .hamburger-btn {
             display: none;
-            background: #fff;
+            background: #030712;
             border: 1px solid var(--border-soft);
             border-radius: 8px;
             color: var(--text-title);
@@ -139,7 +139,7 @@
             align-items: center;
             gap: 8px;
             padding: 6px 14px;
-            background: #ffffff;
+            background: #030712;
             border: 1px solid var(--border-soft);
             border-radius: 30px;
             text-decoration: none;
@@ -194,7 +194,7 @@
         }
         .btn-primary:hover { background: #27272a; }
         .btn-secondary {
-            background: #ffffff;
+            background: #030712;
             color: var(--text-title);
             font-size: 0.88rem;
             font-weight: 600;
@@ -212,7 +212,7 @@
         .input-text {
             width: 100%;
             padding: 12px 14px;
-            background: #ffffff;
+            background: #030712;
             border: 1px solid var(--border-soft);
             border-radius: 8px;
             font-size: 0.9rem;
@@ -257,7 +257,7 @@
             padding: 20px;
         }
         .saas-error-card {
-            background: #ffffff;
+            background: #030712;
             border: 1px solid #f4f4f5;
             border-radius: 20px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.02);
@@ -337,7 +337,7 @@
             transition: all 0.2s ease;
         }
         .auth-tab-btn.active {
-            background: #ffffff;
+            background: #030712;
             color: #09090b;
             box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
@@ -354,7 +354,7 @@
             flex-direction: column;
         }
         .done-box {
-            background: #fff;
+            background: #030712;
             border: 1px solid var(--border-soft);
             box-shadow: var(--shadow-float);
             border-radius: 18px;
@@ -408,7 +408,7 @@
         width: 360px;
         max-width: calc(100vw - 32px);
         height: 500px;
-        background: #ffffff;
+        background: #030712;
         border: 1px solid #e4e4e7;
         border-radius: 20px;
         box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
@@ -465,7 +465,7 @@
     }
     .chat-msg-bot {
         align-self: flex-start;
-        background: #ffffff;
+        background: #030712;
         color: #09090b;
         border: 1px solid #e4e4e7;
         border-bottom-left-radius: 4px;
@@ -491,7 +491,7 @@
     }
     .chat-footer {
         padding: 12px;
-        background: #ffffff;
+        background: #030712;
         border-top: 1px solid #e4e4e7;
         display: flex;
         gap: 8px;
@@ -770,6 +770,44 @@ main, #main-content, .content-wrapper, .container {
   }
 </style>
 
+
+<style id="cyber-contrast-fix">
+  /* Force dark background & glowing cyan text on all inputs, token boxes, and code badges */
+  input, select, textarea, .form-control, .input-box {
+    background-color: #030712 !important;
+    color: #38bdf8 !important;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    border-radius: 10px !important;
+  }
+  /* Fix white NEW TOKEN GENERATED card and white boxes inside cards */
+  .card div[style*="background: #030712"],
+  .card div[style*="background:#030712"],
+  .card div[style*="background: white"],
+  .token-box, .generated-token, .alert, .well, pre, code {
+    background-color: #030712 !important;
+    color: #4ade80 !important;
+    border: 1px solid rgba(74, 222, 128, 0.35) !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+  }
+  /* Fix Active Tokens table token pill */
+  table td code, table td span, .badge-token {
+    background-color: #0f172a !important;
+    color: #38bdf8 !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    font-family: monospace !important;
+    font-weight: 700 !important;
+  }
+  /* Fix buttons inside white boxes */
+  button, .btn {
+    color: #ffffff !important;
+    background-color: #0284c7 !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  }
+</style>
+
 </head>
 <body>
     <div class="drawer-overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -799,6 +837,9 @@ main, #main-content, .content-wrapper, .container {
 
             <li class="nav-section-title">NEURAL & AI ENGINES
         <li><a href="/projects" class="nav-item"><span>GitHub Projects Hub</span></a></li>
+        <li><a href="/tools/voice-studio" class="nav-item"><span style="color:#38bdf8; font-weight:700;">★ Voice Waveform Studio</span></a></li>
+        <li><a href="/tools/prompt-commander" class="nav-item"><span style="color:#f59e0b; font-weight:700;">★ Slash Prompt Commander</span></a></li>
+        <li><a href="/tools/website-generator" class="nav-item"><span style="color:#ec4899; font-weight:700;">★ AI Website Generator</span></a></li>
         <li><a href="/tools/api-bridge" class="nav-item"><span>API Anything Bridge</span></a></li>
         <li><a href="/tools/api-vault" class="nav-item"><span>ApiVault Key Auditor</span></a></li>
         <li><a href="/tools/request-reverser" class="nav-item"><span>API Request Reverser</span></a></li>
@@ -1132,7 +1173,7 @@ main, #main-content, .content-wrapper, .container {
 }
 .ai-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; line-height: 1.45; }
 .ai-msg-bot { background: #18181b; color: #f4f4f5; align-self: flex-start; border: 1px solid #27272a; }
-.ai-msg-user { background: #ffffff; color: #09090b; align-self: flex-end; font-weight: 500; }
+.ai-msg-user { background: #030712; color: #09090b; align-self: flex-end; font-weight: 500; }
 </style>
 
 </script>
@@ -1451,7 +1492,7 @@ document.addEventListener("DOMContentLoaded", function() {
         parent.style.position = "relative";
         parent.innerHTML = `
             <label style="display: block; font-size: 0.84rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Voice Model</label>
-            <div onclick="toggleDarkVoice(event)" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; cursor: pointer; user-select: none;">
+            <div onclick="toggleDarkVoice(event)" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; background: #030712; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; cursor: pointer; user-select: none;">
                 <span id="selected-voice-title" style="font-weight: 600; font-size: 0.88rem; color: #0f172a;">Aanya (Hindi Warm Dialogue)</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </div>
